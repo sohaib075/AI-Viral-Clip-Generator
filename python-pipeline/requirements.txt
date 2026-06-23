@@ -1,0 +1,10 @@
+flask
+flask-cors
+yt-dlp
+ffmpeg-python
+moviepy
+werkzeug
+groq
+google-generativeai
+python-dotenv
+requests
