@@ -21,8 +21,18 @@ def process_video_job(job_id, video_url):
     try:
         JOBS[job_id] = {"status": "processing", "progress": 10, "message": "Downloading video...", "clips": []}
         
-        # 1. Download Video
-        video_path = download_video(video_url, TEMP_DIR)
+        def yt_progress(p):
+            current_p = 10 + int((p / 100.0) * 20)
+            JOBS[job_id]["progress"] = current_p
+            JOBS[job_id]["message"] = f"Downloading video... {p:.1f}%"
+
+        # 1. Download Video (or use local file if uploaded)
+        if video_url.startswith('file://'):
+            # It's a direct file upload from the Node backend
+            import urllib.request
+            video_path = urllib.request.url2pathname(video_url[7:])
+        else:
+            video_path = download_video(video_url, TEMP_DIR, progress_callback=yt_progress)
         
         # 2. Extract Audio
         JOBS[job_id] = {"status": "processing", "progress": 30, "message": "Extracting audio...", "clips": []}

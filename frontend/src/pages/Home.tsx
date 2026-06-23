@@ -29,12 +29,22 @@ const Home = () => {
     if (!videoUrl && !file) return;
     
     try {
+      let body;
+      let headers: HeadersInit = {};
+      
+      if (file) {
+        const formData = new FormData();
+        formData.append('video', file);
+        body = formData;
+      } else {
+        body = JSON.stringify({ videoUrl: videoUrl });
+        headers['Content-Type'] = 'application/json';
+      }
+
       const response = await fetch('http://localhost:5000/api/jobs', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ videoUrl: videoUrl }) // Note: FormData needed if file upload
+        headers: headers,
+        body: body
       });
       
       if (!response.ok) throw new Error('Network response was not ok');
@@ -42,7 +52,7 @@ const Home = () => {
       navigate(`/processing/${data.jobId}`);
     } catch (error) {
       console.error("Failed to submit job", error);
-      alert("Failed to submit job. Make sure the Node.js backend is running on port 5000.");
+      alert("Failed to submit job. Ensure the Node.js backend is running and the file is valid.");
     }
   };
 
