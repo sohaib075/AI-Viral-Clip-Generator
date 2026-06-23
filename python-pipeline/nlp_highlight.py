@@ -1,6 +1,6 @@
 import os
 import json
-import google.generativeai as genai
+from google import genai
 
 def extract_highlights(transcript_data, num_clips=3):
     """
@@ -13,10 +13,9 @@ def extract_highlights(transcript_data, num_clips=3):
     if not api_key:
         raise ValueError("GEMINI_API_KEY environment variable is not set. Get one from aistudio.google.com")
 
-    genai.configure(api_key=api_key)
+    client = genai.Client(api_key=api_key)
     
-    # We use gemini-1.5-flash as it is lightning fast and free
-    model = genai.GenerativeModel('gemini-1.5-flash')
+    # We use gemini-2.5-flash as it is lightning fast and free
     
     # Prepare the payload for the LLM
     text_content = ""
@@ -42,7 +41,10 @@ Transcript:
 """
 
     try:
-        response = model.generate_content(prompt)
+        response = client.models.generate_content(
+            model='gemini-2.5-flash',
+            contents=prompt
+        )
         result_text = response.text.strip()
         
         # Clean up markdown if the LLM accidentally added it

@@ -9,36 +9,30 @@ const Processing = () => {
   const [progress, setProgress] = useState(10);
 
   useEffect(() => {
-    // Simulate the processing steps
-    const timer1 = setTimeout(() => {
-      setStatusMessage('Extracting Audio & Transcribing with Whisper...');
-      setProgress(30);
+    if (!jobId) return;
+    
+    const interval = setInterval(async () => {
+      try {
+        const response = await fetch(`http://localhost:5000/api/jobs/${jobId}`);
+        if (!response.ok) return;
+        const data = await response.json();
+        
+        setStatusMessage(data.message || 'Processing...');
+        setProgress(data.progress || 0);
+        
+        if (data.status === 'completed') {
+          clearInterval(interval);
+          setTimeout(() => navigate(`/results/${jobId}`), 1000);
+        } else if (data.status === 'failed') {
+          clearInterval(interval);
+          setStatusMessage(data.message || 'Processing Failed');
+        }
+      } catch (e) {
+        console.error("Polling error", e);
+      }
     }, 2000);
-
-    const timer2 = setTimeout(() => {
-      setStatusMessage('Running NLP Highlight Detection...');
-      setProgress(60);
-    }, 5000);
-
-    const timer3 = setTimeout(() => {
-      setStatusMessage('Generating 9:16 Vertical Clips & Subtitles...');
-      setProgress(85);
-    }, 8000);
-
-    const timer4 = setTimeout(() => {
-      setProgress(100);
-      setStatusMessage('Processing Complete!');
-      setTimeout(() => {
-        navigate(`/results/${jobId}`);
-      }, 1000);
-    }, 11000);
-
-    return () => {
-      clearTimeout(timer1);
-      clearTimeout(timer2);
-      clearTimeout(timer3);
-      clearTimeout(timer4);
-    };
+    
+    return () => clearInterval(interval);
   }, [jobId, navigate]);
 
   return (

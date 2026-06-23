@@ -12,12 +12,13 @@ def extract_audio(video_path, output_dir):
     audio_output_path = os.path.join(output_dir, f"{file_name_without_ext}.wav")
     
     try:
+        import imageio_ffmpeg
         (
             ffmpeg
             .input(video_path)
             .output(audio_output_path, acodec='pcm_s16le', ac=1, ar='16k')
             .overwrite_output()
-            .run(quiet=True)
+            .run(cmd=imageio_ffmpeg.get_ffmpeg_exe(), quiet=True)
         )
         return audio_output_path
     except ffmpeg.Error as e:

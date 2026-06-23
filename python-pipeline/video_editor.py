@@ -1,5 +1,5 @@
 import os
-from moviepy.editor import VideoFileClip
+from moviepy import VideoFileClip
 import ffmpeg
 
 def create_srt(clip_data, output_path):
@@ -42,15 +42,15 @@ def process_clip(video_path, clip_data, output_dir, clip_index):
     cut_video_path = os.path.join(output_dir, f"{file_name_without_ext}_cut_{clip_index}.mp4")
     
     with VideoFileClip(video_path) as video:
-        clip = video.subclip(start_time, end_time)
+        clip = video.subclipped(start_time, end_time)
         
         # 2. Crop to 9:16 (1080x1920)
         # Assuming original is 16:9 (1920x1080)
         w, h = clip.size
         target_w = int(h * 9 / 16)
         x_center = w / 2
-        clip_cropped = clip.crop(x1=x_center - target_w/2, y1=0, x2=x_center + target_w/2, y2=h)
-        clip_resized = clip_cropped.resize(height=1920, width=1080)
+        clip_cropped = clip.cropped(x1=x_center - target_w/2, y1=0, x2=x_center + target_w/2, y2=h)
+        clip_resized = clip_cropped.resized(height=1920, width=1080)
         
         # Write temporary cut file without subs
         temp_cut_path = os.path.join(output_dir, f"temp_{file_name_without_ext}_{clip_index}.mp4")
@@ -62,13 +62,15 @@ def process_clip(video_path, clip_data, output_dir, clip_index):
     
     # 4. Burn subtitles using FFmpeg
     final_output_path = os.path.join(output_dir, f"final_{file_name_without_ext}_clip_{clip_index}.mp4")
+    srt_path_ffmpeg = srt_path.replace('\\', '/').replace(':', '\\:')
+    import imageio_ffmpeg
     try:
         (
             ffmpeg
             .input(temp_cut_path)
-            .output(final_output_path, vf=f"subtitles={srt_path}:force_style='FontSize=24,PrimaryColour=&H00FFFFFF,OutlineColour=&H00000000,BorderStyle=1,Outline=2,Shadow=0,MarginV=30'")
+            .output(final_output_path, vf=f"subtitles='{srt_path_ffmpeg}':force_style='FontSize=24,PrimaryColour=&H00FFFFFF,OutlineColour=&H00000000,BorderStyle=1,Outline=2,Shadow=0,MarginV=30'")
             .overwrite_output()
-            .run(quiet=True)
+            .run(cmd=imageio_ffmpeg.get_ffmpeg_exe(), quiet=True)
         )
         # Cleanup temp
         if os.path.exists(temp_cut_path):

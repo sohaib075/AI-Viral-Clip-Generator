@@ -1,16 +1,20 @@
 import yt_dlp
 import os
+import imageio_ffmpeg
 
 def download_video(url, output_dir):
     """
     Downloads a video from the given URL using yt-dlp.
     Returns the path to the downloaded video file.
     """
+    ffmpeg_path = imageio_ffmpeg.get_ffmpeg_exe()
+    
     ydl_opts = {
         'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best',
         'outtmpl': os.path.join(output_dir, '%(id)s.%(ext)s'),
         'merge_output_format': 'mp4',
         'noplaylist': True,
+        'ffmpeg_location': ffmpeg_path,
     }
     
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:

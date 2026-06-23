@@ -27,8 +27,23 @@ const Home = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!videoUrl && !file) return;
-    const fakeJobId = `job_${Date.now()}`;
-    navigate(`/processing/${fakeJobId}`);
+    
+    try {
+      const response = await fetch('http://localhost:5000/api/jobs', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ videoUrl: videoUrl }) // Note: FormData needed if file upload
+      });
+      
+      if (!response.ok) throw new Error('Network response was not ok');
+      const data = await response.json();
+      navigate(`/processing/${data.jobId}`);
+    } catch (error) {
+      console.error("Failed to submit job", error);
+      alert("Failed to submit job. Make sure the Node.js backend is running on port 5000.");
+    }
   };
 
   return (

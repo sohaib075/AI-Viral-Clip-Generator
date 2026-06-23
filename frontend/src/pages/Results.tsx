@@ -15,13 +15,30 @@ const Results = () => {
   const [clips, setClips] = useState<ClipResult[]>([]);
 
   useEffect(() => {
-    // In a real app, fetch results using jobId
-    // Mock data:
-    setClips([
-      { id: '1', url: '#', title: 'The Key to Success', duration: '00:45', score: 98 },
-      { id: '2', url: '#', title: 'Unbelievable Story', duration: '00:30', score: 92 },
-      { id: '3', url: '#', title: 'Important Lesson', duration: '00:55', score: 85 },
-    ]);
+    if (!jobId) return;
+    
+    const fetchResults = async () => {
+      try {
+        const response = await fetch(`http://localhost:5000/api/jobs/${jobId}`);
+        if (!response.ok) return;
+        const data = await response.json();
+        
+        if (data.clips && data.clips.length > 0) {
+          setClips(data.clips.map((c: any, i: number) => ({
+            id: String(i),
+            url: `http://localhost:5000${c.video_url}`,
+            title: c.title,
+            duration: '~15-60s',
+            score: c.score || 95,
+            reasoning: c.reasoning
+          })));
+        }
+      } catch (e) {
+        console.error("Error fetching results", e);
+      }
+    };
+    
+    fetchResults();
   }, [jobId]);
 
   return (
@@ -57,9 +74,9 @@ const Results = () => {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/30"></div>
               
-              <button className="w-20 h-20 bg-white backdrop-blur-md rounded-full flex items-center justify-center text-black group-hover:scale-110 transition-transform z-10 shadow-[0_0_30px_rgba(255,255,255,0.5)]">
+              <a href={clip.url} target="_blank" rel="noreferrer" className="w-20 h-20 bg-white backdrop-blur-md rounded-full flex items-center justify-center text-black group-hover:scale-110 transition-transform z-10 shadow-[0_0_30px_rgba(255,255,255,0.5)]">
                 <Play className="w-8 h-8 ml-1" fill="currentColor" />
-              </button>
+              </a>
               
               <div className="absolute bottom-5 right-5 bg-white text-black px-3 py-1.5 rounded-lg text-sm font-black shadow-lg">
                 {clip.duration}
@@ -83,9 +100,9 @@ const Results = () => {
                 <button className="flex-1 flex items-center justify-center gap-2 py-4 glass-panel hover:bg-white/20 rounded-xl transition-colors text-base font-bold text-white border-white/30">
                   <Share2 className="w-5 h-5" /> Share
                 </button>
-                <button className="flex-1 flex items-center justify-center gap-2 py-4 bg-white hover:bg-gray-200 text-black shadow-[0_0_20px_rgba(255,255,255,0.4)] rounded-xl transition-colors text-base font-black">
+                <a href={clip.url} download className="flex-1 flex items-center justify-center gap-2 py-4 bg-white hover:bg-gray-200 text-black shadow-[0_0_20px_rgba(255,255,255,0.4)] rounded-xl transition-colors text-base font-black">
                   <Download className="w-5 h-5" /> Download
-                </button>
+                </a>
               </div>
             </div>
           </div>
