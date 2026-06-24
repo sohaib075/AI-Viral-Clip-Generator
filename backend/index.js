@@ -92,8 +92,13 @@ app.get('/api/jobs/:id', async (req, res) => {
         const data = await response.json();
         res.json(data);
     } catch (error) {
-        console.error(`Error fetching job status for ${req.params.id}:`, error);
-        res.status(500).json({ error: 'Failed to fetch job status' });
+        if (error.cause && error.cause.code === 'ECONNREFUSED') {
+            console.error(`Error: Python backend is unreachable (ECONNREFUSED). Is it running?`);
+            res.status(503).json({ error: 'Python backend is unavailable' });
+        } else {
+            console.error(`Error fetching job status for ${req.params.id}:`, error.message);
+            res.status(500).json({ error: 'Failed to fetch job status' });
+        }
     }
 });
 

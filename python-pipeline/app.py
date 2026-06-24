@@ -1,6 +1,8 @@
 from flask import Flask, request, jsonify
 import os
 import threading
+import warnings
+warnings.filterwarnings("ignore", category=UserWarning, module="pydantic")
 import traceback
 from downloader import download_video
 from audio_extractor import extract_audio
@@ -108,4 +110,4 @@ def get_status(job_id):
     return jsonify(JOBS[job_id])
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5001, debug=True)
+    app.run(host='0.0.0.0', port=5001, debug=True, use_reloader=False)

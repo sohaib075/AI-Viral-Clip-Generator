@@ -14,8 +14,10 @@ def create_srt(clip_data, output_path):
         # 1
         # 00:00:00,000 --> 00:00:05,000
         # Text
+        start_time = clip_data.get('start', clip_data.get('start_time', 0.0))
+        end_time = clip_data.get('end', clip_data.get('end_time', 0.0))
         start_ms = 0
-        end_ms = int((clip_data['end'] - clip_data['start']) * 1000)
+        end_ms = int((end_time - start_time) * 1000)
         
         def format_time(ms):
             s, ms = divmod(ms, 1000)
@@ -25,7 +27,8 @@ def create_srt(clip_data, output_path):
             
         f.write("1\n")
         f.write(f"{format_time(start_ms)} --> {format_time(end_ms)}\n")
-        f.write(f"{clip_data['text'].strip()}\n")
+        text_content = clip_data.get('text', clip_data.get('title', 'Clip Highlight'))
+        f.write(f"{text_content.strip()}\n")
     return output_path
 
 def process_clip(video_path, clip_data, output_dir, clip_index):
@@ -36,8 +39,8 @@ def process_clip(video_path, clip_data, output_dir, clip_index):
     file_name_without_ext = os.path.splitext(base_name)[0]
     
     # 1. Cut video using MoviePy (or ffmpeg directly for speed)
-    start_time = clip_data['start']
-    end_time = clip_data['end']
+    start_time = clip_data.get('start', clip_data.get('start_time', 0.0))
+    end_time = clip_data.get('end', clip_data.get('end_time', 0.0))
     
     cut_video_path = os.path.join(output_dir, f"{file_name_without_ext}_cut_{clip_index}.mp4")
     

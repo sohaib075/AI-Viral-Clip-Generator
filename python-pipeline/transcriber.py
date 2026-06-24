@@ -28,9 +28,9 @@ def transcribe_audio(audio_path):
         if hasattr(transcription, 'segments'):
             for seg in transcription.segments:
                 segments.append({
-                    "start": seg.start,
-                    "end": seg.end,
-                    "text": seg.text.strip()
+                    "start": seg["start"] if isinstance(seg, dict) else seg.start,
+                    "end": seg["end"] if isinstance(seg, dict) else seg.end,
+                    "text": (seg["text"] if isinstance(seg, dict) else seg.text).strip()
                 })
         
         return {
