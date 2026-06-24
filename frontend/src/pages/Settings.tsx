@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Settings as SettingsIcon, User, CreditCard, Bell, Shield } from 'lucide-react';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 const Settings = () => {
   const [userProfile, setUserProfile] = useState<any>(null);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/user/settings')
+    fetch(`${API_URL}/api/user/settings`)
       .then(res => res.json())
       .then(data => setUserProfile(data))
       .catch(err => console.error('Failed to fetch user settings:', err));

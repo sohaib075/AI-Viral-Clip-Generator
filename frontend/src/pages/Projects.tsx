@@ -2,12 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { Folder, MoreVertical, Play, Clock, CheckCircle, XCircle, Search, Filter } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 const Projects = () => {
   const [projects, setProjects] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/jobs')
+    fetch(`${API_URL}/api/jobs`)
       .then(res => res.json())
       .then(data => {
         setProjects(data);

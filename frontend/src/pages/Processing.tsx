@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Sparkles } from 'lucide-react';
 import { useParams, useNavigate } from 'react-router-dom';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 const Processing = () => {
   const { jobId } = useParams();
   const navigate = useNavigate();
@@ -16,7 +18,7 @@ const Processing = () => {
     
     const interval = setInterval(async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/jobs/${jobId}`);
+        const response = await fetch(`${API_URL}/api/jobs/${jobId}`);
         if (!response.ok) return;
         const data = await response.json();
         

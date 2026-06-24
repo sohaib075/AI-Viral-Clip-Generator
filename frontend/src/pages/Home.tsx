@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { UploadCloud, Link as LinkIcon, Sparkles, Clock, Video, Activity, MoreVertical, Play, AlertTriangle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 const Home = () => {
   const [videoUrl, setVideoUrl] = useState('');
   const [file, setFile] = useState<File | null>(null);
@@ -20,8 +22,8 @@ const Home = () => {
     const fetchDashboardData = async () => {
       try {
         const [analyticsRes, jobsRes] = await Promise.all([
-          fetch('http://localhost:5000/api/analytics'),
-          fetch('http://localhost:5000/api/jobs')
+          fetch(`${API_URL}/api/analytics`),
+          fetch(`${API_URL}/api/jobs`)
         ]);
         if (analyticsRes.ok) setAnalytics(await analyticsRes.json());
         if (jobsRes.ok) {
@@ -82,7 +84,7 @@ const Home = () => {
         headers['Content-Type'] = 'application/json';
       }
 
-      const response = await fetch('http://localhost:5000/api/jobs', {
+      const response = await fetch(`${API_URL}/api/jobs`, {
         method: 'POST',
         headers: headers,
         body: body

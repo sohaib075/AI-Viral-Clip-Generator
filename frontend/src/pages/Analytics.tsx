@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { BarChart as BarChartIcon, TrendingUp, Users, Activity, Clock, Download, ArrowUpRight, ArrowDownRight } from 'lucide-react';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 const Analytics = () => {
   const [data, setData] = useState<any>(null);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/analytics')
+    fetch(`${API_URL}/api/analytics`)
       .then(res => res.json())
       .then(resData => setData(resData))
       .catch(err => console.error('Failed to fetch analytics:', err));

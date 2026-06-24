@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { CheckCircle, Play, Share2, Download, ArrowLeft, FileText, Copy } from 'lucide-react';
 import { Link, useParams } from 'react-router-dom';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 interface ClipResult {
   id: string;
   url: string;
@@ -20,7 +22,7 @@ const Results = () => {
     
     const fetchResults = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/jobs/${jobId}`);
+        const response = await fetch(`${API_URL}/api/jobs/${jobId}`);
         if (!response.ok) return;
         const data = await response.json();
         
@@ -31,7 +33,7 @@ const Results = () => {
         if (data.clips && data.clips.length > 0) {
           setClips(data.clips.map((c: any, i: number) => ({
             id: String(i),
-            url: `http://localhost:5000${c.video_url}`,
+            url: `${API_URL}${c.video_url}`,
             title: c.title,
             duration: 'Full Highlight',
             score: c.score || 95,
