@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  python-pipeline:
+    build:
+      context: ./python-pipeline
+    ports:
+      - "5001:5001"
+    env_file:
+      - ./python-pipeline/.env
+    volumes:
+      - ./temp:/temp
+
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - "5000:5000"
+    environment:
+      - PYTHON_API_URL=http://python-pipeline:5001
+      - PORT=5000
+    volumes:
+      - ./temp:/temp
+      # To persist jobs.json locally across container restarts
+      - ./backend/jobs.json:/app/jobs.json
+    depends_on:
+      - python-pipeline
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        - VITE_API_URL=http://localhost:5000
+    ports:
+      - "80:80"
+      # Fallback just in case port 80 is taken
+      - "5173:80"
+    depends_on:
+      - backend

@@ -29,8 +29,7 @@ def download_video(url, output_dir, progress_callback=None):
         'ffmpeg_location': ffmpeg_path,
         'progress_hooks': [my_hook] if progress_callback else [],
         'concurrent_fragment_downloads': 5,
-        'hls_prefer_native': True,
-        'js_runtimes': ['node']
+        'hls_prefer_native': True
     }
     
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
