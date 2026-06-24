@@ -1,67 +1,106 @@
-# AI Viral Clip Generator
+# 🚀 AI Viral Clip Generator
 
-An intelligent, fully open-source system for automated detection, editing, and distribution of viral video content.
+An automated, end-to-end AI pipeline that converts long-form YouTube videos (or local uploads) into highly engaging, viral short-form clips suitable for TikTok, Instagram Reels, and YouTube Shorts.
 
-## Project Structure
-- `frontend/`: React + Vite application (UI)
-- `backend/`: Node.js + Express API server (File uploads and job management)
-- `python-pipeline/`: Python Flask server and AI scripts (Whisper, NLP, FFmpeg, MoviePy)
-- `temp/`: Temporary storage for uploaded videos and processed clips
+![Viral Clips](https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=800&auto=format&fit=crop&q=80&ixlib=rb-4.0.3)
+
+## ✨ Features
+
+- **Lightning-Fast Video Downloading**: Utilizes heavily-optimized `yt-dlp` with Node.js JS-runtime extraction to fetch videos at maximum speeds.
+- **Parallel Audio Transcription**: Splits audio into chunks and transcribes them simultaneously using the blazing-fast Groq API (`whisper-large-v3`), guaranteeing near-instant, highly accurate results with zero timestamp drift.
+- **AI-Powered Viral NLP Highlighting**: Leverages Google's `gemini-2.5-flash` to intelligently analyze transcripts. It prioritizes contextual completeness and viral potential over mere quantity, dynamically adjusting clip lengths.
+- **Automated Video Editing**: Uses pure `ffmpeg-python` for lightning-fast, single-pass video cutting. It preserves the original aspect ratio to ensure no strange cropping or stretching.
+- **Dynamic Synchronized Subtitles**: Automatically generates and burns real-time, phrase-by-phrase subtitles into the clips—keeping viewers engaged.
+- **Persistent Project Dashboard**: A beautiful, modern React frontend that tracks your jobs, saves your generated clips, and allows you to download or view full video transcripts.
+
+## 🏗️ Architecture Stack
+
+The project is split into three decoupled services:
+1. **Frontend**: React + TypeScript + Vite + Tailwind CSS (Lucide Icons)
+2. **Node.js Backend**: Express API that manages file uploads, stores persistent job data (`jobs.json`), and proxies requests to the AI engine.
+3. **Python AI Pipeline**: A Flask microservice that orchestrates `yt-dlp`, FFmpeg, the Groq API, and the Gemini API.
 
 ---
 
-## How to Run the Complete Project Locally
+## 🛠️ Installation & Setup
 
-To run the entire system, you need to start three separate servers. Open three separate terminal windows and run the following commands.
+### Prerequisites
+- Node.js (v18+)
+- Python (3.9+)
+- FFmpeg (Installed and added to your system PATH)
+- API Keys for **Groq** and **Google Gemini**
 
-### 1. Start the Node.js Backend Server
-This server handles video uploads and communicates with the Python pipeline.
-```bash
-cd backend
-npm install   # Only needed the first time
-node index.js
-```
-*The backend will run on `http://localhost:5000`*
+### 1. Python AI Pipeline Setup
 
-### 2. Start the Python AI Pipeline
-This server handles transcription, NLP highlight detection, and video rendering.
+Navigate to the `python-pipeline` directory:
 ```bash
 cd python-pipeline
+```
 
-# Activate the virtual environment
-# On Windows:
-venv\Scripts\activate
-# On Mac/Linux:
-# source venv/bin/activate
+Install the required Python packages:
+```bash
+pip install flask groq google-genai yt-dlp ffmpeg-python imageio-ffmpeg python-dotenv
+```
 
-# Install requirements (Only needed the first time)
-pip install -r requirements.txt
+Create a `.env` file in the `python-pipeline` directory with your API keys:
+```env
+GROQ_API_KEY=your_groq_api_key_here
+GEMINI_API_KEY=your_gemini_api_key_here
+```
 
-# Start the Flask server
+Start the Python engine:
+```bash
 python app.py
 ```
-*The Python pipeline will run on `http://localhost:5001`*
+*Runs on `http://localhost:5001`*
 
-### 3. Start the React Frontend
-This is the user interface where you upload videos.
+### 2. Node.js Backend Setup
+
+Navigate to the `backend` directory:
+```bash
+cd backend
+```
+
+Install dependencies:
+```bash
+npm install express cors multer
+```
+
+Start the backend proxy server:
+```bash
+node index.js
+```
+*Runs on `http://localhost:5000`*
+
+### 3. Frontend Setup
+
+Navigate to the `frontend` directory:
 ```bash
 cd frontend
-npm install   # Only needed the first time
+```
+
+Install dependencies:
+```bash
+npm install
+```
+
+Start the Vite development server:
+```bash
 npm run dev
 ```
-*The frontend will run on `http://localhost:5173`*
+*Runs on `http://localhost:5173`*
 
 ---
 
-## Usage
+## 💡 How it Works
 
-1. Once all three servers are running, open your web browser and navigate to `http://localhost:5173`.
-2. Paste a YouTube URL or upload an MP4 video file.
-3. Click "Generate Viral Clips".
-4. The system will process the video and return the viral short clips!
+1. **Upload**: Paste a YouTube URL (or upload a local file) into the React dashboard.
+2. **Download & Extract**: The Node backend passes the job to the Python engine. The video is downloaded and the audio is compressed to a 32kbps MP3 to bypass API file limits.
+3. **Chunking & Transcription**: The audio is instantly chunked into 5-minute segments and sent concurrently to the Groq Whisper API for extreme speed.
+4. **NLP Highlights**: The full transcript is sent to Google Gemini, which isolates the most meaningful and engaging highlights.
+5. **Subtitle Generation**: Phrase-level timestamps from Whisper are precisely mapped and offset to fit the boundaries of the cut clips.
+6. **Final Render**: FFmpeg simultaneously cuts the video, preserves the dimensions, and burns the generated subtitles into the video.
+7. **Delivery**: The completed clips, viral scores, and the full text transcript are delivered directly to the frontend.
 
-## Prerequisites
-Ensure you have the following installed on your machine:
-- **Node.js** (v18+)
-- **Python** (v3.10+)
-- **FFmpeg**: Must be installed and added to your system's PATH.
+## ⚠️ Disclaimer & Copyright Notice
+Please ensure you have the proper rights or permissions to use, modify, and distribute the content you are processing. Generating AI clips from copyrighted material without permission may violate platform policies (TikTok, YouTube, Instagram) and result in copyright strikes.
