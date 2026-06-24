@@ -24,9 +24,14 @@ def extract_highlights(transcript_data, num_clips=3):
         
     prompt = f"""
 You are an expert viral content editor. Analyze the following transcript from a video.
-Identify the {num_clips} most engaging, viral, and stand-alone highlights (between 15 to 60 seconds long).
+Identify up to {num_clips} of the most engaging, viral, and stand-alone highlights. 
 
-Rules:
+CRITICAL QUALITY RULES:
+1. Focus entirely on QUALITY and RELEVANCE, not quantity. If there is only 1 truly great moment, only return 1. Do not generate random segments just to hit the limit.
+2. Each clip MUST be meaningful and contextually complete. It should have a clear beginning, middle, and end, making sense even to viewers who haven't seen the original video.
+3. There is no strict length limit—clips can be longer than 60 seconds if necessary to preserve context.
+
+Formatting Rules:
 1. Return ONLY a valid JSON array of objects.
 2. Each object must have:
    - "title": A catchy, viral title for the clip (max 5 words)

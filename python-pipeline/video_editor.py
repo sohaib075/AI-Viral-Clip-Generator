@@ -4,85 +4,95 @@ import ffmpeg
 
 def create_srt(clip_data, output_path):
     """
-    Creates an SRT file for a specific clip based on its transcript segment.
-    Since we only have the overall segment text here, a robust implementation 
-    would use the word-level timestamps from Whisper to generate the SRT.
-    This is a simplified version.
+    Creates a synchronized SRT file with phrase-by-phrase timing.
+    Timestamps are shifted to be relative to the start of the generated clip.
     """
     with open(output_path, 'w', encoding='utf-8') as f:
-        # SRT format
-        # 1
-        # 00:00:00,000 --> 00:00:05,000
-        # Text
-        start_time = clip_data.get('start', clip_data.get('start_time', 0.0))
-        end_time = clip_data.get('end', clip_data.get('end_time', 0.0))
-        start_ms = 0
-        end_ms = int((end_time - start_time) * 1000)
+        clip_start = clip_data.get('start', clip_data.get('start_time', 0.0))
+        clip_end = clip_data.get('end', clip_data.get('end_time', 0.0))
+        segments = clip_data.get('segments', [])
         
         def format_time(ms):
             s, ms = divmod(ms, 1000)
             m, s = divmod(s, 60)
             h, m = divmod(m, 60)
-            return f"{h:02d}:{m:02d}:{s:02d},{ms:03d}"
+            return f"{int(h):02d}:{int(m):02d}:{int(s):02d},{int(ms):03d}"
             
-        f.write("1\n")
-        f.write(f"{format_time(start_ms)} --> {format_time(end_ms)}\n")
-        text_content = clip_data.get('text', clip_data.get('title', 'Clip Highlight'))
-        f.write(f"{text_content.strip()}\n")
+        if not segments:
+            # Fallback if no segments found
+            end_ms = int((clip_end - clip_start) * 1000)
+            f.write("1\n")
+            f.write(f"{format_time(0)} --> {format_time(end_ms)}\n")
+            f.write(f"{clip_data.get('text', clip_data.get('title', 'Clip Highlight')).strip()}\n\n")
+            return output_path
+            
+        for i, seg in enumerate(segments):
+            # Shift timestamps to start at 00:00:00 for the newly cut video
+            seg_start_relative = max(0.0, seg['start'] - clip_start)
+            seg_end_relative = max(0.0, seg['end'] - clip_start)
+            
+            # If the segment goes beyond the clip duration, clamp it
+            clip_duration = clip_end - clip_start
+            if seg_end_relative > clip_duration:
+                seg_end_relative = clip_duration
+                
+            # Skip if the segment doesn't make sense (e.g., negative duration)
+            if seg_start_relative >= seg_end_relative:
+                continue
+                
+            start_ms = int(seg_start_relative * 1000)
+            end_ms = int(seg_end_relative * 1000)
+            
+            f.write(f"{i+1}\n")
+            f.write(f"{format_time(start_ms)} --> {format_time(end_ms)}\n")
+            f.write(f"{seg['text'].strip()}\n\n")
+            
     return output_path
 
 def process_clip(video_path, clip_data, output_dir, clip_index):
     """
-    Cuts the video, converts to 9:16, and burns subtitles.
+    Cuts the video and burns subtitles using a single optimized FFmpeg pass while preserving the original aspect ratio.
     """
     base_name = os.path.basename(video_path)
     file_name_without_ext = os.path.splitext(base_name)[0]
     
-    # 1. Cut video using MoviePy (or ffmpeg directly for speed)
+    # Extract times
     start_time = clip_data.get('start', clip_data.get('start_time', 0.0))
     end_time = clip_data.get('end', clip_data.get('end_time', 0.0))
+    duration = end_time - start_time
     
-    cut_video_path = os.path.join(output_dir, f"{file_name_without_ext}_cut_{clip_index}.mp4")
-    
-    with VideoFileClip(video_path) as video:
-        clip = video.subclipped(start_time, end_time)
-        
-        # 2. Crop to 9:16 (1080x1920)
-        # Assuming original is 16:9 (1920x1080)
-        w, h = clip.size
-        target_w = int(h * 9 / 16)
-        x_center = w / 2
-        clip_cropped = clip.cropped(x1=x_center - target_w/2, y1=0, x2=x_center + target_w/2, y2=h)
-        clip_resized = clip_cropped.resized(height=1920, width=1080)
-        
-        # Write temporary cut file without subs
-        temp_cut_path = os.path.join(output_dir, f"temp_{file_name_without_ext}_{clip_index}.mp4")
-        clip_resized.write_videofile(temp_cut_path, codec="libx264", audio_codec="aac", fps=30, preset="ultrafast")
-    
-    # 3. Create SRT
+    # Create SRT file
     srt_path = os.path.join(output_dir, f"{file_name_without_ext}_{clip_index}.srt")
     create_srt(clip_data, srt_path)
-    
-    # 4. Burn subtitles using FFmpeg
-    final_output_path = os.path.join(output_dir, f"final_{file_name_without_ext}_clip_{clip_index}.mp4")
     srt_path_ffmpeg = srt_path.replace('\\', '/').replace(':', '\\:')
+    
+    final_output_path = os.path.join(output_dir, f"final_{file_name_without_ext}_clip_{clip_index}.mp4")
+    
     import imageio_ffmpeg
+    ffmpeg_exe = imageio_ffmpeg.get_ffmpeg_exe()
+    
     try:
+        # We use a pure ffmpeg command with complex filtergraph
+        # -ss before -i is crucial for fast seeking
+        # The filter burns subtitles while maintaining original video dimensions
         (
             ffmpeg
-            .input(temp_cut_path)
-            .output(final_output_path, vf=f"subtitles='{srt_path_ffmpeg}':force_style='FontSize=24,PrimaryColour=&H00FFFFFF,OutlineColour=&H00000000,BorderStyle=1,Outline=2,Shadow=0,MarginV=30'")
+            .input(video_path, ss=start_time, t=duration)
+            .output(
+                final_output_path, 
+                vf=f"subtitles='{srt_path_ffmpeg}':force_style='FontSize=24,PrimaryColour=&H00FFFFFF,OutlineColour=&H00000000,BorderStyle=1,Outline=2,Shadow=0,MarginV=30'",
+                vcodec="libx264",
+                acodec="aac",
+                preset="ultrafast",
+                crf=23
+            )
             .overwrite_output()
-            .run(cmd=imageio_ffmpeg.get_ffmpeg_exe(), quiet=True)
+            .run(cmd=ffmpeg_exe, quiet=True)
         )
-        # Cleanup temp
-        if os.path.exists(temp_cut_path):
-            os.remove(temp_cut_path)
         return final_output_path
     except ffmpeg.Error as e:
-        print(f"Error burning subtitles: {e.stderr.decode() if e.stderr else str(e)}")
-        # If ffmpeg fails, just return the temp cut path
-        return temp_cut_path
+        print(f"Error processing clip {clip_index}: {e.stderr.decode() if e.stderr else str(e)}")
+        raise e
 
 if __name__ == '__main__':
     # Test

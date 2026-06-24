@@ -1,12 +1,39 @@
-import { useState } from 'react';
-import { UploadCloud, Link as LinkIcon, Sparkles, Clock, Video, Activity, MoreVertical, Play } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { UploadCloud, Link as LinkIcon, Sparkles, Clock, Video, Activity, MoreVertical, Play, AlertTriangle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
   const [videoUrl, setVideoUrl] = useState('');
   const [file, setFile] = useState<File | null>(null);
   const [dragActive, setDragActive] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
   const navigate = useNavigate();
+
+  const [analytics, setAnalytics] = useState({
+    totalClips: 0,
+    hoursProcessed: 0,
+    avgVirality: '0%'
+  });
+  const [recentJobs, setRecentJobs] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        const [analyticsRes, jobsRes] = await Promise.all([
+          fetch('http://localhost:5000/api/analytics'),
+          fetch('http://localhost:5000/api/jobs')
+        ]);
+        if (analyticsRes.ok) setAnalytics(await analyticsRes.json());
+        if (jobsRes.ok) {
+          const jobsData = await jobsRes.json();
+          setRecentJobs(jobsData.slice(0, 4)); // Only show top 4 recent jobs
+        }
+      } catch (e) {
+        console.error('Failed to fetch dashboard data:', e);
+      }
+    };
+    fetchDashboardData();
+  }, []);
 
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault();
@@ -26,7 +53,21 @@ const Home = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrorMsg('');
     if (!videoUrl && !file) return;
+    
+    if (videoUrl && !file) {
+      try {
+        const parsedUrl = new URL(videoUrl);
+        if (videoUrl.toLowerCase().includes('gt')) {
+          setErrorMsg('Invalid URL.');
+          return;
+        }
+      } catch (err) {
+        setErrorMsg('Invalid URL.');
+        return;
+      }
+    }
     
     try {
       let body;
@@ -75,10 +116,10 @@ const Home = () => {
             </div>
             <div>
               <p className="text-sm text-gray-400 font-bold uppercase tracking-wider">Total Clips</p>
-              <p className="text-3xl font-black text-white">1,284</p>
+              <p className="text-3xl font-black text-white">{analytics.totalClips.toLocaleString()}</p>
             </div>
           </div>
-          <div className="text-sm font-semibold text-[#66fcf1] bg-[#66fcf1]/10 self-start px-2 py-1 rounded-md">+24% this week</div>
+          <div className="text-sm font-semibold text-[#66fcf1] bg-[#66fcf1]/10 self-start px-2 py-1 rounded-md">Real Data</div>
         </div>
 
         <div className="glass-panel p-6 rounded-2xl flex flex-col relative overflow-hidden group hover:border-purple-500/50 transition-colors">
@@ -89,10 +130,10 @@ const Home = () => {
             </div>
             <div>
               <p className="text-sm text-gray-400 font-bold uppercase tracking-wider">Hours Processed</p>
-              <p className="text-3xl font-black text-white">43.5h</p>
+              <p className="text-3xl font-black text-white">{analytics.hoursProcessed}h</p>
             </div>
           </div>
-          <div className="text-sm font-semibold text-purple-400 bg-purple-500/10 self-start px-2 py-1 rounded-md">8.2h remaining</div>
+          <div className="text-sm font-semibold text-purple-400 bg-purple-500/10 self-start px-2 py-1 rounded-md">Real Data</div>
         </div>
 
         <div className="glass-panel p-6 rounded-2xl flex flex-col relative overflow-hidden group hover:border-pink-500/50 transition-colors">
@@ -103,10 +144,10 @@ const Home = () => {
             </div>
             <div>
               <p className="text-sm text-gray-400 font-bold uppercase tracking-wider">Avg. Virality</p>
-              <p className="text-3xl font-black text-white">94%</p>
+              <p className="text-3xl font-black text-white">{analytics.avgVirality}</p>
             </div>
           </div>
-          <div className="text-sm font-semibold text-green-400 bg-green-500/10 self-start px-2 py-1 rounded-md">Top Tier Performance</div>
+          <div className="text-sm font-semibold text-green-400 bg-green-500/10 self-start px-2 py-1 rounded-md">Real Data</div>
         </div>
       </div>
 
@@ -128,6 +169,14 @@ const Home = () => {
             <form onSubmit={handleSubmit} className="space-y-6">
               
               <div className="space-y-3 group">
+                {errorMsg && (
+                  <div className="bg-red-500/10 border border-red-500/50 text-red-400 px-4 py-3 rounded-xl text-sm font-bold mb-4 flex items-center gap-2">
+                    <svg className="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    {errorMsg}
+                  </div>
+                )}
                 <label className="text-sm font-semibold text-gray-300 flex items-center gap-2">
                   <LinkIcon className="w-4 h-4 text-gray-400 group-focus-within:text-[#66fcf1] transition-colors" />
                   YouTube or Web URL
@@ -137,7 +186,7 @@ const Home = () => {
                   value={videoUrl}
                   onChange={(e) => setVideoUrl(e.target.value)}
                   placeholder="https://www.youtube.com/watch?v=..."
-                  className="w-full pl-5 pr-5 py-4 bg-black/50 border border-white/10 rounded-xl focus:outline-none focus:border-[#66fcf1]/50 focus:ring-1 focus:ring-[#66fcf1]/50 transition-all duration-300 placeholder:text-gray-600 text-white shadow-[inset_0_2px_4px_rgba(0,0,0,0.5)]"
+                  className={`w-full pl-5 pr-5 py-4 bg-black/50 border ${errorMsg ? 'border-red-500/50' : 'border-white/10'} rounded-xl focus:outline-none focus:border-[#66fcf1]/50 focus:ring-1 focus:ring-[#66fcf1]/50 transition-all duration-300 placeholder:text-gray-600 text-white shadow-[inset_0_2px_4px_rgba(0,0,0,0.5)]`}
                 />
               </div>
 
@@ -167,6 +216,13 @@ const Home = () => {
                 <Play className="w-4 h-4 fill-current" />
                 <span>Process Video Pipeline</span>
               </button>
+
+              <div className="mt-6 p-4 bg-yellow-500/10 border border-yellow-500/20 rounded-xl flex gap-3 items-start">
+                <AlertTriangle className="w-5 h-5 text-yellow-500 flex-shrink-0 mt-0.5" />
+                <p className="text-xs text-yellow-200/80 leading-relaxed font-medium">
+                  <strong>Content Guidelines:</strong> The generated clips are formatted for TikTok, Instagram Reels, and YouTube Shorts. Please ensure you use properly licensed, royalty-free, or original assets. Avoid copyrighted music, visuals, or watermarks. Note that copyright compliance cannot be guaranteed automatically and depends entirely on the source content you process.
+                </p>
+              </div>
             </form>
           </div>
         </div>
@@ -179,33 +235,38 @@ const Home = () => {
           </div>
           
           <div className="flex-1 flex flex-col gap-4">
-            {[
-              { id: 'job_4821', title: 'Lex Fridman Podcast #394', status: 'Completed', time: '2h ago', clips: 12 },
-              { id: 'job_4820', title: 'Huberman Lab: Dopamine', status: 'Completed', time: '5h ago', clips: 8 },
-              { id: 'job_4819', title: 'Keynote Speech 2024', status: 'Failed', time: '1d ago', clips: 0 },
-              { id: 'job_4818', title: 'Marketing Meeting', status: 'Completed', time: '2d ago', clips: 3 },
-            ].map((job) => (
-              <div key={job.id} className="p-4 rounded-xl bg-black/40 border border-white/5 hover:border-white/20 transition-colors flex flex-col gap-2 cursor-pointer">
-                <div className="flex justify-between items-start">
-                  <span className="font-bold text-sm text-white truncate max-w-[150px]">{job.title}</span>
-                  <span className={`text-[10px] font-bold uppercase px-2 py-1 rounded-md ${job.status === 'Completed' ? 'bg-green-500/10 text-green-400' : 'bg-red-500/10 text-red-400'}`}>
-                    {job.status}
-                  </span>
-                </div>
-                <div className="flex justify-between items-center text-xs text-gray-500 font-semibold">
-                  <span>{job.id}</span>
-                  <span className="flex items-center gap-3">
-                    <span>{job.clips} clips</span>
-                    <span className="w-1 h-1 bg-gray-600 rounded-full"></span>
-                    <span>{job.time}</span>
-                  </span>
-                </div>
+            {recentJobs.length === 0 ? (
+              <div className="flex flex-col items-center justify-center h-full text-gray-500 py-10">
+                <Video className="w-8 h-8 mb-2 opacity-50" />
+                <p className="font-bold">No recent jobs found</p>
+                <p className="text-sm">Submit a video to see it here.</p>
               </div>
-            ))}
+            ) : (
+              recentJobs.map((job) => (
+                <div key={job.id} onClick={() => navigate(`/processing/${job.id}`)} className="p-4 rounded-xl bg-black/40 border border-white/5 hover:border-white/20 transition-colors flex flex-col gap-2 cursor-pointer">
+                  <div className="flex justify-between items-start">
+                    <span className="font-bold text-sm text-white truncate max-w-[150px]">{job.title}</span>
+                    <span className={`text-[10px] font-bold uppercase px-2 py-1 rounded-md ${job.status === 'Completed' ? 'bg-green-500/10 text-green-400' : job.status === 'Processing' ? 'bg-blue-500/10 text-blue-400' : 'bg-red-500/10 text-red-400'}`}>
+                      {job.status}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center text-xs text-gray-500 font-semibold">
+                    <span>{job.id}</span>
+                    <span className="flex items-center gap-3">
+                      <span>{job.clips} clips</span>
+                      <span className="w-1 h-1 bg-gray-600 rounded-full"></span>
+                      <span>{job.time}</span>
+                    </span>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
-          <button className="w-full mt-6 py-3 rounded-xl border border-white/10 hover:bg-white/5 transition-colors text-sm font-bold text-gray-300">
-            View All Jobs
-          </button>
+          {recentJobs.length > 0 && (
+            <button onClick={() => navigate('/projects')} className="w-full mt-6 py-3 rounded-xl border border-white/10 hover:bg-white/5 transition-colors text-sm font-bold text-gray-300">
+              View All Jobs
+            </button>
+          )}
         </div>
 
       </div>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { CheckCircle, Play, Share2, Download, ArrowLeft } from 'lucide-react';
+import { CheckCircle, Play, Share2, Download, ArrowLeft, FileText, Copy } from 'lucide-react';
 import { Link, useParams } from 'react-router-dom';
 
 interface ClipResult {
@@ -13,6 +13,7 @@ interface ClipResult {
 const Results = () => {
   const { jobId } = useParams();
   const [clips, setClips] = useState<ClipResult[]>([]);
+  const [transcript, setTranscript] = useState<string>('');
 
   useEffect(() => {
     if (!jobId) return;
@@ -23,12 +24,16 @@ const Results = () => {
         if (!response.ok) return;
         const data = await response.json();
         
+        if (data.transcript) {
+          setTranscript(data.transcript);
+        }
+
         if (data.clips && data.clips.length > 0) {
           setClips(data.clips.map((c: any, i: number) => ({
             id: String(i),
             url: `http://localhost:5000${c.video_url}`,
             title: c.title,
-            duration: '~15-60s',
+            duration: 'Full Highlight',
             score: c.score || 95,
             reasoning: c.reasoning
           })));
@@ -109,7 +114,28 @@ const Results = () => {
         ))}
       </div>
       
-      <div className="mt-16 text-center pb-10">
+      {/* Transcript Section */}
+      {transcript && (
+        <div className="mt-16 glass-panel-dark p-8 rounded-3xl border border-white/20 animate-fade-in-up">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+            <h3 className="text-2xl font-black text-white flex items-center gap-3">
+              <FileText className="w-6 h-6 text-[#66fcf1]" />
+              Full Video Transcript
+            </h3>
+            <button 
+              onClick={() => { navigator.clipboard.writeText(transcript); alert('Copied to clipboard!'); }}
+              className="flex items-center gap-2 px-6 py-3 bg-white/10 hover:bg-white/20 rounded-xl text-sm font-bold text-white transition-colors border border-white/20"
+            >
+              <Copy className="w-5 h-5" /> Copy Text
+            </button>
+          </div>
+          <div className="p-8 bg-black/60 rounded-2xl max-h-[500px] overflow-y-auto font-medium text-gray-300 leading-loose text-base border border-white/10 shadow-inner">
+            {transcript}
+          </div>
+        </div>
+      )}
+      
+      <div className="mt-12 text-center pb-10">
         <button className="px-10 py-5 bg-black/40 hover:bg-black/60 backdrop-blur-xl border-2 border-white/30 rounded-2xl transition-colors text-lg font-black text-white shadow-xl inline-flex items-center gap-3 hover:scale-105">
           <Download className="w-6 h-6" /> Download All Clips (.zip)
         </button>

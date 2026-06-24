@@ -33,6 +33,22 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
+const JOBS_FILE = path.join(__dirname, 'jobs.json');
+
+// In-memory data store for demonstration, now backed by a file
+let jobsHistory = [];
+if (fs.existsSync(JOBS_FILE)) {
+    try {
+        jobsHistory = JSON.parse(fs.readFileSync(JOBS_FILE, 'utf-8'));
+    } catch (e) {
+        console.error('Failed to load jobs from file', e);
+    }
+}
+
+const saveJobs = () => {
+    fs.writeFileSync(JOBS_FILE, JSON.stringify(jobsHistory, null, 2));
+};
+
 // API Routes
 app.post('/api/jobs', upload.single('video'), async (req, res) => {
     try {
@@ -49,6 +65,20 @@ app.post('/api/jobs', upload.single('video'), async (req, res) => {
         // If it's a file upload, we would need to pass the file path to python,
         // but for now let's focus on videoUrl processing
         const targetUrl = videoUrl || (file ? `file://${file.path}` : null);
+
+        // Track job in history
+        const newJob = {
+            id: jobId,
+            title: targetUrl ? targetUrl.substring(0, 30) + '...' : 'Uploaded Video',
+            status: 'Processing',
+            time: 'Just now',
+            clips: 0,
+            duration: '0:00:00',
+            thumbnail: 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=800&auto=format&fit=crop&q=80',
+            createdAt: Date.now()
+        };
+        jobsHistory.unshift(newJob);
+        saveJobs();
 
         // Trigger the Python pipeline
         const response = await fetch(`${PYTHON_API_URL}/api/process`, {
@@ -77,19 +107,79 @@ app.post('/api/jobs', upload.single('video'), async (req, res) => {
     }
 });
 
+// Get all jobs
+app.get('/api/jobs', (req, res) => {
+    res.json(jobsHistory);
+});
+
+// Analytics mock endpoint
+app.get('/api/analytics', (req, res) => {
+    const totalClips = jobsHistory.reduce((acc, job) => acc + (job.clips || 0), 0);
+    const totalHours = jobsHistory.length > 0 ? (jobsHistory.length * 1.5).toFixed(1) : 0;
+    const avgVirality = jobsHistory.length > 0 ? 85 : 0;
+
+    res.json({
+        totalClips,
+        hoursProcessed: totalHours,
+        avgVirality: `${avgVirality}%`,
+        views: '0',
+        engagementRate: '0%',
+        timeSaved: '0h'
+    });
+});
+
+// User settings mock endpoint
+app.get('/api/user/settings', (req, res) => {
+    res.json({
+        firstName: 'ClipGenius',
+        lastName: 'User',
+        email: 'user@example.com',
+        company: 'AI Viral Clips'
+    });
+});
+
 app.get('/api/jobs/:id', async (req, res) => {
     try {
         const jobId = req.params.id;
+        
+        // Also get the clips if they are stored in the job
+        const jobIndex = jobsHistory.findIndex(j => j.id === jobId);
+        
         const response = await fetch(`${PYTHON_API_URL}/api/status/${jobId}`);
         
         if (!response.ok) {
             if (response.status === 404) {
+                // Return local job history if python forgot it but we saved it
+                if (jobIndex !== -1 && jobsHistory[jobIndex].status === 'Completed') {
+                    const localJob = { ...jobsHistory[jobIndex] };
+                    if (localJob.clipsData) {
+                        localJob.clips = localJob.clipsData; // Map it back to the expected 'clips' array format
+                    }
+                    return res.json(localJob);
+                }
                 return res.status(404).json({ error: 'Job not found' });
             }
             throw new Error(`Python API error: ${response.statusText}`);
         }
         
         const data = await response.json();
+        
+        // Update history status if changed
+        if (jobIndex !== -1) {
+            if (data.status === 'completed') {
+                jobsHistory[jobIndex].status = 'Completed';
+                jobsHistory[jobIndex].clips = data.clips ? data.clips.length : 0;
+                jobsHistory[jobIndex].clipsData = data.clips; // Save clips in history
+                if (data.transcript) {
+                    jobsHistory[jobIndex].transcript = data.transcript;
+                }
+                saveJobs();
+            } else if (data.status === 'failed') {
+                jobsHistory[jobIndex].status = 'Failed';
+                saveJobs();
+            }
+        }
+
         res.json(data);
     } catch (error) {
         if (error.cause && error.cause.code === 'ECONNREFUSED') {

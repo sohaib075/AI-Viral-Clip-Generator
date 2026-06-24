@@ -51,24 +51,46 @@ def process_video_job(job_id, video_url):
         highlights = extract_highlights(transcript_data, num_clips=3)
         
         # 5. Video Editing
-        JOBS[job_id] = {"status": "processing", "progress": 85, "message": "Generating Vertical Clips & Subtitles...", "clips": []}
+        JOBS[job_id] = {"status": "processing", "progress": 85, "message": "Generating Clips & Subtitles...", "clips": []}
         final_clips = []
-        for idx, clip_data in enumerate(highlights):
+        
+        import concurrent.futures
+        
+        def process_highlight(idx_and_clip):
+            idx, clip_data = idx_and_clip
+            
+            clip_start = clip_data.get('start_time', 0.0)
+            clip_end = clip_data.get('end_time', 0.0)
+            
+            # Find all phrase-level segments that fall into this highlight
+            relevant_segments = []
+            for seg in transcript_data["segments"]:
+                if seg["start"] < clip_end and seg["end"] > clip_start:
+                    relevant_segments.append(seg)
+                    
+            clip_data["segments"] = relevant_segments
+            
             final_clip_path = process_clip(video_path, clip_data, TEMP_DIR, idx)
-            # Make the path relative to TEMP_DIR for the frontend
             relative_path = os.path.basename(final_clip_path)
-            final_clips.append({
+            return {
                 "title": clip_data.get("title", f"Clip {idx+1}"),
                 "score": clip_data.get("score", 0),
                 "reasoning": clip_data.get("reasoning", ""),
                 "video_url": f"/temp/{relative_path}"
-            })
+            }
+            
+        with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
+            # Enumerate highlights so each gets a unique index
+            items = list(enumerate(highlights))
+            results = list(executor.map(process_highlight, items))
+            final_clips.extend(results)
             
         JOBS[job_id] = {
             "status": "completed", 
             "progress": 100, 
             "message": "Processing Complete!", 
-            "clips": final_clips
+            "clips": final_clips,
+            "transcript": transcript_data.get("text", "") if transcript_data else ""
         }
         
     except Exception as e:

@@ -6,6 +6,9 @@ import Home from './pages/Home';
 import Processing from './pages/Processing';
 import Results from './pages/Results';
 import HowItWorks from './pages/HowItWorks';
+import Projects from './pages/Projects';
+import Analytics from './pages/Analytics';
+import Settings from './pages/Settings';
 import './index.css';
 
 function App() {
@@ -26,6 +29,9 @@ function App() {
               <Route path="/how-it-works" element={<HowItWorks />} />
               <Route path="/processing/:jobId" element={<Processing />} />
               <Route path="/results/:jobId" element={<Results />} />
+              <Route path="/projects" element={<Projects />} />
+              <Route path="/analytics" element={<Analytics />} />
+              <Route path="/settings" element={<Settings />} />
             </Routes>
           </main>
         </div>
