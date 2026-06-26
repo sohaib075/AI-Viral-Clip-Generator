@@ -2,7 +2,7 @@ import os
 import json
 from google import genai
 
-def extract_highlights(transcript_data, num_clips=3):
+def extract_highlights(transcript_data, num_clips=10):
     """
     Uses Google Gemini API to identify the most engaging highlights 
     from the transcript and returns their start and end times.
@@ -23,12 +23,13 @@ def extract_highlights(transcript_data, num_clips=3):
         text_content += f"[{idx}] {seg['start']:.2f} - {seg['end']:.2f}: {seg['text']}\n"
         
     prompt = f"""
-You are an expert viral content editor. Analyze the following transcript from a video.
-Identify up to {num_clips} of the most engaging, viral, and stand-alone highlights. 
+You are an expert viral content editor. Analyze the ENTIRE following transcript from a video.
+Identify the most engaging, viral, and stand-alone highlights from beginning to end.
+You can return up to {num_clips} clips, but only if they are genuinely good.
 
 CRITICAL QUALITY RULES:
-1. Focus entirely on QUALITY and RELEVANCE, not quantity. If there is only 1 truly great moment, only return 1. Do not generate random segments just to hit the limit.
-2. Each clip MUST be meaningful and contextually complete. It should have a clear beginning, middle, and end, making sense even to viewers who haven't seen the original video.
+1. Scan the ENTIRE transcript, do not just look at the beginning. We want highlights from the middle and end of the video too.
+2. Focus on QUALITY and RELEVANCE. Each clip MUST be meaningful and contextually complete.
 3. There is no strict length limit—clips can be longer than 60 seconds if necessary to preserve context.
 
 Formatting Rules:
@@ -39,7 +40,7 @@ Formatting Rules:
    - "end_time": The end timestamp (in seconds, as a float)
    - "score": A virality score from 1 to 100
    - "reasoning": A 1 sentence explanation of why this clip is highly engaging.
-3. No markdown blocks, just the raw JSON array.
+3. Output nothing but the JSON array.
 
 Transcript:
 {text_content}
@@ -48,7 +49,8 @@ Transcript:
     try:
         response = client.models.generate_content(
             model='gemini-2.5-flash',
-            contents=prompt
+            contents=prompt,
+            config={'response_mime_type': 'application/json'}
         )
         result_text = response.text.strip()
         

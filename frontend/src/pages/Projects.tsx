@@ -75,7 +75,7 @@ const Projects = () => {
               {/* Thumbnail Area */}
               <div className="h-40 relative overflow-hidden bg-black/50 border-b border-white/10">
                 <img 
-                  src={project.thumbnail} 
+                  src={project.thumbnail.startsWith('http') ? project.thumbnail : `${API_URL}${project.thumbnail}`} 
                   alt={project.title} 
                   className="w-full h-full object-cover opacity-70 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"
                 />
@@ -99,7 +99,7 @@ const Projects = () => {
                 </div>
                 
                 {project.status === 'Completed' && (
-                  <Link to={`/results/${project.id.split('_')[1]}`} className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/30 backdrop-blur-[2px]">
+                  <Link to={`/results/${project.id}`} className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/30 backdrop-blur-[2px]">
                     <div className="w-12 h-12 bg-[#66fcf1] rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(102,252,241,0.5)] transform scale-75 group-hover:scale-100 transition-transform duration-300">
                       <Play className="w-5 h-5 text-black ml-1" fill="currentColor" />
                     </div>
@@ -126,7 +126,7 @@ const Projects = () => {
                     <span className="text-lg font-black text-white">{project.clips}</span>
                   </div>
                   {project.status === 'Completed' && (
-                    <Link to={`/results/${project.id.split('_')[1]}`} className="text-sm font-bold text-[#66fcf1] hover:text-white transition-colors">
+                    <Link to={`/results/${project.id}`} className="text-sm font-bold text-[#66fcf1] hover:text-white transition-colors">
                       View Clips &rarr;
                     </Link>
                   )}

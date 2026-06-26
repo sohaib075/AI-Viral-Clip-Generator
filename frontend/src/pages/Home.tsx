@@ -9,6 +9,7 @@ const Home = () => {
   const [file, setFile] = useState<File | null>(null);
   const [dragActive, setDragActive] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+  const [layout, setLayout] = useState('vertical');
   const navigate = useNavigate();
 
   const [analytics, setAnalytics] = useState({
@@ -60,13 +61,9 @@ const Home = () => {
     
     if (videoUrl && !file) {
       try {
-        const parsedUrl = new URL(videoUrl);
-        if (videoUrl.toLowerCase().includes('gt')) {
-          setErrorMsg('Invalid URL.');
-          return;
-        }
+        new URL(videoUrl);
       } catch (err) {
-        setErrorMsg('Invalid URL.');
+        setErrorMsg('Invalid URL. Please enter a valid HTTP/HTTPS URL.');
         return;
       }
     }
@@ -78,9 +75,10 @@ const Home = () => {
       if (file) {
         const formData = new FormData();
         formData.append('video', file);
+        formData.append('layout', layout);
         body = formData;
       } else {
-        body = JSON.stringify({ videoUrl: videoUrl });
+        body = JSON.stringify({ videoUrl: videoUrl, layout: layout });
         headers['Content-Type'] = 'application/json';
       }
 
@@ -210,6 +208,38 @@ const Home = () => {
                 <div className="text-center">
                   <p className="text-base font-bold text-gray-200 mb-1">{file ? file.name : "Drag & drop file"}</p>
                   <p className="text-xs text-gray-500 font-medium">{file ? `${(file.size / (1024*1024)).toFixed(2)} MB` : "MP4, MOV up to 2GB"}</p>
+                </div>
+              </div>
+
+              {/* Target Format Layout Selector */}
+              <div className="space-y-3">
+                <label className="text-sm font-semibold text-gray-300 flex items-center gap-2">
+                  <Video className="w-4 h-4 text-gray-400" />
+                  Target Video Format & Aspect Ratio
+                </label>
+                <div className="grid grid-cols-2 gap-4">
+                  <button
+                    type="button"
+                    onClick={() => setLayout('vertical')}
+                    className={`py-3.5 px-4 rounded-xl border-2 text-sm font-bold flex flex-col items-center justify-center gap-1 transition-all duration-300
+                      ${layout === 'vertical'
+                        ? 'border-[#66fcf1] bg-[#66fcf1]/10 text-white shadow-[0_0_15px_rgba(102,252,241,0.1)]'
+                        : 'border-white/10 bg-black/20 text-gray-400 hover:border-white/20'}`}
+                  >
+                    <span className="text-base font-black">9:16 Vertical</span>
+                    <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">TikTok / Reels / Shorts</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setLayout('horizontal')}
+                    className={`py-3.5 px-4 rounded-xl border-2 text-sm font-bold flex flex-col items-center justify-center gap-1 transition-all duration-300
+                      ${layout === 'horizontal'
+                        ? 'border-[#66fcf1] bg-[#66fcf1]/10 text-white shadow-[0_0_15px_rgba(102,252,241,0.1)]'
+                        : 'border-white/10 bg-black/20 text-gray-400 hover:border-white/20'}`}
+                  >
+                    <span className="text-base font-black">16:9 Horizontal</span>
+                    <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">Landscape / Standard Web</span>
+                  </button>
                 </div>
               </div>
 

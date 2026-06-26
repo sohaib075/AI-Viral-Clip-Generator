@@ -23,7 +23,11 @@ app.use('/temp', express.static(tempDir));
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, tempDir);
+        const inputDir = path.join(tempDir, 'Input');
+        if (!fs.existsSync(inputDir)) {
+            fs.mkdirSync(inputDir, { recursive: true });
+        }
+        cb(null, inputDir);
     },
     filename: (req, file, cb) => {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
@@ -80,6 +84,8 @@ app.post('/api/jobs', upload.single('video'), async (req, res) => {
         jobsHistory.unshift(newJob);
         saveJobs();
 
+        const layout = req.body.layout || 'vertical';
+
         // Trigger the Python pipeline
         const response = await fetch(`${PYTHON_API_URL}/api/process`, {
             method: 'POST',
@@ -88,7 +94,8 @@ app.post('/api/jobs', upload.single('video'), async (req, res) => {
             },
             body: JSON.stringify({
                 jobId: jobId,
-                videoUrl: targetUrl
+                videoUrl: targetUrl,
+                layout: layout
             })
         });
 
@@ -166,16 +173,23 @@ app.get('/api/jobs/:id', async (req, res) => {
         
         // Update history status if changed
         if (jobIndex !== -1) {
-            if (data.status === 'completed') {
+            let changed = false;
+            if (data.status === 'completed' && jobsHistory[jobIndex].status !== 'Completed') {
                 jobsHistory[jobIndex].status = 'Completed';
                 jobsHistory[jobIndex].clips = data.clips ? data.clips.length : 0;
                 jobsHistory[jobIndex].clipsData = data.clips; // Save clips in history
+                if (data.clips && data.clips.length > 0 && data.clips[0].thumbnail_url) {
+                    jobsHistory[jobIndex].thumbnail = data.clips[0].thumbnail_url;
+                }
                 if (data.transcript) {
                     jobsHistory[jobIndex].transcript = data.transcript;
                 }
-                saveJobs();
-            } else if (data.status === 'failed') {
+                changed = true;
+            } else if (data.status === 'failed' && jobsHistory[jobIndex].status !== 'Failed') {
                 jobsHistory[jobIndex].status = 'Failed';
+                changed = true;
+            }
+            if (changed) {
                 saveJobs();
             }
         }
