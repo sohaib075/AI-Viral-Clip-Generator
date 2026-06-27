@@ -5,6 +5,9 @@ const path = require('path');
 const fs = require('fs');
 require('dotenv').config();
 
+const db = require('./db');
+const { startQueueWorker } = require('./queue');
+
 const app = express();
 const port = process.env.PORT || 5000;
 const PYTHON_API_URL = process.env.PYTHON_API_URL || 'http://127.0.0.1:5001';
@@ -205,6 +208,89 @@ app.get('/api/jobs/:id', async (req, res) => {
         }
     }
 });
+
+app.post('/api/export', async (req, res) => {
+    try {
+        const response = await fetch(`${PYTHON_API_URL}/api/export`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(req.body)
+        });
+        
+        if (!response.ok) {
+            const errData = await response.text();
+            throw new Error(`Python API error: ${response.statusText} - ${errData}`);
+        }
+        
+        const data = await response.json();
+        res.json(data);
+    } catch (error) {
+        console.error("Error proxying export job:", error);
+        res.status(500).json({ error: 'Failed to start export job' });
+    }
+});
+
+app.get('/api/accounts', (req, res) => {
+    db.all(`SELECT * FROM accounts`, [], (err, rows) => {
+        if (err) return res.status(500).json({ error: 'Database error' });
+        res.json(rows);
+    });
+});
+
+app.post('/api/accounts', (req, res) => {
+    // Deprecated for mock connect. Use OAuth instead.
+    return res.status(400).json({ error: 'Use /auth/:platform for real connections' });
+});
+
+app.delete('/api/accounts/:id', (req, res) => {
+    db.run(`DELETE FROM accounts WHERE id = ?`, [req.params.id], (err) => {
+        if (err) return res.status(500).json({ error: 'Failed to disconnect account' });
+        res.json({ success: true });
+    });
+});
+
+app.get('/api/posts', (req, res) => {
+    db.all(`SELECT * FROM posts ORDER BY created_at DESC`, [], (err, rows) => {
+        if (err) return res.status(500).json({ error: 'Database error' });
+        res.json(rows);
+    });
+});
+
+app.post('/api/posts', (req, res) => {
+    const { clip_url, platforms, title, description, hashtags, scheduled_time } = req.body;
+    const id = `post_${Date.now()}`;
+    
+    // Validate inputs
+    if (!clip_url || !platforms || platforms.length === 0) {
+        return res.status(400).json({ error: 'Missing clip URL or platforms' });
+    }
+
+    // scheduled_time should be a valid SQLite datetime string, e.g., 'YYYY-MM-DD HH:MM:SS'
+    // If empty or "now", we schedule it 5 seconds from now for demo
+    let sqlTime = scheduled_time;
+    if (!sqlTime || sqlTime === 'now') {
+        sqlTime = new Date(Date.now() + 5000).toISOString().replace('T', ' ').substring(0, 19);
+    } else {
+        sqlTime = new Date(sqlTime).toISOString().replace('T', ' ').substring(0, 19);
+    }
+
+    db.run(`INSERT INTO posts (id, clip_url, platforms, title, description, hashtags, scheduled_time) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        [id, clip_url, JSON.stringify(platforms), title, description, hashtags, sqlTime], (err) => {
+            if (err) {
+                console.error(err);
+                return res.status(500).json({ error: 'Failed to schedule post' });
+            }
+            res.json({ success: true, id, scheduled_time: sqlTime });
+    });
+});
+
+// Auth Routes
+app.use('/auth', require('./auth'));
+
+// Start background worker
+startQueueWorker();
 
 app.listen(port, () => {
     console.log(`Backend server running on http://localhost:${port}`);

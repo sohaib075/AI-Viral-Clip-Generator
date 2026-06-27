@@ -9,6 +9,8 @@ import HowItWorks from './pages/HowItWorks';
 import Projects from './pages/Projects';
 import Analytics from './pages/Analytics';
 import Settings from './pages/Settings';
+import Accounts from './pages/Accounts';
+import Queue from './pages/Queue';
 import './index.css';
 
 function App() {
@@ -32,6 +34,8 @@ function App() {
               <Route path="/projects" element={<Projects />} />
               <Route path="/analytics" element={<Analytics />} />
               <Route path="/settings" element={<Settings />} />
+              <Route path="/accounts" element={<Accounts />} />
+              <Route path="/queue" element={<Queue />} />
             </Routes>
           </main>
         </div>

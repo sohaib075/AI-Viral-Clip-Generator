@@ -40,6 +40,13 @@ Formatting Rules:
    - "end_time": The end timestamp (in seconds, as a float)
    - "score": A virality score from 1 to 100
    - "reasoning": A 1 sentence explanation of why this clip is highly engaging.
+   - "emphasized_words": An array of strings representing the most important 2-5 words in this clip that should be highlighted.
+   - "metadata": An object containing platform-specific engaging content based on the clip:
+       - "tiktok": {{"title": "...", "description": "...", "hashtags": ["...", "..."]}}
+       - "instagram": {{"title": "...", "description": "...", "hashtags": ["...", "..."]}}
+       - "youtube_shorts": {{"title": "...", "description": "...", "hashtags": ["...", "..."]}}
+       - "linkedin": {{"post": "...", "hashtags": ["...", "..."]}}
+       - "x": {{"tweet": "...", "hashtags": ["...", "..."]}}
 3. Output nothing but the JSON array.
 
 Transcript:
@@ -73,7 +80,15 @@ Transcript:
             "start_time": first_seg["start"],
             "end_time": min(first_seg["start"] + 30, transcript_data["segments"][-1]["end"]),
             "score": 85,
-            "reasoning": "Fallback highlight."
+            "reasoning": "Fallback highlight.",
+            "emphasized_words": [],
+            "metadata": {
+                "tiktok": {"title": "Interesting Moment", "description": "Check this out!", "hashtags": ["#viral"]},
+                "instagram": {"title": "Interesting Moment", "description": "Check this out!", "hashtags": ["#viral"]},
+                "youtube_shorts": {"title": "Interesting Moment", "description": "Check this out!", "hashtags": ["#viral"]},
+                "linkedin": {"post": "Interesting moment captured.", "hashtags": ["#viral"]},
+                "x": {"tweet": "Check this out!", "hashtags": ["#viral"]}
+            }
         }]
 
 if __name__ == "__main__":

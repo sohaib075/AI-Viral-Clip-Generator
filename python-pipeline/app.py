@@ -127,29 +127,69 @@ def process_video_job(job_id, video_url, layout='vertical'):
             
             clip_start = clip_data.get('start_time', 0.0)
             clip_end = clip_data.get('end_time', 0.0)
+            clip_duration = clip_end - clip_start
+            if clip_duration <= 0:
+                clip_duration = 15.0
+                clip_end = clip_start + 15.0
             
             relevant_segments = []
-            for seg in transcript_data["segments"]:
+            for seg in transcript_data.get("segments", []):
                 if seg["start"] < clip_end and seg["end"] > clip_start:
                     relevant_segments.append(seg)
                     
+            relevant_words = []
+            if "words" in transcript_data:
+                for w in transcript_data["words"]:
+                    if w["start"] < clip_end and w["end"] > clip_start:
+                        relevant_words.append(w)
+                        
+            if not relevant_words:
+                log_job_message(job_id, f"WARNING: Clip {idx+1} missing captions. Generating estimated captions.")
+                title_words = clip_data.get("title", f"Clip {idx+1}").split()
+                if not title_words: title_words = ["Highlight"]
+                word_dur = clip_duration / len(title_words)
+                for i, tw in enumerate(title_words):
+                    relevant_words.append({
+                        "start": clip_start + (i * word_dur),
+                        "end": clip_start + ((i+1) * word_dur),
+                        "word": tw
+                    })
+                        
             clip_data["segments"] = relevant_segments
+            clip_data["words"] = relevant_words
             clip_data["layout"] = layout
             
-            final_clip_path, srt_path, thumbnail_path = process_clip(
-                video_path, clip_data, CLIPS_DIR, SUBTITLES_DIR, job_id, idx
-            )
+            max_render_retries = 3
+            final_clip_path, base_clip_path, thumbnail_path = None, None, None
+            
+            for attempt in range(max_render_retries):
+                try:
+                    final_clip_path, base_clip_path, srt_path, thumbnail_path = process_clip(
+                        video_path, clip_data, CLIPS_DIR, SUBTITLES_DIR, job_id, idx
+                    )
+                    break
+                except Exception as e:
+                    log_job_message(job_id, f"ERROR: Clip {idx+1} render failed on attempt {attempt+1}: {e}")
+                    if attempt == max_render_retries - 1:
+                        raise e
             
             clip_filename = os.path.basename(final_clip_path)
+            base_filename = os.path.basename(base_clip_path)
             thumb_filename = os.path.basename(thumbnail_path)
             
             return {
                 "title": clip_data.get("title", f"Clip {idx+1}"),
+                "start_time": clip_start,
+                "end_time": clip_end,
                 "score": clip_data.get("score", 0),
                 "reasoning": clip_data.get("reasoning", ""),
                 "video_url": f"/temp/Clips/{clip_filename}",
+                "base_url": f"/temp/Clips/{base_filename}",
                 "thumbnail_url": f"/temp/Clips/{thumb_filename}",
-                "segments": relevant_segments
+                "segments": relevant_segments,
+                "words": relevant_words,
+                "metadata": clip_data.get("metadata", {}),
+                "emphasized_words": clip_data.get("emphasized_words", [])
             }
             
         with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
@@ -202,6 +242,38 @@ def get_status(job_id):
     if job_id not in JOBS:
         return jsonify({"error": "Job not found"}), 404
     return jsonify(JOBS[job_id])
+
+@app.route('/api/export', methods=['POST'])
+def export_clip():
+    data = request.json
+    if not data or 'jobId' not in data or 'clipUrl' not in data or 'styleConfig' not in data:
+        return jsonify({"error": "Missing required fields"}), 400
+    
+    job_id = data['jobId']
+    clip_url = data['clipUrl']
+    style_config = data['styleConfig']
+    clip_data = data.get('clipData', {})
+    
+    base_filename = os.path.basename(clip_url)
+    base_clip_path = os.path.join(CLIPS_DIR, base_filename)
+    
+    if not os.path.exists(base_clip_path):
+        return jsonify({"error": "Base clip not found"}), 404
+        
+    final_filename = base_filename.replace('_base.mp4', '_final.mp4')
+    if '_base' not in base_filename:
+        final_filename = base_filename.replace('.mp4', '_final.mp4')
+        
+    final_output_path = os.path.join(CLIPS_DIR, final_filename)
+    
+    try:
+        from video_editor import burn_subtitles
+        burn_subtitles(base_clip_path, clip_data, style_config, final_output_path)
+        return jsonify({"success": True, "export_url": f"/temp/Clips/{final_filename}"})
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001, debug=True, use_reloader=False)

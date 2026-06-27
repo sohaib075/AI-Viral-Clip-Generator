@@ -2,6 +2,22 @@ import os
 from moviepy import VideoFileClip
 import ffmpeg
 
+def verify_ass_file(ass_path):
+    if not os.path.exists(ass_path):
+        return False
+    with open(ass_path, 'r', encoding='utf-8') as f:
+        content = f.read()
+        if "Dialogue:" not in content:
+            return False
+    return True
+
+def verify_video_file(video_path):
+    if not os.path.exists(video_path):
+        return False
+    if os.path.getsize(video_path) < 1000:
+        return False
+    return True
+
 def split_segment(segment, max_words=3):
     """
     Splits a segment into smaller segments with a maximum word count.
@@ -43,9 +59,7 @@ def split_segment(segment, max_words=3):
 
 def create_srt(clip_data, output_path):
     """
-    Creates a synchronized SRT file with phrase-by-phrase timing.
-    Timestamps are shifted to be relative to the start of the generated clip.
-    Subtitles are split into short, punchy 3-word chunks for vertical social media.
+    Creates a synchronized SRT file.
     """
     with open(output_path, 'w', encoding='utf-8') as f:
         clip_start = clip_data.get('start', clip_data.get('start_time', 0.0))
@@ -59,29 +73,24 @@ def create_srt(clip_data, output_path):
             return f"{int(h):02d}:{int(m):02d}:{int(s):02d},{int(ms):03d}"
             
         if not segments:
-            # Fallback if no segments found
             end_ms = int((clip_end - clip_start) * 1000)
             f.write("1\n")
             f.write(f"{format_time(0)} --> {format_time(end_ms)}\n")
             f.write(f"{clip_data.get('text', clip_data.get('title', 'Clip Highlight')).strip()}\n\n")
             return output_path
             
-        # Split segments to keep subtitles short and punchy (3 words max)
         split_segments = []
         for seg in segments:
             split_segments.extend(split_segment(seg, max_words=3))
             
         for i, seg in enumerate(split_segments):
-            # Shift timestamps to start at 00:00:00 for the newly cut video
             seg_start_relative = max(0.0, seg['start'] - clip_start)
             seg_end_relative = max(0.0, seg['end'] - clip_start)
             
-            # If the segment goes beyond the clip duration, clamp it
             clip_duration = clip_end - clip_start
             if seg_end_relative > clip_duration:
                 seg_end_relative = clip_duration
                 
-            # Skip if the segment doesn't make sense (e.g., negative duration)
             if seg_start_relative >= seg_end_relative:
                 continue
                 
@@ -95,9 +104,6 @@ def create_srt(clip_data, output_path):
     return output_path
 
 def slugify(text):
-    """
-    Converts a string to a clean alphanumeric-and-underscore path-safe string.
-    """
     import re
     if not text:
         return "clip"
@@ -108,9 +114,6 @@ def slugify(text):
     return text[:30] if text else "clip"
 
 def extract_thumbnail(video_path, time_offset, output_path):
-    """
-    Extracts a single frame from the video at the given timestamp and saves it as a JPG.
-    """
     import imageio_ffmpeg
     ffmpeg_exe = imageio_ffmpeg.get_ffmpeg_exe()
     try:
@@ -126,225 +129,271 @@ def extract_thumbnail(video_path, time_offset, output_path):
         print(f"Error extracting thumbnail: {e}")
         return None
 
-def create_ass(clip_data, output_path, is_vertical=True):
+def create_ass(clip_data, output_path, is_vertical=True, style_config=None):
     """
-    Creates an Advanced SubStation Alpha (ASS) file with:
-    - Bold modern Arial Black typography.
-    - Centered bottom-aligned placement raised for vertical layouts (MarginV=500).
-    - Perfect word-by-word progressive highlights (Yellow & enlarged active word).
-    Timestamps are shifted relative to the start of the clip.
+    Creates an ASS file with exact word timings if available, customized by style_config.
     """
     clip_start = clip_data.get('start', clip_data.get('start_time', 0.0))
     clip_end = clip_data.get('end', clip_data.get('end_time', 0.0))
+    clip_duration = clip_end - clip_start
+    
+    words_data = clip_data.get('words', [])
     segments = clip_data.get('segments', [])
-
+    
+    if clip_duration <= 0:
+        if words_data:
+            clip_start = max(0.0, words_data[0].get('start', 0.0))
+            clip_end = max(clip_start + 1.0, words_data[-1].get('end', 1.0))
+            clip_duration = clip_end - clip_start
+        elif segments:
+            clip_start = max(0.0, segments[0].get('start', 0.0))
+            clip_end = max(clip_start + 1.0, segments[-1].get('end', 1.0))
+            clip_duration = clip_end - clip_start
+        else:
+            clip_duration = 15.0
+    
+    # Defaults and config overrides
+    config = style_config or {}
+    theme = config.get('theme', 'Modern')
+    font_name = config.get('fontName', 'Arial Black')
+    font_size = config.get('fontSize', 64 if is_vertical else 44)
+    primary_color = config.get('primaryColor', '&H00FFFFFF')  # Default White
+    highlight_color = config.get('highlightColor', '&H0000FFFF')  # Default Yellow
+    margin_v = config.get('marginV', 500 if is_vertical else 80)
+    
     def format_ass_time(sec):
-        if sec < 0:
-            sec = 0
+        if sec < 0: sec = 0
         h = int(sec // 3600)
         m = int((sec % 3600) // 60)
         s = int(sec % 60)
         cs = int(round((sec - int(sec)) * 100))
-        if cs == 100:
-            cs = 99
+        if cs == 100: cs = 99
         return f"{h}:{m:02d}:{s:02d}.{cs:02d}"
 
-    # Layout parameters based on format
-    if is_vertical:
-        play_res_x = 1080
-        play_res_y = 1920
-        font_size = 64
-        margin_v = 500  # Elevated above mobile overlays
-    else:
-        play_res_x = 1920
-        play_res_y = 1080
-        font_size = 44
-        margin_v = 80   # Standard bottom placement
+    play_res_x = 1080 if is_vertical else 1920
+    play_res_y = 1920 if is_vertical else 1080
 
     with open(output_path, 'w', encoding='utf-8') as f:
-        # 1. Script Info Section
         f.write("[Script Info]\n")
-        f.write("Title: AI Viral Clips Premium Subtitles\n")
+        f.write(f"Title: {theme} Subtitles\n")
         f.write("ScriptType: v4.00+\n")
         f.write(f"PlayResX: {play_res_x}\n")
         f.write(f"PlayResY: {play_res_y}\n")
         f.write("ScaledBorderAndShadow: yes\n\n")
 
-        # 2. Styles Section
         f.write("[V4+ Styles]\n")
         f.write("Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding\n")
-        f.write(f"Style: Default,Arial Black,{font_size},&H00FFFFFF,&H0000FFFF,&H00000000,&H00000000,1,0,0,0,100,100,0,0,1,4,2,2,40,40,{margin_v},1\n\n")
+        # Base Style
+        f.write(f"Style: Default,{font_name},{font_size},{primary_color},&H000000FF,&H00000000,&H00000000,1,0,0,0,100,100,0,0,1,4,2,2,40,40,{margin_v},1\n\n")
 
-        # 3. Events Section
         f.write("[Events]\n")
         f.write("Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text\n")
 
-        if not segments:
-            duration = clip_end - clip_start
-            text = clip_data.get('text', clip_data.get('title', 'Clip Highlight')).strip()
-            f.write(f"Dialogue: 0,{format_ass_time(0)},{format_ass_time(duration)},Default,,0,0,0,,{text}\n")
+        if not words_data:
+            # Fallback to segments if no words (e.g. mock data or error)
+            if not segments:
+                text = clip_data.get('text', clip_data.get('title', 'Clip Highlight')).strip()
+                f.write(f"Dialogue: 0,{format_ass_time(0)},{format_ass_time(clip_duration)},Default,,0,0,0,,{text}\n")
+                return output_path
+
+            split_segments = []
+            for seg in segments:
+                split_segments.extend(split_segment(seg, max_words=3))
+
+            for seg in split_segments:
+                seg_start_relative = max(0.0, seg['start'] - clip_start)
+                seg_end_relative = max(0.0, min(seg['end'] - clip_start, clip_duration))
+                if seg_start_relative >= seg_end_relative: continue
+                f.write(f"Dialogue: 0,{format_ass_time(seg_start_relative)},{format_ass_time(seg_end_relative)},Default,,0,0,0,,{seg['text'].strip()}\n")
             return output_path
 
-        split_segments = []
-        for seg in segments:
-            split_segments.extend(split_segment(seg, max_words=3))
-
-        for seg in split_segments:
-            seg_start_relative = max(0.0, seg['start'] - clip_start)
-            seg_end_relative = max(0.0, seg['end'] - clip_start)
-            clip_duration = clip_end - clip_start
-            if seg_end_relative > clip_duration:
-                seg_end_relative = clip_duration
-
-            if seg_start_relative >= seg_end_relative:
-                continue
-
-            text = seg['text'].strip()
-            words = text.split()
-            if not words:
-                continue
-
-            num_words = len(words)
-            seg_duration = seg_end_relative - seg_start_relative
-            clip_duration = clip_end - clip_start
-
-            # Calculate weights based on character length and punctuation pauses
-            import re
-            weights = []
-            for w in words:
-                clean_w = re.sub(r'[^\w]', '', w)
-                w_len = len(clean_w) if clean_w else 1
-                
-                # Check for punctuation pauses at the end of the word
-                if w.endswith(('.', '?', '!')):
-                    w_len += 4
-                elif w.endswith((',', ';', ':', '-')):
-                    w_len += 2
-                weights.append(w_len)
-                
-            total_weight = sum(weights)
-            if total_weight <= 0:
-                total_weight = 1
-                
-            current_offset = 0.0
+        # Word-level perfect timing processing
+        # We group words into small phrases (e.g. 3 words max) so the screen isn't just 1 word at a time,
+        # but we highlight the specific active word using its exact start/end.
+        current_phrase = []
+        phrase_start = 0.0
+        
+        for w in words_data:
+            w_start = w['start'] - clip_start
+            w_end = w['end'] - clip_start
+            w_text = w['word'].strip()
             
-            for w_idx in range(num_words):
-                w_dur = (weights[w_idx] / total_weight) * seg_duration
-                w_start = seg_start_relative + current_offset
-                w_end = w_start + w_dur
-                current_offset += w_dur
-
-                if w_idx == num_words - 1:
-                    w_end = seg_end_relative
-
-                # Boundary Validation & Clamping
-                w_start = max(0.0, min(w_start, clip_duration))
-                w_end = max(0.0, min(w_end, clip_duration))
+            if w_start < 0:
+                if w_end > 0: w_start = 0.0
+                else: continue
+            if w_end > clip_duration:
+                w_end = clip_duration
                 
-                # Enforce minimum duration of 50ms if clamped together
-                if w_start >= w_end:
-                    if w_start < clip_duration - 0.05:
-                        w_end = w_start + 0.05
-                    elif w_start > 0.05:
-                        w_start = w_end - 0.05
-                    else:
-                        continue # Skip if segment is completely invalid
+            if w_start >= clip_duration:
+                continue
 
+            current_phrase.append({"word": w_text, "start": w_start, "end": w_end})
+            
+            # End phrase if we hit 3 words or there's a big gap
+            if len(current_phrase) >= 3 or w_text[-1] in ".?!":
+                # Render phrase word by word
+                for idx, active_w in enumerate(current_phrase):
+                    line_start = active_w["start"]
+                    line_end = active_w["end"]
+                    
+                    # Extend phrase visibility duration if it's the last word?
+                    # In ASS, we write multiple Dialogue lines overlapping in time? No, we write one Dialogue line per active word time.
+                    
+                    # For perfect sync, we just show the phrase during the active word's time? No, usually a 3-word phrase is shown for the duration of all 3 words,
+                    # and we color the active word during its specific time window.
+                    pass
+                
+                # To do progressive highlighting properly in ASS:
+                # We emit one dialogue line for each word's duration. The line contains the full phrase, but only the active word is highlighted.
+                phrase_overall_start = current_phrase[0]["start"]
+                phrase_overall_end = current_phrase[-1]["end"]
+                
+                # Ensure continuous display (fill tiny gaps between words in the same phrase)
+                for idx, active_w in enumerate(current_phrase):
+                    active_start = active_w["start"]
+                    active_end = active_w["end"]
+                    
+                    # If there's a gap to the next word, maybe fill it. But whisper timestamps are usually tight.
+                    formatted_words = []
+                    for inner_idx, inner_w in enumerate(current_phrase):
+                        if inner_idx == idx:
+                            # Highlighted active word
+                            formatted_words.append(f"{{\\c{highlight_color}&\\fscx115\\fscy115}}{inner_w['word']}{{\\r}}")
+                        else:
+                            formatted_words.append(inner_w['word'])
+                            
+                    line_text = " ".join(formatted_words)
+                    f.write(f"Dialogue: 0,{format_ass_time(active_start)},{format_ass_time(active_end)},Default,,0,0,0,,{line_text}\n")
+
+                current_phrase = []
+                
+        # Flush any remaining words
+        if current_phrase:
+            for idx, active_w in enumerate(current_phrase):
+                active_start = active_w["start"]
+                active_end = active_w["end"]
+                
                 formatted_words = []
-                for idx, w in enumerate(words):
-                    if idx == w_idx:
-                        # Highlight active word (Yellow and 15% size pop)
-                        formatted_words.append(f"{{\\c&H0000FFFF&\\fscx115\\fscy115}}{w}{{\\r}}")
+                for inner_idx, inner_w in enumerate(current_phrase):
+                    if inner_idx == idx:
+                        formatted_words.append(f"{{\\c{highlight_color}&\\fscx115\\fscy115}}{inner_w['word']}{{\\r}}")
                     else:
-                        formatted_words.append(w)
-
+                        formatted_words.append(inner_w['word'])
+                        
                 line_text = " ".join(formatted_words)
-                f.write(f"Dialogue: 0,{format_ass_time(w_start)},{format_ass_time(w_end)},Default,,0,0,0,,{line_text}\n")
+                f.write(f"Dialogue: 0,{format_ass_time(active_start)},{format_ass_time(active_end)},Default,,0,0,0,,{line_text}\n")
 
     return output_path
 
 def process_clip(video_path, clip_data, clips_dir, subtitles_dir, job_id, clip_index):
     """
-    Cuts the video, scales to target layout format, and burns animated subtitles
-    using a single optimized FFmpeg pass while ensuring cross-platform playability.
-    Saves outputs in organized folders with unique, descriptive filenames.
+    Cuts the BASE video and generates the default FINAL video with burned subtitles simultaneously.
     """
     title = clip_data.get('title', f"Clip {clip_index + 1}")
     slugified_title = slugify(title)
     seq_str = f"{clip_index + 1:02d}"
     
-    # Filenames following convention:
-    # Sub_[Seq]_[Slugified_Title]_[JobId].srt / .ass
-    # Clip_[Seq]_[Slugified_Title]_[JobId].mp4
-    # Thumbnail_[Seq]_[Slugified_Title]_[JobId].jpg
-    srt_filename = f"Sub_{seq_str}_{slugified_title}_{job_id}.srt"
-    ass_filename = f"Sub_{seq_str}_{slugified_title}_{job_id}.ass"
-    clip_filename = f"Clip_{seq_str}_{slugified_title}_{job_id}.mp4"
+    base_clip_filename = f"Clip_{seq_str}_{slugified_title}_{job_id}_base.mp4"
+    final_clip_filename = f"Clip_{seq_str}_{slugified_title}_{job_id}_final.mp4"
     thumbnail_filename = f"Thumbnail_{seq_str}_{slugified_title}_{job_id}.jpg"
+    srt_filename = f"Sub_{seq_str}_{slugified_title}_{job_id}.srt"
     
-    srt_path = os.path.join(subtitles_dir, srt_filename)
-    ass_path = os.path.join(subtitles_dir, ass_filename)
-    final_output_path = os.path.join(clips_dir, clip_filename)
+    base_clip_path = os.path.join(clips_dir, base_clip_filename)
+    final_clip_path = os.path.join(clips_dir, final_clip_filename)
     thumbnail_path = os.path.join(clips_dir, thumbnail_filename)
+    srt_path = os.path.join(subtitles_dir, srt_filename)
     
-    # Extract times
     start_time = clip_data.get('start', clip_data.get('start_time', 0.0))
     end_time = clip_data.get('end', clip_data.get('end_time', 0.0))
     duration = end_time - start_time
     
-    # Create SRT and ASS files
-    create_srt(clip_data, srt_path)
-    
     layout = clip_data.get('layout', 'vertical')
     is_vertical = (layout != 'horizontal')
-    create_ass(clip_data, ass_path, is_vertical=is_vertical)
-    
-    ass_path_ffmpeg = ass_path.replace('\\', '/').replace(':', '\\:')
     
     import imageio_ffmpeg
     ffmpeg_exe = imageio_ffmpeg.get_ffmpeg_exe()
     
-    # Determine crop & scale layout
     if is_vertical:
-        # Crop to 9:16 and scale to 1080x1920
-        vf_filter = (
-            f"crop=min(iw\\,ih*9/16):min(ih\\,iw*16/9),"
-            f"scale=1080:1920,"
-            f"subtitles='{ass_path_ffmpeg}'"
-        )
+        vf_filter = f"crop=min(iw\\,ih*9/16):min(ih\\,iw*16/9),scale=1080:1920"
     else:
-        # Scale to 1920x1080 (no crop)
-        vf_filter = (
-            f"scale=1920:1080,"
-            f"subtitles='{ass_path_ffmpeg}'"
-        )
+        vf_filter = f"scale=1920:1080"
     
     try:
         (
             ffmpeg
             .input(video_path, ss=start_time, t=duration)
             .output(
-                final_output_path, 
+                base_clip_path, 
                 vf=vf_filter,
                 vcodec="libx264",
                 acodec="aac",
                 preset="ultrafast",
                 crf=23,
-                pix_fmt="yuv420p"  # Ensure compatibility with all mobile devices (iOS/Android)
+                pix_fmt="yuv420p"
             )
             .overwrite_output()
             .run(cmd=ffmpeg_exe, quiet=True)
         )
         
-        # Extract a thumbnail from the final rendered clip at 1.0 second mark (or 0.0 if short)
+        if not verify_video_file(base_clip_path):
+            raise Exception("Base video verification failed: missing or empty output.")
+            
         thumb_time = 1.0 if duration > 1.0 else 0.0
-        extract_thumbnail(final_output_path, thumb_time, thumbnail_path)
+        extract_thumbnail(base_clip_path, thumb_time, thumbnail_path)
         
-        return final_output_path, srt_path, thumbnail_path
+        create_srt(clip_data, srt_path)
+        
+        # Automatically burn default subtitles for the final clip
+        default_style = {'theme': 'Modern', 'fontName': 'Arial Black'}
+        burn_subtitles(base_clip_path, clip_data, default_style, final_clip_path)
+        
+        if not verify_video_file(final_clip_path):
+            raise Exception("Final video verification failed: missing or empty output.")
+            
+        return final_clip_path, base_clip_path, srt_path, thumbnail_path
+    except Exception as e:
+        print(f"Error processing clip {clip_index}: {str(e)}")
+        raise e
+
+def burn_subtitles(base_clip_path, clip_data, style_config, output_path):
+    """
+    Takes a base clip and burns custom subtitles into it.
+    """
+    import imageio_ffmpeg
+    ffmpeg_exe = imageio_ffmpeg.get_ffmpeg_exe()
+    
+    layout = clip_data.get('layout', 'vertical')
+    is_vertical = (layout != 'horizontal')
+    
+    # Create ASS file
+    ass_path = output_path.replace('.mp4', '.ass')
+    create_ass(clip_data, ass_path, is_vertical=is_vertical, style_config=style_config)
+    
+    if not verify_ass_file(ass_path):
+        raise Exception("ASS file verification failed: empty or missing Dialogue events.")
+    
+    ass_path_ffmpeg = ass_path.replace('\\', '/').replace(':', '\\:')
+    
+    try:
+        (
+            ffmpeg
+            .input(base_clip_path)
+            .output(
+                output_path, 
+                vf=f"subtitles='{ass_path_ffmpeg}'",
+                vcodec="libx264",
+                acodec="copy", # Copy audio
+                preset="ultrafast",
+                crf=23,
+                pix_fmt="yuv420p"
+            )
+            .overwrite_output()
+            .run(cmd=ffmpeg_exe, quiet=True)
+        )
+        return output_path
     except ffmpeg.Error as e:
-        print(f"Error processing clip {clip_index}: {e.stderr.decode() if e.stderr else str(e)}")
+        print(f"Error burning subtitles: {e.stderr.decode() if e.stderr else str(e)}")
         raise e
 
 if __name__ == '__main__':
-    # Test
     pass

@@ -19,10 +19,12 @@ def transcribe_chunk(client, chunk_path, offset_seconds):
                     model="whisper-large-v3",
                     response_format="verbose_json",
                     temperature=0.0,
-                    prompt="Please accurately transcribe all spoken content. Ensure every single word is captured with high accuracy without omitting any important words or sentences."
+                    prompt="Please accurately transcribe all spoken content. Ensure every single word is captured with high accuracy without omitting any important words or sentences.",
+                    timestamp_granularities=["word", "segment"]
                 )
             
             segments = []
+            words = []
             if hasattr(transcription, 'segments'):
                 for seg in transcription.segments:
                     start_t = seg["start"] if isinstance(seg, dict) else seg.start
@@ -34,16 +36,29 @@ def transcribe_chunk(client, chunk_path, offset_seconds):
                         "end": end_t + offset_seconds,
                         "text": text_content
                     })
+
+            if hasattr(transcription, 'words') and transcription.words:
+                for w in transcription.words:
+                    start_t = w["start"] if isinstance(w, dict) else w.start
+                    end_t = w["end"] if isinstance(w, dict) else w.end
+                    word_text = w["word"] if isinstance(w, dict) else w.word
+                    
+                    words.append({
+                        "start": start_t + offset_seconds,
+                        "end": end_t + offset_seconds,
+                        "word": word_text
+                    })
             
             return {
                 "text": transcription.text,
-                "segments": segments
+                "segments": segments,
+                "words": words
             }
             
         except Exception as e:
             print(f"Error transcribing {os.path.basename(chunk_path)} (Attempt {attempt + 1}/{max_retries}): {e}")
             if attempt == max_retries - 1:
-                return {"text": "", "segments": []}
+                return {"text": "", "segments": [], "words": []}
             time.sleep(3 * (attempt + 1))
 
 def transcribe_audio(audio_path):
@@ -92,6 +107,7 @@ def transcribe_audio(audio_path):
     # 2. Transcribe concurrently
     all_text = []
     all_segments = []
+    all_words = []
     
     def process_with_index(idx_and_chunk):
         idx, chunk_file = idx_and_chunk
@@ -104,9 +120,12 @@ def transcribe_audio(audio_path):
         
     # 3. Merge results
     for res in results:
-        if res["text"]:
+        if res.get("text"):
             all_text.append(res["text"])
-        all_segments.extend(res["segments"])
+        if res.get("segments"):
+            all_segments.extend(res["segments"])
+        if res.get("words"):
+            all_words.extend(res["words"])
         
     # 4. Cleanup chunks
     for f in chunks:
@@ -116,7 +135,8 @@ def transcribe_audio(audio_path):
     print("Concurrent transcription complete!")
     return {
         "text": " ".join(all_text),
-        "segments": all_segments
+        "segments": all_segments,
+        "words": all_words
     }
 
 if __name__ == "__main__":
