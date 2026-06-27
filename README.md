@@ -8,25 +8,25 @@ An automated, end-to-end AI pipeline that converts long-form landscape videos (o
 
 ## ✨ Features
 
-- **Lightning-Fast Video Downloading**: Utilizes heavily-optimized `yt-dlp` to fetch videos at maximum speeds, constrained up to `1080p` for high-quality cropping.
+- **Lightning-Fast Video Downloading**: Utilizes a robust, heavily-optimized `yt-dlp` engine. Features an advanced fallback chain (including Android client spoofing and local browser cookie extraction) to automatically bypass bot detection and age restrictions, constrainted up to `1080p` for high-quality cropping.
 - **Parallel Audio Transcription**: Splits audio into chunks and transcribes them simultaneously using the blazing-fast Groq API (`whisper-large-v3`), guaranteeing near-instant, highly accurate results with zero timestamp drift.
 - **AI-Powered Viral NLP Highlighting**: Leverages Google's `gemini-2.5-flash` to intelligently analyze transcripts. It prioritizes contextual completeness and viral potential over mere quantity, dynamically adjusting clip lengths.
 - **Adaptive Layout Formats**: Supports dual aspect-ratio rendering:
   - **9:16 Vertical Crop**: Centered crop and scale to `1080x1920` optimal for TikTok, Instagram Reels, and YouTube Shorts.
-  - **16:9 Horizontal Scale**: Standard standard widescreen scale to `1920x1080` for standard web players.
+  - **16:9 Horizontal Scale**: Standard widescreen scale to `1920x1080` for standard web players.
 - **Premium Animated captions (ASS)**: Automatically generates and burns real-time, animated subtitles utilizing Advanced SubStation Alpha (`.ass`) styling:
-  - **Bold Meme-Style Typography**: Renders in thick, bold **Arial Black** font with high-contrast black outline and drop shadow.
-  - **Progressive Word-Level Highlighting**: The active spoken word dynamically turns bright **Yellow** and pops out with a **15% size zoom** (`\fscx115\fscy115`) while spoken, keeping other words white.
+  - **Customizable Themes**: Choose from Modern, Viral, Podcast, or Gaming styles with fully customizable text colors, highlight colors, font size, and vertical margins directly from the UI.
+  - **Progressive Word-Level Highlighting**: The active spoken word pops out dynamically while spoken, keeping other words white.
   - **Timing Proportional Allocation**: Timestamps are dynamically calculated based on word character length (excluding punctuation) to match spoken tempos naturally.
-  - **Pause Padding**: Automatically detects punctuation (periods, commas, question marks) and adds custom pause weights to absorb silence and prevent caption drift.
-  - **Automatic Verification**: Clamps subtitle timestamps within clip boundaries, resolves overlaps, and enforces a minimum 50ms duration check.
-  - **Adaptive Margins**: Subtitles are positioned high enough on vertical layouts (`MarginV=500` from bottom) to avoid TikTok UI overlays, and at the bottom (`MarginV=80`) for widescreen.
-- **Automated Thumbnail Extraction**: Uses FFmpeg to extract a preview frame from the first second of each rendered clip, automatically binding it to project cards.
-- **Persistent Project Dashboard**: A beautiful, modern React frontend featuring:
-  - An **inline vertical video player preview** that autoplays chosen clips.
-  - Interactive **subtitle track segments** synced to the active clip.
-  - Dynamic **AI Virality Explanation** card.
-  - Step-by-step pipeline logging displays.
+- **Automated Social Media Publisher Pipeline**:
+  - **Smart Queueing System**: Schedule posts to automatically go live immediately or in the future across YouTube Shorts, Instagram Reels, and TikTok. 
+  - **Global Duplicate Prevention**: Features a strict SHA-256 video fingerprinting system. The backend validates a unique `video_hash` against the database to guarantee that a video is never accidentally uploaded twice globally across any platform.
+  - **Robust Background Worker**: A dedicated background Node.js worker atomically polls the queue, gracefully handles API ratelimits, implements automatic retries, and records success/failure states without overlapping execution threads.
+- **"Minimalist Stealth" React Dashboard**: A beautiful, completely overhauled React frontend featuring:
+  - A premium, developer-focused dark mode aesthetic utilizing translucent glassmorphic panels and subtle micro-animations.
+  - An **inline vertical video player preview** and fully-featured **Caption Customizer**.
+  - Dynamic **AI Social Media Pack** card offering ready-to-copy titles, descriptions, and hashtags.
+  - A comprehensive **Publishing Queue** table to track post statuses in real-time.
 
 ---
 
