@@ -54,7 +54,7 @@ const Accounts = () => {
 
     return (
         <div className="p-8 max-w-5xl mx-auto pt-24 md:pt-8">
-            <h1 className="text-4xl font-black text-white mb-2">Social Accounts</h1>
+            <h1 className="text-4xl font-bold text-white mb-2">Social Accounts</h1>
             <p className="text-gray-400 mb-8 text-lg font-medium">Connect your social media accounts for fully automated publishing.</p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -63,7 +63,7 @@ const Accounts = () => {
                     const isConnected = connectedAccs.length > 0;
 
                     return (
-                        <div key={platform.id} className="glass-panel p-6 rounded-3xl relative overflow-hidden group hover:border-[#66fcf1]/50 transition-all">
+                        <div key={platform.id} className="glass-panel p-6 rounded-3xl relative overflow-hidden group hover:border-white/50 transition-all">
                             <div className="flex items-center justify-between mb-4">
                                 <div className="p-3 bg-white/5 rounded-2xl">{platform.icon}</div>
                                 {isConnected ? (
@@ -93,7 +93,7 @@ const Accounts = () => {
 
                                 <button 
                                     onClick={() => connectAccount(platform.id)}
-                                    className="w-full py-3 bg-white/5 hover:bg-[#66fcf1]/10 text-white hover:text-[#66fcf1] font-bold rounded-xl transition-all border border-white/5 hover:border-[#66fcf1]/30"
+                                    className="w-full py-3 bg-white/5 hover:bg-white/10 text-white hover:text-white font-bold rounded-xl transition-all border border-white/5 hover:border-white/30"
                                 >
                                     + Connect Account
                                 </button>

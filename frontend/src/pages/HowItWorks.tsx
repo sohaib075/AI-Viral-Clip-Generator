@@ -29,7 +29,7 @@ const HowItWorks = () => {
   return (
     <div className="w-full max-w-5xl mx-auto animate-fade-in-up mt-16 px-4">
       <div className="text-center mb-16">
-        <h1 className="text-5xl md:text-7xl font-black text-white mb-6 drop-shadow-xl">How It Works</h1>
+        <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 drop-shadow-xl">How It Works</h1>
         <p className="text-xl md:text-2xl text-white/80 max-w-3xl mx-auto font-medium">
           A fully open-source, locally run AI pipeline that transforms long-form content into viral shorts with zero paid API dependencies.
         </p>
@@ -41,14 +41,14 @@ const HowItWorks = () => {
             <div className="bg-white/10 w-16 h-16 rounded-2xl flex items-center justify-center mb-6 shadow-inner">
               {step.icon}
             </div>
-            <h3 className="text-2xl font-black text-white mb-4">{step.title}</h3>
+            <h3 className="text-2xl font-bold text-white mb-4">{step.title}</h3>
             <p className="text-lg text-white/70 font-medium leading-relaxed">{step.desc}</p>
           </div>
         ))}
       </div>
 
       <div className="text-center pb-20">
-        <Link to="/" className="inline-flex items-center gap-3 px-8 py-4 bg-white hover:bg-gray-200 text-black rounded-2xl text-xl font-black shadow-[0_0_30px_rgba(255,255,255,0.4)] hover:scale-105 transition-all">
+        <Link to="/" className="inline-flex items-center gap-3 px-8 py-4 bg-white hover:bg-gray-200 text-black rounded-2xl text-xl font-bold shadow-[0_0_30px_rgba(255,255,255,0.4)] hover:scale-105 transition-all">
           <CheckCircle className="w-6 h-6" /> Try it Now
         </Link>
       </div>

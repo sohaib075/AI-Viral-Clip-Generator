@@ -24,7 +24,7 @@ const Settings = () => {
   return (
     <div className="w-full max-w-6xl mx-auto flex flex-col p-8 animate-fade-in-up">
       <div className="mb-10">
-        <h1 className="text-3xl font-black text-white mb-2 flex items-center gap-3">
+        <h1 className="text-3xl font-bold text-white mb-2 flex items-center gap-3">
           <SettingsIcon className="w-8 h-8 text-gray-400" />
           Settings
         </h1>
@@ -59,7 +59,7 @@ const Settings = () => {
           <h2 className="text-xl font-bold text-white mb-6 border-b border-white/10 pb-4">Profile Information</h2>
           
           <div className="flex items-center gap-6 mb-8">
-            <div className="w-24 h-24 rounded-full bg-gradient-to-tr from-purple-500 to-[#66fcf1] p-1">
+            <div className="w-24 h-24 rounded-full bg-gradient-to-tr from-white/10 to-[#66fcf1] p-1">
               <img 
                 src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=800&auto=format&fit=crop&q=80" 
                 alt="Avatar" 
@@ -78,27 +78,27 @@ const Settings = () => {
             <div className="flex gap-6">
               <div className="flex-1 space-y-2">
                 <label className="text-sm font-bold text-gray-400">First Name</label>
-                <input type="text" defaultValue={userProfile.firstName} className="w-full px-4 py-3 bg-black/40 border border-white/10 rounded-xl focus:outline-none focus:border-[#66fcf1] text-white" />
+                <input type="text" defaultValue={userProfile.firstName} className="w-full px-4 py-3 bg-black/40 border border-white/10 rounded-xl focus:outline-none focus:border-white text-white" />
               </div>
               <div className="flex-1 space-y-2">
                 <label className="text-sm font-bold text-gray-400">Last Name</label>
-                <input type="text" defaultValue={userProfile.lastName} className="w-full px-4 py-3 bg-black/40 border border-white/10 rounded-xl focus:outline-none focus:border-[#66fcf1] text-white" />
+                <input type="text" defaultValue={userProfile.lastName} className="w-full px-4 py-3 bg-black/40 border border-white/10 rounded-xl focus:outline-none focus:border-white text-white" />
               </div>
             </div>
 
             <div className="space-y-2">
               <label className="text-sm font-bold text-gray-400">Email Address</label>
-              <input type="email" defaultValue={userProfile.email} className="w-full px-4 py-3 bg-black/40 border border-white/10 rounded-xl focus:outline-none focus:border-[#66fcf1] text-white" />
+              <input type="email" defaultValue={userProfile.email} className="w-full px-4 py-3 bg-black/40 border border-white/10 rounded-xl focus:outline-none focus:border-white text-white" />
             </div>
 
             <div className="space-y-2">
               <label className="text-sm font-bold text-gray-400">Company</label>
-              <input type="text" defaultValue={userProfile.company} className="w-full px-4 py-3 bg-black/40 border border-white/10 rounded-xl focus:outline-none focus:border-[#66fcf1] text-white" />
+              <input type="text" defaultValue={userProfile.company} className="w-full px-4 py-3 bg-black/40 border border-white/10 rounded-xl focus:outline-none focus:border-white text-white" />
             </div>
 
             <div className="pt-6 border-t border-white/10 flex justify-end gap-4">
               <button type="button" className="px-6 py-3 font-bold text-gray-400 hover:text-white transition-colors">Cancel</button>
-              <button type="button" className="px-6 py-3 bg-[#66fcf1] hover:bg-[#52c9c1] text-black font-bold rounded-xl transition-all shadow-[0_0_20px_rgba(102,252,241,0.3)]">
+              <button type="button" className="px-6 py-3 bg-white hover:bg-[#52c9c1] text-black font-bold rounded-xl transition-all shadow-[0_0_20px_rgba(102,252,241,0.3)]">
                 Save Changes
               </button>
             </div>

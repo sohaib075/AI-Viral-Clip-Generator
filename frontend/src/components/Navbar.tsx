@@ -15,18 +15,25 @@ const Navbar = () => {
 
   return (
     <>
-      <nav className="w-full relative z-40 px-6 py-4 md:px-8 md:py-6 flex justify-between items-center border-b border-white/20 glass-panel">
-        <Link to="/" className="flex items-center gap-3 cursor-pointer">
-          <div className="bg-white p-[2px] rounded-xl shadow-[0_0_15px_rgba(255,255,255,0.5)]">
-            <div className="bg-black p-2 rounded-lg">
-              <Play className="w-4 h-4 md:w-5 md:h-5 text-white" fill="currentColor" />
+      <nav className="w-full relative z-40 px-6 py-4 md:px-8 md:py-6 flex justify-between items-center border-b border-white/5 bg-black/50 backdrop-blur-md">
+        <Link to="/" className="flex items-center gap-3 cursor-pointer md:hidden">
+          <div className="bg-white/10 p-[1px] rounded-lg">
+            <div className="bg-black p-1.5 rounded-md">
+              <Play className="w-4 h-4 text-white" fill="currentColor" />
             </div>
           </div>
-          <span className="text-xl md:text-2xl font-black tracking-tight text-white drop-shadow-md">ClipGenius AI</span>
+          <span className="text-xl font-bold tracking-tight text-white">ClipGenius</span>
         </Link>
-        <div className="hidden md:flex gap-6">
-          <Link to="/how-it-works" className="text-sm font-bold text-white/90 hover:text-white transition-colors duration-200">How it works</Link>
-          <a href="#" className="text-sm font-bold text-white/90 hover:text-white transition-colors duration-200">GitHub</a>
+        
+        {/* Empty div to keep right-side aligned when logo is hidden on desktop (since it's in sidebar) */}
+        <div className="hidden md:block"></div>
+
+        <div className="hidden md:flex gap-6 items-center">
+          <Link to="/how-it-works" className="text-sm font-medium text-gray-400 hover:text-white transition-colors duration-200">Documentation</Link>
+          <a href="#" className="text-sm font-medium text-gray-400 hover:text-white transition-colors duration-200">GitHub</a>
+          <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center cursor-pointer hover:bg-white/20 transition-colors border border-white/5">
+             <span className="text-xs font-semibold">MS</span>
+          </div>
         </div>
         
         {/* Mobile Menu Toggle */}
@@ -40,7 +47,7 @@ const Navbar = () => {
 
       {/* Mobile Menu Dropdown */}
       {mobileMenuOpen && (
-        <div className="absolute top-[72px] left-0 w-full bg-[#050505]/95 backdrop-blur-3xl border-b border-white/10 z-30 md:hidden flex flex-col p-4 animate-fade-in-up">
+        <div className="absolute top-[72px] left-0 w-full bg-black/95 backdrop-blur-3xl border-b border-white/10 z-30 md:hidden flex flex-col p-4 animate-fade-in-up">
           {navItems.map((item) => {
             const isActive = location.pathname === item.path;
             return (
@@ -50,18 +57,18 @@ const Navbar = () => {
                 onClick={() => setMobileMenuOpen(false)}
                 className={`flex items-center gap-3 px-4 py-4 rounded-xl transition-all duration-300 font-semibold mb-2 ${
                   isActive 
-                    ? 'bg-purple-500/10 text-[#66fcf1] border border-purple-500/20' 
+                    ? 'bg-white/10 text-white border border-white/10' 
                     : 'text-gray-400 hover:text-white hover:bg-white/5'
                 }`}
               >
                 {item.icon}
-                <span className="text-lg">{item.name}</span>
+                <span className="text-base">{item.name}</span>
               </Link>
             );
           })}
           <div className="h-[1px] bg-white/10 my-2"></div>
-          <Link to="/how-it-works" onClick={() => setMobileMenuOpen(false)} className="px-4 py-3 text-white font-bold">How it works</Link>
-          <a href="#" className="px-4 py-3 text-white font-bold">GitHub</a>
+          <Link to="/how-it-works" onClick={() => setMobileMenuOpen(false)} className="px-4 py-3 text-gray-300 font-medium">Documentation</Link>
+          <a href="#" className="px-4 py-3 text-gray-300 font-medium">GitHub</a>
         </div>
       )}
     </>

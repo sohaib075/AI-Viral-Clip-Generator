@@ -209,8 +209,8 @@ const Results = () => {
       {/* Header Panel */}
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-12 gap-6 bg-black/20 p-8 rounded-3xl backdrop-blur-md border border-white/10">
         <div>
-          <h2 className="text-3xl md:text-5xl font-black text-white mb-3 flex items-center gap-4 drop-shadow-xl">
-            <CheckCircle className="w-8 h-8 md:w-10 md:h-10 text-[#66fcf1]" />
+          <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-white mb-3 flex items-center gap-4">
+            <CheckCircle className="w-8 h-8 md:w-10 md:h-10 text-white" />
             Your Viral Clips
           </h2>
           <p className="text-lg md:text-xl text-white/80 font-bold">We identified {clips.length} highly engaging moments.</p>
@@ -229,25 +229,25 @@ const Results = () => {
         {/* Left: Active Clip Preview & Settings (7 cols) */}
         <div className="lg:col-span-7 flex flex-col gap-6">
           {activeClip ? (
-            <div className="glass-panel-dark rounded-[2.5rem] p-6 md:p-8 border border-white/10 flex flex-col gap-6 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)] relative">
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-[1px] bg-gradient-to-r from-transparent via-[#66fcf1]/30 to-transparent"></div>
+            <div className="glass-panel border border-white/5 rounded-[2.5rem] p-6 md:p-8 border border-white/10 flex flex-col gap-6 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)] relative">
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
               
               <div className="flex justify-center gap-4 mb-2">
                 <button 
                   onClick={() => setActiveTab('final_clip')}
-                  className={`px-6 py-2 rounded-full font-bold transition-all ${activeTab === 'final_clip' ? 'bg-[#66fcf1] text-black shadow-glow' : 'bg-white/10 text-white hover:bg-white/20'}`}
+                  className={`px-6 py-2 rounded-full font-bold transition-all ${activeTab === 'final_clip' ? 'bg-white text-black shadow-md' : 'bg-white/5 text-gray-300 hover:bg-white/10 hover:text-white'}`}
                 >
                   Final Output
                 </button>
                 <button 
                   onClick={() => setActiveTab('customizer')}
-                  className={`px-6 py-2 rounded-full font-bold transition-all ${activeTab === 'customizer' ? 'bg-[#66fcf1] text-black shadow-glow' : 'bg-white/10 text-white hover:bg-white/20'}`}
+                  className={`px-6 py-2 rounded-full font-bold transition-all ${activeTab === 'customizer' ? 'bg-white text-black shadow-md' : 'bg-white/5 text-gray-300 hover:bg-white/10 hover:text-white'}`}
                 >
                   Customizer
                 </button>
                 <button 
                   onClick={() => setActiveTab('metadata')}
-                  className={`px-6 py-2 rounded-full font-bold transition-all ${activeTab === 'metadata' ? 'bg-[#66fcf1] text-black shadow-glow' : 'bg-white/10 text-white hover:bg-white/20'}`}
+                  className={`px-6 py-2 rounded-full font-bold transition-all ${activeTab === 'metadata' ? 'bg-white text-black shadow-md' : 'bg-white/5 text-gray-300 hover:bg-white/10 hover:text-white'}`}
                 >
                   Social Media
                 </button>
@@ -256,7 +256,7 @@ const Results = () => {
               {activeTab === 'final_clip' && (
                 <div className="flex flex-col gap-6 items-center">
                   <p className="text-gray-400 font-bold text-center">This is the final generated video with hardcoded, properly synced captions.</p>
-                  <div className="relative aspect-[9/16] w-full max-w-[320px] mx-auto bg-black rounded-3xl overflow-hidden border-2 border-white/10 shadow-[0_0_50px_rgba(102,252,241,0.05)]">
+                  <div className="relative aspect-[9/16] w-full max-w-[320px] mx-auto bg-black rounded-3xl overflow-hidden border-2 border-white/10 shadow-2xl">
                     <video 
                       key={activeClip.url}
                       src={activeClip.url}
@@ -265,7 +265,7 @@ const Results = () => {
                       className="w-full h-full object-cover"
                     />
                   </div>
-                  <a href={activeClip.url} download className="w-full max-w-[320px] py-4 bg-white text-black font-black rounded-xl hover:bg-gray-200 transition-all flex justify-center items-center gap-2 shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:scale-[1.02]">
+                  <a href={activeClip.url} download className="w-full max-w-[320px] py-4 bg-white text-black font-bold rounded-xl hover:bg-gray-200 transition-all flex justify-center items-center gap-2 shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:scale-[1.02]">
                     <Download className="w-5 h-5"/> Download Video
                   </a>
                   <button 
@@ -279,7 +279,7 @@ const Results = () => {
                         setExportUrl(activeClip.url);
                         setShowPublishModal(true);
                     }}
-                    className="w-full max-w-[320px] py-4 bg-gradient-to-r from-purple-500 to-[#66fcf1] text-black font-black rounded-xl hover:brightness-110 transition-all flex justify-center items-center gap-2 shadow-[0_0_20px_rgba(102,252,241,0.4)] hover:scale-[1.02]"
+                    className="w-full max-w-[320px] py-4 bg-white text-black font-bold rounded-xl hover:brightness-110 transition-all flex justify-center items-center gap-2 shadow-lg hover:scale-[1.02]"
                   >
                     <Globe className="w-5 h-5"/> Auto-Publish to Socials
                   </button>
@@ -290,7 +290,7 @@ const Results = () => {
                 <>
                   <div className="flex flex-col md:flex-row gap-6 items-start">
                     {/* Vertical 9:16 Video Player Container */}
-                    <div className="relative aspect-[9/16] w-full max-w-[280px] mx-auto bg-black rounded-3xl overflow-hidden border-2 border-white/10 shadow-[0_0_50px_rgba(102,252,241,0.05)] flex-shrink-0 group">
+                    <div className="relative aspect-[9/16] w-full max-w-[280px] mx-auto bg-black rounded-3xl overflow-hidden border-2 border-white/10 shadow-2xl flex-shrink-0 group">
                       <video 
                         ref={videoRef}
                         key={activeClip.base_url || activeClip.url}
@@ -344,7 +344,7 @@ const Results = () => {
                             <select 
                               value={styleConfig.theme}
                               onChange={(e) => setStyleConfig({...styleConfig, theme: e.target.value})}
-                              className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white font-bold focus:border-[#66fcf1]"
+                              className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white font-bold focus:border-white"
                             >
                               <option value="Modern">Modern (Bold & Clean)</option>
                               <option value="Viral">Viral (Yellow Highlights)</option>
@@ -359,7 +359,7 @@ const Results = () => {
                               <select 
                                 value={styleConfig.primaryColor}
                                 onChange={(e) => setStyleConfig({...styleConfig, primaryColor: e.target.value})}
-                                className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white font-bold focus:border-[#66fcf1]"
+                                className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white font-bold focus:border-white"
                               >
                                 <option value="&H00FFFFFF">White</option>
                                 <option value="&H000000FF">Red</option>
@@ -371,7 +371,7 @@ const Results = () => {
                               <select 
                                 value={styleConfig.highlightColor}
                                 onChange={(e) => setStyleConfig({...styleConfig, highlightColor: e.target.value})}
-                                className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white font-bold focus:border-[#66fcf1]"
+                                className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white font-bold focus:border-white"
                               >
                                 <option value="&H0000FFFF">Yellow</option>
                                 <option value="&H00FF0000">Blue</option>
@@ -417,7 +417,7 @@ const Results = () => {
                             <div className="bg-green-500/20 border border-green-500/50 p-4 rounded-xl text-green-400 font-bold text-center flex items-center justify-center gap-2">
                               <CheckCircle className="w-5 h-5"/> Export Successful!
                             </div>
-                            <a href={exportUrl} download className="w-full py-4 bg-white text-black font-black rounded-xl hover:bg-gray-200 transition-all flex justify-center items-center gap-2 shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:scale-[1.02]">
+                            <a href={exportUrl} download className="w-full py-4 bg-white text-black font-bold rounded-xl hover:bg-gray-200 transition-all flex justify-center items-center gap-2 shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:scale-[1.02]">
                               <Download className="w-5 h-5"/> Download Final Video
                             </a>
                             <button 
@@ -430,7 +430,7 @@ const Results = () => {
                                   });
                                   setShowPublishModal(true);
                               }}
-                              className="w-full py-4 bg-gradient-to-r from-purple-500 to-[#66fcf1] text-black font-black rounded-xl hover:brightness-110 transition-all flex justify-center items-center gap-2 shadow-[0_0_20px_rgba(102,252,241,0.4)] hover:scale-[1.02]"
+                              className="w-full py-4 bg-white text-black font-bold rounded-xl hover:brightness-110 transition-all flex justify-center items-center gap-2 shadow-lg hover:scale-[1.02]"
                             >
                               <Globe className="w-5 h-5"/> Auto-Publish Custom Video
                             </button>
@@ -439,7 +439,7 @@ const Results = () => {
                           <button 
                             onClick={handleExport}
                             disabled={isExporting}
-                            className={`w-full py-4 font-black rounded-xl transition-all flex justify-center items-center gap-2 hover:scale-[1.02] shadow-[0_0_20px_rgba(102,252,241,0.2)] ${isExporting ? 'bg-gray-600 text-gray-400 cursor-not-allowed' : 'bg-gradient-to-r from-[#66fcf1] to-blue-400 text-black hover:brightness-110'}`}
+                            className={`w-full py-4 font-black rounded-xl transition-all flex justify-center items-center gap-2 hover:scale-[1.02] shadow-md ${isExporting ? 'bg-gray-600 text-gray-400 cursor-not-allowed' : 'bg-white text-black hover:brightness-110'}`}
                           >
                             {isExporting ? (
                               <><Loader className="w-5 h-5 animate-spin"/> Rendering Subtitles...</>
@@ -463,40 +463,40 @@ const Results = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {/* TikTok */}
                     {activeClip.metadata?.tiktok && (
-                      <div className="bg-[#25F4EE]/10 border border-[#25F4EE]/30 p-5 rounded-2xl relative group">
-                        <div className="absolute top-4 right-4 text-[#25F4EE] opacity-50 group-hover:opacity-100 transition-opacity"><svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/></svg></div>
+                      <div className="glass-panel border border-white/10 p-5 rounded-2xl relative group hover:bg-white/5 transition-colors">
+                        <div className="absolute top-4 right-4 text-gray-300 opacity-50 group-hover:opacity-100 transition-opacity"><svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/></svg></div>
                         <h4 className="font-bold text-white mb-2 pr-8">{activeClip.metadata.tiktok.title}</h4>
                         <p className="text-sm text-gray-300 mb-3">{activeClip.metadata.tiktok.description}</p>
-                        <p className="text-xs font-bold text-[#25F4EE]">{activeClip.metadata.tiktok.hashtags?.join(' ')}</p>
+                        <p className="text-xs font-bold text-gray-300">{activeClip.metadata.tiktok.hashtags?.join(' ')}</p>
                         <button className="mt-3 text-xs bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded flex items-center gap-1 font-bold text-white transition-colors" onClick={() => {navigator.clipboard.writeText(`${activeClip.metadata?.tiktok.title}\n${activeClip.metadata?.tiktok.description}\n${activeClip.metadata?.tiktok.hashtags?.join(' ')}`); alert('Copied!');}}><Copy className="w-3 h-3"/> Copy</button>
                       </div>
                     )}
                     
                     {/* Instagram */}
                     {activeClip.metadata?.instagram && (
-                      <div className="bg-pink-500/10 border border-pink-500/30 p-5 rounded-2xl relative group">
-                        <div className="absolute top-4 right-4 text-pink-400 opacity-50 group-hover:opacity-100 transition-opacity"><Camera className="w-6 h-6"/></div>
+                      <div className="glass-panel border border-white/10 p-5 rounded-2xl relative group hover:bg-white/5 transition-colors">
+                        <div className="absolute top-4 right-4 text-white opacity-50 group-hover:opacity-100 transition-opacity"><Camera className="w-6 h-6"/></div>
                         <h4 className="font-bold text-white mb-2 pr-8">{activeClip.metadata.instagram.title}</h4>
                         <p className="text-sm text-gray-300 mb-3">{activeClip.metadata.instagram.description}</p>
-                        <p className="text-xs font-bold text-pink-400">{activeClip.metadata.instagram.hashtags?.join(' ')}</p>
+                        <p className="text-xs font-bold text-white">{activeClip.metadata.instagram.hashtags?.join(' ')}</p>
                         <button className="mt-3 text-xs bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded flex items-center gap-1 font-bold text-white transition-colors" onClick={() => {navigator.clipboard.writeText(`${activeClip.metadata?.instagram.title}\n${activeClip.metadata?.instagram.description}\n${activeClip.metadata?.instagram.hashtags?.join(' ')}`); alert('Copied!');}}><Copy className="w-3 h-3"/> Copy</button>
                       </div>
                     )}
                     
                     {/* YouTube Shorts */}
                     {activeClip.metadata?.youtube_shorts && (
-                      <div className="bg-red-500/10 border border-red-500/30 p-5 rounded-2xl relative group">
-                        <div className="absolute top-4 right-4 text-red-400 opacity-50 group-hover:opacity-100 transition-opacity"><Video className="w-6 h-6"/></div>
+                      <div className="glass-panel border border-white/10 p-5 rounded-2xl relative group hover:bg-white/5 transition-colors">
+                        <div className="absolute top-4 right-4 text-gray-300 opacity-50 group-hover:opacity-100 transition-opacity"><Video className="w-6 h-6"/></div>
                         <h4 className="font-bold text-white mb-2 pr-8">{activeClip.metadata.youtube_shorts.title}</h4>
                         <p className="text-sm text-gray-300 mb-3">{activeClip.metadata.youtube_shorts.description}</p>
-                        <p className="text-xs font-bold text-red-400">{activeClip.metadata.youtube_shorts.hashtags?.join(' ')}</p>
+                        <p className="text-xs font-bold text-gray-300">{activeClip.metadata.youtube_shorts.hashtags?.join(' ')}</p>
                         <button className="mt-3 text-xs bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded flex items-center gap-1 font-bold text-white transition-colors" onClick={() => {navigator.clipboard.writeText(`${activeClip.metadata?.youtube_shorts.title}\n${activeClip.metadata?.youtube_shorts.description}\n${activeClip.metadata?.youtube_shorts.hashtags?.join(' ')}`); alert('Copied!');}}><Copy className="w-3 h-3"/> Copy</button>
                       </div>
                     )}
                     
                     {/* X */}
                     {activeClip.metadata?.x && (
-                      <div className="bg-gray-500/10 border border-gray-500/30 p-5 rounded-2xl relative group">
+                      <div className="glass-panel border border-white/10 p-5 rounded-2xl relative group hover:bg-white/5 transition-colors">
                         <div className="absolute top-4 right-4 text-gray-400 opacity-50 group-hover:opacity-100 transition-opacity"><MessageCircle className="w-6 h-6"/></div>
                         <p className="text-sm text-gray-300 mb-3 pr-8">{activeClip.metadata.x.tweet}</p>
                         <p className="text-xs font-bold text-gray-400">{activeClip.metadata.x.hashtags?.join(' ')}</p>
@@ -525,9 +525,9 @@ const Results = () => {
                 <div 
                   key={clip.id}
                   onClick={() => { setActiveClip(clip); setExportUrl(null); }}
-                  className={`glass-panel-dark p-4 rounded-2xl flex gap-4 cursor-pointer transition-all duration-300 border-2 hover:-translate-y-0.5
+                  className={`glass-panel border border-white/5 p-4 rounded-2xl flex gap-4 cursor-pointer transition-all duration-300 border-2 hover:-translate-y-0.5
                     ${isSelected 
-                      ? 'border-[#66fcf1] bg-white/[0.04] shadow-[0_0_25px_rgba(102,252,241,0.12)]' 
+                      ? 'border-white bg-white/[0.04] shadow-md' 
                       : 'border-white/5 bg-black/20 hover:border-white/20'}`}
                 >
                   {/* Thumbnail Preview Area */}
@@ -538,7 +538,7 @@ const Results = () => {
                       className="w-full h-full object-cover opacity-60"
                     />
                     <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-                      <div className={`p-2 rounded-full ${isSelected ? 'bg-[#66fcf1] text-black shadow-glow' : 'bg-white/10 text-white'}`}>
+                      <div className={`p-2 rounded-full ${isSelected ? 'bg-white text-black shadow-md' : 'bg-white/10 text-white'}`}>
                         <Play className="w-4 h-4 ml-0.5" fill="currentColor" />
                       </div>
                     </div>
@@ -547,7 +547,7 @@ const Results = () => {
                   {/* Clip Details */}
                   <div className="flex-1 flex flex-col justify-between py-1 min-w-0">
                     <div>
-                      <h4 className={`text-base font-bold truncate ${isSelected ? 'text-[#66fcf1]' : 'text-white'}`}>
+                      <h4 className={`text-base font-bold truncate ${isSelected ? 'text-white' : 'text-white'}`}>
                         {clip.title}
                       </h4>
                       <p className="text-xs text-gray-500 font-semibold mt-1">
@@ -572,10 +572,10 @@ const Results = () => {
       
       {/* Transcript Section */}
       {transcript && (
-        <div className="mt-16 glass-panel-dark p-8 rounded-3xl border border-white/10 animate-fade-in-up">
+        <div className="mt-16 glass-panel border border-white/5 p-8 rounded-3xl border border-white/10 animate-fade-in-up">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
             <h3 className="text-2xl font-black text-white flex items-center gap-3">
-              <FileText className="w-6 h-6 text-[#66fcf1]" />
+              <FileText className="w-6 h-6 text-white" />
               Full Video Transcript
             </h3>
             <button 
@@ -592,7 +592,7 @@ const Results = () => {
       )}
       
       <div className="mt-12 text-center pb-10">
-        <button className="px-10 py-5 bg-black/40 hover:bg-black/60 backdrop-blur-xl border-2 border-white/30 rounded-2xl transition-colors text-lg font-black text-white shadow-xl inline-flex items-center gap-3 hover:scale-105">
+        <button className="px-6 py-3.5 bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl transition-all text-sm font-bold text-white shadow-lg inline-flex items-center gap-3 hover:scale-105">
           <Download className="w-6 h-6" /> Download All Clips (.zip)
         </button>
       </div>
@@ -600,7 +600,7 @@ const Results = () => {
       {/* Publish Modal */}
       {showPublishModal && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-          <div className="bg-[#111] border border-white/10 p-8 rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+          <div className="bg-[#0a0a0a] border border-white/10 p-8 rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-3xl font-black text-white">Publish Video</h2>
               <button onClick={() => setShowPublishModal(false)} className="text-gray-400 hover:text-white"><X className="w-6 h-6"/></button>
@@ -619,7 +619,7 @@ const Results = () => {
                           : [...publishForm.platforms, p];
                         setPublishForm({...publishForm, platforms: newPlatforms});
                       }}
-                      className={`px-4 py-2 rounded-xl font-bold capitalize transition-all border ${publishForm.platforms.includes(p) ? 'bg-[#66fcf1]/20 border-[#66fcf1] text-[#66fcf1]' : 'bg-white/5 border-white/10 text-gray-400 hover:bg-white/10'}`}
+                      className={`px-4 py-2 rounded-xl font-bold capitalize transition-all border ${publishForm.platforms.includes(p) ? 'bg-white/20 border-white text-white' : 'bg-white/5 border-white/10 text-gray-400 hover:bg-white/10'}`}
                     >
                       {p}
                     </button>
@@ -633,7 +633,7 @@ const Results = () => {
                   type="text" 
                   value={publishForm.title}
                   onChange={e => setPublishForm({...publishForm, title: e.target.value})}
-                  className="w-full bg-black border border-white/10 rounded-xl px-4 py-3 text-white font-bold"
+                  className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:border-white focus:outline-none transition-colors"
                 />
               </div>
 
@@ -643,7 +643,7 @@ const Results = () => {
                   rows={3}
                   value={publishForm.description}
                   onChange={e => setPublishForm({...publishForm, description: e.target.value})}
-                  className="w-full bg-black border border-white/10 rounded-xl px-4 py-3 text-white font-medium resize-none"
+                  className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:border-white focus:outline-none transition-colors resize-none"
                 />
               </div>
 
@@ -653,7 +653,7 @@ const Results = () => {
                   type="text" 
                   value={publishForm.hashtags}
                   onChange={e => setPublishForm({...publishForm, hashtags: e.target.value})}
-                  className="w-full bg-black border border-white/10 rounded-xl px-4 py-3 text-white font-bold text-blue-400"
+                  className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:border-white focus:outline-none transition-colors text-blue-400"
                 />
               </div>
 
@@ -662,7 +662,7 @@ const Results = () => {
                 <select 
                   value={publishForm.scheduled_time}
                   onChange={e => setPublishForm({...publishForm, scheduled_time: e.target.value})}
-                  className="w-full bg-black border border-white/10 rounded-xl px-4 py-3 text-white font-bold"
+                  className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:border-white focus:outline-none transition-colors"
                 >
                   <option value="now">Post Immediately</option>
                   <option value={new Date(Date.now() + 3600000).toISOString()}>In 1 Hour</option>
@@ -675,7 +675,7 @@ const Results = () => {
                 <button 
                   onClick={handlePublish}
                   disabled={isPublishing || publishForm.platforms.length === 0}
-                  className="px-8 py-3 bg-gradient-to-r from-purple-500 to-[#66fcf1] text-black rounded-xl font-black transition-all hover:scale-105 disabled:opacity-50 flex items-center gap-2"
+                  className="px-8 py-3 bg-white text-black rounded-xl font-black transition-all hover:scale-105 disabled:opacity-50 flex items-center gap-2"
                 >
                   {isPublishing ? 'Scheduling...' : 'Queue Posts'}
                 </button>

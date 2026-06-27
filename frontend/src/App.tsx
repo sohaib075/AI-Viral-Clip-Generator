@@ -16,7 +16,7 @@ import './index.css';
 function App() {
   return (
     <Router>
-      <div className="min-h-screen text-white font-sans overflow-hidden relative selection:bg-[#66fcf1] selection:text-black flex">
+      <div className="min-h-screen text-white font-sans overflow-hidden relative selection:bg-white selection:text-black flex">
         <BackgroundEffects />
         
         {/* Sidebar for Desktop */}

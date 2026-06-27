@@ -74,12 +74,12 @@ const Processing = () => {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
         </div>
-        <h2 className="text-4xl font-black text-white mb-4 drop-shadow-xl">Oops! Something went wrong.</h2>
+        <h2 className="text-4xl font-bold text-white mb-4 drop-shadow-xl">Oops! Something went wrong.</h2>
         <p className="text-xl text-red-400 mb-10 font-bold drop-shadow-md">{statusMessage}</p>
         
         <button 
           onClick={() => navigate('/')} 
-          className="px-8 py-4 bg-white hover:bg-gray-200 text-black font-black rounded-xl transition-all shadow-[0_0_20px_rgba(255,255,255,0.4)] hover:scale-105"
+          className="px-8 py-4 bg-white hover:bg-gray-200 text-black font-bold rounded-xl transition-all shadow-[0_0_20px_rgba(255,255,255,0.4)] hover:scale-105"
         >
           Return to Main Page
         </button>
@@ -98,7 +98,7 @@ const Processing = () => {
         </div>
       </div>
       
-      <h2 className="text-5xl font-black text-white mb-6 drop-shadow-xl">AI Magic at Work</h2>
+      <h2 className="text-5xl font-bold text-white mb-6 drop-shadow-xl">AI Magic at Work</h2>
       <p className="text-2xl text-white/90 mb-12 font-bold animate-pulse drop-shadow-md">{statusMessage}</p>
       
       <div className="w-full glass-panel-dark rounded-full h-6 mb-4 overflow-hidden p-1">
@@ -109,11 +109,11 @@ const Processing = () => {
           <div className="absolute inset-0 bg-black/10 animate-[shimmer_2s_infinite]"></div>
         </div>
       </div>
-      <div className="flex justify-between items-center w-full text-lg text-white font-black px-4 mb-4">
+      <div className="flex justify-between items-center w-full text-lg text-white font-bold px-4 mb-4">
         <span className="drop-shadow-md">{progress}% Completed</span>
         {jobId && <span className="drop-shadow-md opacity-80 text-sm">Job ID: {jobId}</span>}
       </div>
-      <div className="text-[#66fcf1] font-bold text-lg animate-pulse">
+      <div className="text-white font-bold text-lg animate-pulse">
         Estimated Time Left: {estimatedTimeLeft}
       </div>
     </div>

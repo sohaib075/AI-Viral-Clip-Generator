@@ -1,5 +1,3000 @@
 [
   {
+    "id": "job_1782577881263",
+    "title": "https://youtu.be/WRLPz6u7XQs?s...",
+    "status": "Completed",
+    "time": "Just now",
+    "clips": 10,
+    "duration": "0:00:00",
+    "thumbnail": "/temp/Clips/Thumbnail_01_gta_6_sells_39_million_job_1782577881263.jpg",
+    "createdAt": 1782577881264,
+    "clipsData": [
+      {
+        "base_url": "/temp/Clips/Clip_01_gta_6_sells_39_million_job_1782577881263_base.mp4",
+        "emphasized_words": [
+          "GTA 6",
+          "pre-order open",
+          "39 million",
+          "copies sale"
+        ],
+        "end_time": 7.64,
+        "metadata": {
+          "instagram": {
+            "description": "Unbelievable! GTA 6 pre-orders are smashing records with 39 million copies sold already. This is just the beginning! Are you getting your copy? Let us know! 👇 #GTA6 #GamingCommunity #Rockstar #VideoGames #GrandTheftAuto",
+            "title": "🔥 GTA 6: 39 Million Copies SOLD! 🔥"
+          },
+          "linkedin": {
+            "hashtags": [
+              "GamingIndustry",
+              "GTA6",
+              "RockstarGames",
+              "MarketTrends"
+            ],
+            "post": "The gaming industry continues to demonstrate its immense market power. GTA 6 has reportedly sold 39 million pre-order copies, setting a new benchmark for anticipation and consumer demand in entertainment. A testament to effective brand building and franchise loyalty."
+          },
+          "tiktok": {
+            "description": "GTA 6 pre-orders are open and they've already sold 39 MILLION copies! The hype is real. What are your thoughts? #GTA6 #RockstarGames #GamingNews #ViralGaming #Preorder",
+            "hashtags": [
+              "GTA6",
+              "GamingNews",
+              "RockstarGames",
+              "Gaming"
+            ],
+            "title": "GTA 6 Broke Records Already?! 🤯"
+          },
+          "x": {
+            "hashtags": [
+              "GTA6",
+              "Gaming",
+              "RockstarGames",
+              "GrandTheftAutoVI"
+            ],
+            "tweet": "BREAKING: GTA 6 pre-orders already hit 39 MILLION copies sold! This game is going to be absolutely massive. What are your predictions? #GTA6 #Gaming #RockstarGames #GrandTheftAutoVI"
+          },
+          "youtube_shorts": {
+            "description": "Can you believe it? GTA 6 already sold 39 million pre-orders! Rockstar is making history. #GTA6 #RockstarGames #GamingFacts #Shorts #Gaming",
+            "title": "GTA 6 Pre-Orders are WILD! 🤯"
+          }
+        },
+        "reasoning": "This clip immediately grabs attention with staggering sales figures for a pre-order, creating massive buzz and discussion.",
+        "score": 98,
+        "segments": [
+          {
+            "end": 7.64,
+            "start": 1.9799999,
+            "text": "तो आप सभी को पता है कि GTA 6 का pre-order open हो चुका है और अभी तक Rockstar ने 39 million copies sale भी कर दिया है।"
+          }
+        ],
+        "start_time": 1.98,
+        "thumbnail_url": "/temp/Clips/Thumbnail_01_gta_6_sells_39_million_job_1782577881263.jpg",
+        "title": "GTA 6 Sells 39 Million!",
+        "video_url": "/temp/Clips/Clip_01_gta_6_sells_39_million_job_1782577881263_final.mp4",
+        "words": [
+          {
+            "end": 2.1,
+            "start": 1.96,
+            "word": "तो"
+          },
+          {
+            "end": 2.16,
+            "start": 2.1,
+            "word": "आप"
+          },
+          {
+            "end": 2.32,
+            "start": 2.16,
+            "word": "सभी"
+          },
+          {
+            "end": 2.42,
+            "start": 2.32,
+            "word": "को"
+          },
+          {
+            "end": 2.64,
+            "start": 2.42,
+            "word": "पता"
+          },
+          {
+            "end": 2.7,
+            "start": 2.64,
+            "word": "है"
+          },
+          {
+            "end": 2.82,
+            "start": 2.7,
+            "word": "कि"
+          },
+          {
+            "end": 3.1,
+            "start": 2.82,
+            "word": "GTA"
+          },
+          {
+            "end": 3.2,
+            "start": 3.1,
+            "word": "6"
+          },
+          {
+            "end": 3.36,
+            "start": 3.2,
+            "word": "का"
+          },
+          {
+            "end": 3.76,
+            "start": 3.36,
+            "word": "pre-order"
+          },
+          {
+            "end": 4.1,
+            "start": 3.76,
+            "word": "open"
+          },
+          {
+            "end": 4.22,
+            "start": 4.1,
+            "word": "हो"
+          },
+          {
+            "end": 4.46,
+            "start": 4.22,
+            "word": "चुका"
+          },
+          {
+            "end": 4.56,
+            "start": 4.46,
+            "word": "है"
+          },
+          {
+            "end": 4.8,
+            "start": 4.56,
+            "word": "और"
+          },
+          {
+            "end": 4.96,
+            "start": 4.8,
+            "word": "अभी"
+          },
+          {
+            "end": 5.1,
+            "start": 4.96,
+            "word": "तक"
+          },
+          {
+            "end": 5.34,
+            "start": 5.1,
+            "word": "Rockstar"
+          },
+          {
+            "end": 5.54,
+            "start": 5.34,
+            "word": "ने"
+          },
+          {
+            "end": 5.98,
+            "start": 5.54,
+            "word": "39"
+          },
+          {
+            "end": 6.32,
+            "start": 5.98,
+            "word": "million"
+          },
+          {
+            "end": 6.72,
+            "start": 6.32,
+            "word": "copies"
+          },
+          {
+            "end": 7,
+            "start": 6.72,
+            "word": "sale"
+          },
+          {
+            "end": 7.04,
+            "start": 7,
+            "word": "भी"
+          },
+          {
+            "end": 7.22,
+            "start": 7.04,
+            "word": "कर"
+          },
+          {
+            "end": 7.42,
+            "start": 7.22,
+            "word": "दिया"
+          },
+          {
+            "end": 7.58,
+            "start": 7.42,
+            "word": "है।"
+          },
+          {
+            "end": 7.84,
+            "start": 7.14,
+            "word": "ऐसा"
+          }
+        ]
+      },
+      {
+        "base_url": "/temp/Clips/Clip_02_rockstars_3_billion_pre_order_job_1782577881263_base.mp4",
+        "emphasized_words": [
+          "Rockstar Games",
+          "3 billion dollars",
+          "pre-order",
+          "earn"
+        ],
+        "end_time": 13,
+        "metadata": {
+          "instagram": {
+            "description": "Rockstar Games claiming $3 BILLION from GTA 6 pre-orders alone. This level of success is unprecedented! What an incredible achievement for the gaming industry. #GTA6 #Rockstar #GamingNews #BillionDollarGame #GameChanger",
+            "title": "🤑 GTA 6: A Billion Dollar Phenomenon! 🤑"
+          },
+          "linkedin": {
+            "hashtags": [
+              "BusinessStrategy",
+              "GamingFinance",
+              "RockstarGames",
+              "GTA6"
+            ],
+            "post": "Rockstar Games' reported $3 billion earnings from GTA 6 pre-orders highlights the immense financial potential and market capitalization within the video game industry. This serves as a significant case study for product launch strategies and brand loyalty."
+          },
+          "tiktok": {
+            "description": "Rockstar Games is rumored to have already made $3 BILLION just from GTA 6 pre-orders! This is insane! How much do you think it will make in total? #GTA6 #GamingEconomy #BillionDollarGame #RockstarGames #MoneyTalks",
+            "hashtags": [
+              "GTA6",
+              "GamingEconomy",
+              "RockstarGames",
+              "GameDev"
+            ],
+            "title": "GTA 6 Made $3 Billion?! 💰🤯"
+          },
+          "x": {
+            "hashtags": [
+              "GTA6",
+              "GamingFinance",
+              "RockstarGames",
+              "BillionDollarClub"
+            ],
+            "tweet": "Rockstar Games is reportedly sitting on $3 BILLION from GTA 6 pre-orders alone. This game is setting financial records before it's even out! #GTA6 #GamingFinance #RockstarGames #BillionDollarClub"
+          },
+          "youtube_shorts": {
+            "description": "Mind-blowing! Rockstar Games has reportedly raked in $3 billion from GTA 6 pre-orders. That's a new level of hype! #GTA6 #RockstarGames #GamingIndustry #Financials #Shorts",
+            "title": "Rockstar Earned $3 Billion From GTA 6 PRE-ORDERS?!"
+          }
+        },
+        "reasoning": "Highlighting the massive financial earnings from pre-orders provides an astounding metric that captivates and sparks widespread conversation about the game's success.",
+        "score": 95,
+        "segments": [
+          {
+            "end": 13,
+            "start": 7.64,
+            "text": "ऐसा claim किया जा रहा है कि Rockstar Games ने अभी तक 3 billion dollars सिर्फ pre-order से ही earn कर लिया है।"
+          }
+        ],
+        "start_time": 7.64,
+        "thumbnail_url": "/temp/Clips/Thumbnail_02_rockstars_3_billion_pre_order_job_1782577881263.jpg",
+        "title": "Rockstar's $3 Billion Pre-Order!",
+        "video_url": "/temp/Clips/Clip_02_rockstars_3_billion_pre_order_job_1782577881263_final.mp4",
+        "words": [
+          {
+            "end": 7.84,
+            "start": 7.14,
+            "word": "ऐसा"
+          },
+          {
+            "end": 8.16,
+            "start": 7.84,
+            "word": "claim"
+          },
+          {
+            "end": 8.36,
+            "start": 8.16,
+            "word": "किया"
+          },
+          {
+            "end": 8.46,
+            "start": 8.36,
+            "word": "जा"
+          },
+          {
+            "end": 8.58,
+            "start": 8.46,
+            "word": "रहा"
+          },
+          {
+            "end": 8.6,
+            "start": 8.58,
+            "word": "है"
+          },
+          {
+            "end": 8.72,
+            "start": 8.6,
+            "word": "कि"
+          },
+          {
+            "end": 9,
+            "start": 8.72,
+            "word": "Rockstar"
+          },
+          {
+            "end": 9.28,
+            "start": 9,
+            "word": "Games"
+          },
+          {
+            "end": 9.44,
+            "start": 9.28,
+            "word": "ने"
+          },
+          {
+            "end": 9.68,
+            "start": 9.44,
+            "word": "अभी"
+          },
+          {
+            "end": 9.9,
+            "start": 9.68,
+            "word": "तक"
+          },
+          {
+            "end": 10.16,
+            "start": 9.9,
+            "word": "3"
+          },
+          {
+            "end": 10.5,
+            "start": 10.16,
+            "word": "billion"
+          },
+          {
+            "end": 10.84,
+            "start": 10.5,
+            "word": "dollars"
+          },
+          {
+            "end": 11.04,
+            "start": 10.84,
+            "word": "सिर्फ"
+          },
+          {
+            "end": 11.48,
+            "start": 11.04,
+            "word": "pre-order"
+          },
+          {
+            "end": 11.62,
+            "start": 11.48,
+            "word": "से"
+          },
+          {
+            "end": 11.74,
+            "start": 11.62,
+            "word": "ही"
+          },
+          {
+            "end": 11.9,
+            "start": 11.74,
+            "word": "earn"
+          },
+          {
+            "end": 12.04,
+            "start": 11.9,
+            "word": "कर"
+          },
+          {
+            "end": 12.28,
+            "start": 12.04,
+            "word": "लिया"
+          },
+          {
+            "end": 12.54,
+            "start": 12.28,
+            "word": "है।"
+          }
+        ]
+      },
+      {
+        "base_url": "/temp/Clips/Clip_03_next_gen_character_hair_detail_job_1782577881263_base.mp4",
+        "emphasized_words": [
+          "Lucia's hair",
+          "light",
+          "Jason's hand",
+          "arm hair",
+          "Witcher 2"
+        ],
+        "end_time": 111.81,
+        "metadata": {
+          "instagram": {
+            "description": "Look at the insane realism in GTA 6! From Lucia's light-diffused hair to Jason's highly detailed arm hair, Rockstar is pushing boundaries. What detail are you most excited for? #GTA6 #RealisticGraphics #GameDetails #RockstarGames #NewGen",
+            "title": "👀 GTA 6's Unbelievable Hair Details! 👀"
+          },
+          "linkedin": {
+            "hashtags": [
+              "GameDevelopment",
+              "VisualFidelity",
+              "GTA6",
+              "TechInnovation"
+            ],
+            "post": "Rockstar Games continues to innovate in visual fidelity. The attention to detail in GTA 6, such as realistic light diffusion through character hair and intricate arm hair textures, sets a new standard for character modeling in open-world games. This showcases advanced rendering techniques."
+          },
+          "tiktok": {
+            "description": "The level of detail in GTA 6 is mind-blowing! Lucia's hair reacts to light, and Jason's arm hair has Witcher 2 level detail. Are you ready for next-gen graphics? #GTA6 #Graphics #GamingDetails #NextGen #Rockstar",
+            "hashtags": [
+              "GTA6",
+              "Graphics",
+              "GamingDetails",
+              "NextGen"
+            ],
+            "title": "GTA 6 Hair Physics is INSANE! 🤯"
+          },
+          "x": {
+            "hashtags": [
+              "GTA6",
+              "Graphics",
+              "GameDev",
+              "Rockstar"
+            ],
+            "tweet": "GTA 6 detail alert! Lucia's hair literally diffusing light and Jason's arm hair detail matching Witcher 2 levels. Rockstar is NOT playing around with realism! #GTA6 #Graphics #GameDev #Rockstar"
+          },
+          "youtube_shorts": {
+            "description": "GTA 6 is bringing next-level realism! Check out the incredible detail in Lucia's hair and Jason's arm hair. #GTA6 #Graphics #GamePhysics #RockstarGames #Shorts",
+            "title": "The Crazy Hair Details in GTA 6!"
+          }
+        },
+        "reasoning": "This clip showcases the extreme graphical fidelity of character models, specifically dynamic hair physics and intricate arm hair, generating hype for the game's visual realism.",
+        "score": 88,
+        "segments": [
+          {
+            "end": 111.806,
+            "start": 100.006,
+            "text": "लूसिया के बालों थ्रू लिटरली लाइट यहाँ पे नेचरली डिफ्यूज होते हुई हमें दिख जाती है बट साथ ही जेसन के हाथ पे देखने पर हमें वाई टेलर टू वाली डिटेलिंग नजर आती है जहाँ उसके आम हेयर काफी डिफाइंड नजर आते हैं"
+          },
+          {
+            "end": 117.046,
+            "start": 111.806,
+            "text": "Ocean View Hotel's neon sign light reflects on Jason and Lucia's backs."
+          }
+        ],
+        "start_time": 100.01,
+        "thumbnail_url": "/temp/Clips/Thumbnail_03_next_gen_character_hair_detail_job_1782577881263.jpg",
+        "title": "Next-Gen Character Hair Details",
+        "video_url": "/temp/Clips/Clip_03_next_gen_character_hair_detail_job_1782577881263_final.mp4",
+        "words": [
+          {
+            "end": 101.766,
+            "start": 100.006,
+            "word": "लूसिया"
+          },
+          {
+            "end": 101.885994,
+            "start": 101.766,
+            "word": "के"
+          },
+          {
+            "end": 102.145996,
+            "start": 101.885994,
+            "word": "बालों"
+          },
+          {
+            "end": 102.34599,
+            "start": 102.145996,
+            "word": "थ्रू"
+          },
+          {
+            "end": 102.76599,
+            "start": 102.34599,
+            "word": "लिटरली"
+          },
+          {
+            "end": 103.145996,
+            "start": 102.76599,
+            "word": "लाइट"
+          },
+          {
+            "end": 103.386,
+            "start": 103.145996,
+            "word": "यहाँ"
+          },
+          {
+            "end": 103.465996,
+            "start": 103.386,
+            "word": "पे"
+          },
+          {
+            "end": 103.84599,
+            "start": 103.465996,
+            "word": "नेचरली"
+          },
+          {
+            "end": 104.20599,
+            "start": 103.84599,
+            "word": "डिफ्यूज"
+          },
+          {
+            "end": 104.465996,
+            "start": 104.20599,
+            "word": "होते"
+          },
+          {
+            "end": 104.546,
+            "start": 104.465996,
+            "word": "हुई"
+          },
+          {
+            "end": 104.70599,
+            "start": 104.546,
+            "word": "हमें"
+          },
+          {
+            "end": 104.84599,
+            "start": 104.70599,
+            "word": "दिख"
+          },
+          {
+            "end": 105.105995,
+            "start": 104.84599,
+            "word": "जाती"
+          },
+          {
+            "end": 105.246,
+            "start": 105.105995,
+            "word": "है"
+          },
+          {
+            "end": 105.605995,
+            "start": 105.246,
+            "word": "बट"
+          },
+          {
+            "end": 105.806,
+            "start": 105.605995,
+            "word": "साथ"
+          },
+          {
+            "end": 105.866,
+            "start": 105.806,
+            "word": "ही"
+          },
+          {
+            "end": 106.065994,
+            "start": 105.866,
+            "word": "जेसन"
+          },
+          {
+            "end": 106.246,
+            "start": 106.065994,
+            "word": "के"
+          },
+          {
+            "end": 106.425995,
+            "start": 106.246,
+            "word": "हाथ"
+          },
+          {
+            "end": 106.565994,
+            "start": 106.425995,
+            "word": "पे"
+          },
+          {
+            "end": 106.84599,
+            "start": 106.565994,
+            "word": "देखने"
+          },
+          {
+            "end": 106.98599,
+            "start": 106.84599,
+            "word": "पर"
+          },
+          {
+            "end": 107.186,
+            "start": 106.98599,
+            "word": "हमें"
+          },
+          {
+            "end": 107.366,
+            "start": 107.186,
+            "word": "वाई"
+          },
+          {
+            "end": 107.586,
+            "start": 107.366,
+            "word": "टेलर"
+          },
+          {
+            "end": 107.726,
+            "start": 107.586,
+            "word": "टू"
+          },
+          {
+            "end": 107.925995,
+            "start": 107.726,
+            "word": "वाली"
+          },
+          {
+            "end": 108.526,
+            "start": 107.925995,
+            "word": "डिटेलिंग"
+          },
+          {
+            "end": 108.70599,
+            "start": 108.526,
+            "word": "नजर"
+          },
+          {
+            "end": 109.006,
+            "start": 108.70599,
+            "word": "आती"
+          },
+          {
+            "end": 109.145996,
+            "start": 109.006,
+            "word": "है"
+          },
+          {
+            "end": 109.48599,
+            "start": 109.145996,
+            "word": "जहाँ"
+          },
+          {
+            "end": 109.726,
+            "start": 109.48599,
+            "word": "उसके"
+          },
+          {
+            "end": 109.925995,
+            "start": 109.726,
+            "word": "आम"
+          },
+          {
+            "end": 110.12599,
+            "start": 109.925995,
+            "word": "हेयर"
+          },
+          {
+            "end": 110.48599,
+            "start": 110.12599,
+            "word": "काफी"
+          },
+          {
+            "end": 110.965996,
+            "start": 110.48599,
+            "word": "डिफाइंड"
+          },
+          {
+            "end": 111.226,
+            "start": 110.965996,
+            "word": "नजर"
+          },
+          {
+            "end": 111.546,
+            "start": 111.226,
+            "word": "आते"
+          },
+          {
+            "end": 111.746,
+            "start": 111.546,
+            "word": "हैं"
+          },
+          {
+            "end": 112.026,
+            "start": 111.806,
+            "word": "Ocean"
+          }
+        ]
+      },
+      {
+        "base_url": "/temp/Clips/Clip_04_gta_6_lighting_controversy_deb_job_1782577881263_base.mp4",
+        "emphasized_words": [
+          "light not reflecting",
+          "plant",
+          "Ocean View Hotel",
+          "signboard",
+          "light reflecting"
+        ],
+        "end_time": 139.97,
+        "metadata": {
+          "instagram": {
+            "description": "A common 'issue' with GTA 6 screenshots was the light not reflecting on a background plant. We explain why the Ocean View Hotel sign's light isn't reaching it, and show where it IS reflecting! #GTA6 #GameDesign #Lighting #Rockstar #Details",
+            "title": "💡 GTA 6 Lighting Explained! 💡"
+          },
+          "linkedin": {
+            "hashtags": [
+              "GameDevelopment",
+              "GraphicsEngineering",
+              "CommunityManagement",
+              "GTA6"
+            ],
+            "post": "Addressing common misconceptions about graphical fidelity is crucial for community engagement. Here, an explanation is provided for why a light source in a GTA 6 screenshot did not appear to reflect on a specific object, reinforcing the realistic rendering engine at play."
+          },
+          "tiktok": {
+            "description": "People said the light wasn't reflecting on the plant in GTA 6, but here's why! It's all about perspective and distance. Rockstar's lighting is legit! #GTA6 #MythBusters #GamingFacts #RockstarGames #Graphics",
+            "hashtags": [
+              "GTA6",
+              "MythBusters",
+              "GamingFacts",
+              "Graphics"
+            ],
+            "title": "GTA 6 Light REFLECTION MYTH BUSTED! 🤯"
+          },
+          "x": {
+            "hashtags": [
+              "GTA6",
+              "Graphics",
+              "GameFact",
+              "Rockstar"
+            ],
+            "tweet": "The GTA 6 plant lighting 'controversy' debunked! It's not a flaw, it's just physics. Rockstar's lighting engine is still top-tier. #GTA6 #Graphics #GameFact #Rockstar"
+          },
+          "youtube_shorts": {
+            "description": "Is GTA 6's lighting flawed? Many thought so about a background plant, but we explain why the light wasn't reaching it! #GTA6 #RockstarGames #GameGraphics #Debunked #Shorts",
+            "title": "GTA 6 Lighting: Is it a Flaw? (Debunked!)"
+          }
+        },
+        "reasoning": "This clip addresses a visual 'controversy' by debunking a perceived flaw with a clear explanation, appealing to curious and analytical viewers while proving the game's visual integrity.",
+        "score": 85,
+        "segments": [
+          {
+            "end": 128.746,
+            "start": 123.446,
+            "text": "But many people say that the light is not reflecting on the plant in the background."
+          },
+          {
+            "end": 134.066,
+            "start": 128.746,
+            "text": "So for all of them, my answer is that the sign of this Ocean View Hotel's boat is far ahead of this plant,"
+          },
+          {
+            "end": 136.306,
+            "start": 134.066,
+            "text": "where the light of this signboard is not reaching."
+          },
+          {
+            "end": 139.966,
+            "start": 136.306,
+            "text": "On this plant, we can clearly see that its light is reflecting on this plant,"
+          },
+          {
+            "end": 143.926,
+            "start": 139.966,
+            "text": "अगर दिखें आप सल्ट लेने के लिए उसके अलग-अलग लीफ्स और ब्रांचिस से इंटरैक्ट हो रही है."
+          }
+        ],
+        "start_time": 123.45,
+        "thumbnail_url": "/temp/Clips/Thumbnail_04_gta_6_lighting_controversy_deb_job_1782577881263.jpg",
+        "title": "GTA 6 Lighting Controversy Debunked",
+        "video_url": "/temp/Clips/Clip_04_gta_6_lighting_controversy_deb_job_1782577881263_final.mp4",
+        "words": [
+          {
+            "end": 123.806,
+            "start": 123.62599,
+            "word": "But"
+          },
+          {
+            "end": 124.26599,
+            "start": 123.806,
+            "word": "many"
+          },
+          {
+            "end": 124.605995,
+            "start": 124.26599,
+            "word": "people"
+          },
+          {
+            "end": 125.20599,
+            "start": 124.605995,
+            "word": "say"
+          },
+          {
+            "end": 125.425995,
+            "start": 125.20599,
+            "word": "that"
+          },
+          {
+            "end": 127.166,
+            "start": 125.425995,
+            "word": "the"
+          },
+          {
+            "end": 127.366,
+            "start": 127.166,
+            "word": "light"
+          },
+          {
+            "end": 127.506,
+            "start": 127.366,
+            "word": "is"
+          },
+          {
+            "end": 127.586,
+            "start": 127.506,
+            "word": "not"
+          },
+          {
+            "end": 128.10599,
+            "start": 127.586,
+            "word": "reflecting"
+          },
+          {
+            "end": 128.406,
+            "start": 128.10599,
+            "word": "on"
+          },
+          {
+            "end": 128.426,
+            "start": 128.406,
+            "word": "the"
+          },
+          {
+            "end": 128.446,
+            "start": 128.426,
+            "word": "plant"
+          },
+          {
+            "end": 128.466,
+            "start": 128.446,
+            "word": "in"
+          },
+          {
+            "end": 128.486,
+            "start": 128.466,
+            "word": "the"
+          },
+          {
+            "end": 128.506,
+            "start": 128.486,
+            "word": "background."
+          },
+          {
+            "end": 128.906,
+            "start": 128.846,
+            "word": "So"
+          },
+          {
+            "end": 128.926,
+            "start": 128.906,
+            "word": "for"
+          },
+          {
+            "end": 129.12599,
+            "start": 128.926,
+            "word": "all"
+          },
+          {
+            "end": 129.146,
+            "start": 129.12599,
+            "word": "of"
+          },
+          {
+            "end": 129.54599,
+            "start": 129.146,
+            "word": "them,"
+          },
+          {
+            "end": 129.60599,
+            "start": 129.54599,
+            "word": "my"
+          },
+          {
+            "end": 129.82599,
+            "start": 129.60599,
+            "word": "answer"
+          },
+          {
+            "end": 130.146,
+            "start": 129.82599,
+            "word": "is"
+          },
+          {
+            "end": 130.346,
+            "start": 130.146,
+            "word": "that"
+          },
+          {
+            "end": 130.666,
+            "start": 130.346,
+            "word": "the"
+          },
+          {
+            "end": 130.686,
+            "start": 130.666,
+            "word": "sign"
+          },
+          {
+            "end": 130.706,
+            "start": 130.686,
+            "word": "of"
+          },
+          {
+            "end": 130.726,
+            "start": 130.706,
+            "word": "this"
+          },
+          {
+            "end": 130.866,
+            "start": 130.726,
+            "word": "Ocean"
+          },
+          {
+            "end": 131.12599,
+            "start": 130.866,
+            "word": "View"
+          },
+          {
+            "end": 131.586,
+            "start": 131.12599,
+            "word": "Hotel's"
+          },
+          {
+            "end": 131.76599,
+            "start": 131.586,
+            "word": "boat"
+          },
+          {
+            "end": 132.26599,
+            "start": 131.76599,
+            "word": "is"
+          },
+          {
+            "end": 132.286,
+            "start": 132.26599,
+            "word": "far"
+          },
+          {
+            "end": 132.306,
+            "start": 132.286,
+            "word": "ahead"
+          },
+          {
+            "end": 132.32599,
+            "start": 132.306,
+            "word": "of"
+          },
+          {
+            "end": 132.446,
+            "start": 132.32599,
+            "word": "this"
+          },
+          {
+            "end": 133.986,
+            "start": 132.446,
+            "word": "plant,"
+          },
+          {
+            "end": 134.486,
+            "start": 134.286,
+            "word": "where"
+          },
+          {
+            "end": 134.586,
+            "start": 134.486,
+            "word": "the"
+          },
+          {
+            "end": 134.60599,
+            "start": 134.586,
+            "word": "light"
+          },
+          {
+            "end": 134.626,
+            "start": 134.60599,
+            "word": "of"
+          },
+          {
+            "end": 134.706,
+            "start": 134.626,
+            "word": "this"
+          },
+          {
+            "end": 135.186,
+            "start": 134.706,
+            "word": "signboard"
+          },
+          {
+            "end": 135.526,
+            "start": 135.186,
+            "word": "is"
+          },
+          {
+            "end": 135.60599,
+            "start": 135.526,
+            "word": "not"
+          },
+          {
+            "end": 136.246,
+            "start": 135.60599,
+            "word": "reaching."
+          },
+          {
+            "end": 136.446,
+            "start": 136.32599,
+            "word": "On"
+          },
+          {
+            "end": 136.54599,
+            "start": 136.446,
+            "word": "this"
+          },
+          {
+            "end": 136.906,
+            "start": 136.54599,
+            "word": "plant,"
+          },
+          {
+            "end": 136.986,
+            "start": 136.906,
+            "word": "we"
+          },
+          {
+            "end": 137.086,
+            "start": 136.986,
+            "word": "can"
+          },
+          {
+            "end": 137.246,
+            "start": 137.086,
+            "word": "clearly"
+          },
+          {
+            "end": 137.726,
+            "start": 137.246,
+            "word": "see"
+          },
+          {
+            "end": 138.146,
+            "start": 137.726,
+            "word": "that"
+          },
+          {
+            "end": 138.446,
+            "start": 138.146,
+            "word": "its"
+          },
+          {
+            "end": 138.726,
+            "start": 138.446,
+            "word": "light"
+          },
+          {
+            "end": 139.206,
+            "start": 138.726,
+            "word": "is"
+          },
+          {
+            "end": 139.666,
+            "start": 139.206,
+            "word": "reflecting"
+          },
+          {
+            "end": 139.686,
+            "start": 139.666,
+            "word": "on"
+          },
+          {
+            "end": 139.706,
+            "start": 139.686,
+            "word": "this"
+          },
+          {
+            "end": 140.04599,
+            "start": 139.706,
+            "word": "plant,"
+          },
+          {
+            "end": 140.186,
+            "start": 139.966,
+            "word": "अगर"
+          }
+        ]
+      },
+      {
+        "base_url": "/temp/Clips/Clip_05_gta_6_car__garage_features_job_1782577881263_base.mp4",
+        "emphasized_words": [
+          "classic sedan",
+          "cruise",
+          "personal garage",
+          "Ocean Beach",
+          "weapon locker"
+        ],
+        "end_time": 205.01,
+        "metadata": {
+          "instagram": {
+            "description": "Exciting details from GTA 6! Cruise in a classic sedan, store it in your personal garage near Ocean Beach, and arm up with your weapon locker. The possibilities are endless! #GTA6 #VehicleCustomization #GamePlay #Rockstar #GrandTheftAuto",
+            "title": "🏎️ GTA 6: Garage Goals & Weapon Lockers! 🔫"
+          },
+          "linkedin": {
+            "hashtags": [
+              "GameDesign",
+              "PlayerExperience",
+              "GTA6",
+              "RockstarGames"
+            ],
+            "post": "In-game feature announcements are critical for generating consumer excitement. GTA 6's confirmed features, such as vehicle customization, personal garages, and weapon lockers, demonstrate a continued focus on player agency and immersive open-world experiences."
+          },
+          "tiktok": {
+            "description": "Get ready to cruise in style! GTA 6 is bringing classic sedans, personal garages in Ocean Beach, AND weapon lockers. What car are you buying first? #GTA6 #CarCustomization #GamingFeatures #RockstarGames #OpenWorld",
+            "hashtags": [
+              "GTA6",
+              "CarCustomization",
+              "GamingFeatures",
+              "RockstarGames"
+            ],
+            "title": "New GTA 6 Car & Garage Details! 🚗💨"
+          },
+          "x": {
+            "hashtags": [
+              "GTA6",
+              "GameFeatures",
+              "Rockstar",
+              "GamingNews"
+            ],
+            "tweet": "GTA 6 drops new details! Classic sedans, personal garages in Ocean Beach, AND weapon lockers. This is going to be epic! #GTA6 #GameFeatures #Rockstar #GamingNews"
+          },
+          "youtube_shorts": {
+            "description": "Unlocking new details about GTA 6! Classic sedans, personal garages, and weapon lockers confirmed! #GTA6 #GamingNews #GameFeatures #RockstarGames #Shorts",
+            "title": "GTA 6's Hidden Car & Garage Secrets!"
+          }
+        },
+        "reasoning": "This segment reveals specific in-game features like customizable vehicles, personal garages, and weapon lockers, exciting players about gameplay mechanics and customization options.",
+        "score": 80,
+        "segments": [
+          {
+            "end": 175.012,
+            "start": 144.54599,
+            "text": "55"
+          },
+          {
+            "end": 205.012,
+            "start": 175.012,
+            "text": "इस प्राश्ट पर देखने को मिलता है जहां पर यह लिखा है कि इस क्लासिक सेडान में सोर ड्राइपे क्रूज करो या पर इसे सोर कोट प्रसनल गराज में स्टोर करो जो ओसन बीच के चमकती रेज से बस थोड़ी सी दोरी पे है इसमें एक वेपन लॉकर भी है साथ ही स्ट"
+          }
+        ],
+        "start_time": 175.01,
+        "thumbnail_url": "/temp/Clips/Thumbnail_05_gta_6_car__garage_features_job_1782577881263.jpg",
+        "title": "GTA 6 Car & Garage Features",
+        "video_url": "/temp/Clips/Clip_05_gta_6_car__garage_features_job_1782577881263_final.mp4",
+        "words": [
+          {
+            "end": 175.032,
+            "start": 175.012,
+            "word": "इस"
+          },
+          {
+            "end": 175.052,
+            "start": 175.032,
+            "word": "प्राश्ट"
+          },
+          {
+            "end": 175.07199,
+            "start": 175.052,
+            "word": "पर"
+          },
+          {
+            "end": 175.41199,
+            "start": 175.07199,
+            "word": "देखने"
+          },
+          {
+            "end": 175.43199,
+            "start": 175.41199,
+            "word": "को"
+          },
+          {
+            "end": 175.752,
+            "start": 175.43199,
+            "word": "मिलता"
+          },
+          {
+            "end": 175.832,
+            "start": 175.752,
+            "word": "है"
+          },
+          {
+            "end": 176.112,
+            "start": 175.832,
+            "word": "जहां"
+          },
+          {
+            "end": 176.252,
+            "start": 176.112,
+            "word": "पर"
+          },
+          {
+            "end": 176.29199,
+            "start": 176.252,
+            "word": "यह"
+          },
+          {
+            "end": 176.47198,
+            "start": 176.29199,
+            "word": "लिखा"
+          },
+          {
+            "end": 176.57199,
+            "start": 176.47198,
+            "word": "है"
+          },
+          {
+            "end": 176.71199,
+            "start": 176.57199,
+            "word": "कि"
+          },
+          {
+            "end": 176.79199,
+            "start": 176.71199,
+            "word": "इस"
+          },
+          {
+            "end": 177.112,
+            "start": 176.79199,
+            "word": "क्लासिक"
+          },
+          {
+            "end": 177.49199,
+            "start": 177.112,
+            "word": "सेडान"
+          },
+          {
+            "end": 177.752,
+            "start": 177.49199,
+            "word": "में"
+          },
+          {
+            "end": 178.052,
+            "start": 177.752,
+            "word": "सोर"
+          },
+          {
+            "end": 178.372,
+            "start": 178.052,
+            "word": "ड्राइपे"
+          },
+          {
+            "end": 178.612,
+            "start": 178.372,
+            "word": "क्रूज"
+          },
+          {
+            "end": 178.93199,
+            "start": 178.612,
+            "word": "करो"
+          },
+          {
+            "end": 179.27199,
+            "start": 178.93199,
+            "word": "या"
+          },
+          {
+            "end": 179.43199,
+            "start": 179.27199,
+            "word": "पर"
+          },
+          {
+            "end": 179.57199,
+            "start": 179.43199,
+            "word": "इसे"
+          },
+          {
+            "end": 179.872,
+            "start": 179.57199,
+            "word": "सोर"
+          },
+          {
+            "end": 180.052,
+            "start": 179.872,
+            "word": "कोट"
+          },
+          {
+            "end": 180.392,
+            "start": 180.052,
+            "word": "प्रसनल"
+          },
+          {
+            "end": 180.652,
+            "start": 180.392,
+            "word": "गराज"
+          },
+          {
+            "end": 180.77199,
+            "start": 180.652,
+            "word": "में"
+          },
+          {
+            "end": 180.99199,
+            "start": 180.77199,
+            "word": "स्टोर"
+          },
+          {
+            "end": 181.332,
+            "start": 180.99199,
+            "word": "करो"
+          },
+          {
+            "end": 181.652,
+            "start": 181.332,
+            "word": "जो"
+          },
+          {
+            "end": 181.99199,
+            "start": 181.652,
+            "word": "ओसन"
+          },
+          {
+            "end": 182.172,
+            "start": 181.99199,
+            "word": "बीच"
+          },
+          {
+            "end": 182.312,
+            "start": 182.172,
+            "word": "के"
+          },
+          {
+            "end": 182.69199,
+            "start": 182.312,
+            "word": "चमकती"
+          },
+          {
+            "end": 182.892,
+            "start": 182.69199,
+            "word": "रेज"
+          },
+          {
+            "end": 183.052,
+            "start": 182.892,
+            "word": "से"
+          },
+          {
+            "end": 183.232,
+            "start": 183.052,
+            "word": "बस"
+          },
+          {
+            "end": 183.512,
+            "start": 183.232,
+            "word": "थोड़ी"
+          },
+          {
+            "end": 183.63199,
+            "start": 183.512,
+            "word": "सी"
+          },
+          {
+            "end": 183.93199,
+            "start": 183.63199,
+            "word": "दोरी"
+          },
+          {
+            "end": 184.052,
+            "start": 183.93199,
+            "word": "पे"
+          },
+          {
+            "end": 184.172,
+            "start": 184.052,
+            "word": "है"
+          },
+          {
+            "end": 184.612,
+            "start": 184.172,
+            "word": "इसमें"
+          },
+          {
+            "end": 184.752,
+            "start": 184.612,
+            "word": "एक"
+          },
+          {
+            "end": 184.99199,
+            "start": 184.752,
+            "word": "वेपन"
+          },
+          {
+            "end": 185.29199,
+            "start": 184.99199,
+            "word": "लॉकर"
+          },
+          {
+            "end": 185.452,
+            "start": 185.29199,
+            "word": "भी"
+          },
+          {
+            "end": 185.592,
+            "start": 185.452,
+            "word": "है"
+          },
+          {
+            "end": 186.012,
+            "start": 185.592,
+            "word": "साथ"
+          },
+          {
+            "end": 186.07199,
+            "start": 186.012,
+            "word": "ही"
+          }
+        ]
+      },
+      {
+        "base_url": "/temp/Clips/Clip_06_nightclub_vibes_jason__lucia_job_1782577881263_base.mp4",
+        "emphasized_words": [
+          "Jason and Lucia",
+          "new outfit",
+          "nightclub",
+          "dance",
+          "lighting"
+        ],
+        "end_time": 299.9,
+        "metadata": {
+          "instagram": {
+            "description": "Jason and Lucia owning the dance floor in a Vice City nightclub! The new outfits and dynamic lighting are unreal. Get ready for some serious party vibes! #GTA6 #Nightclub #Characters #Rockstar #Party",
+            "title": "🌃 GTA 6 Nightclub Scene! 🤩"
+          },
+          "linkedin": {
+            "hashtags": [
+              "GameDesign",
+              "WorldBuilding",
+              "GTA6",
+              "Animation"
+            ],
+            "post": "The depiction of dynamic social environments, such as the nightclub scene with Jason and Lucia, highlights Rockstar Games' commitment to immersive world-building and character interaction within GTA 6. Advanced lighting contributes significantly to atmosphere."
+          },
+          "tiktok": {
+            "description": "Jason and Lucia in their new outfits, dancing in a nightclub! The lighting is incredible. Can't wait to explore Vice City's nightlife in GTA 6! #GTA6 #Nightlife #ViceCity #Characters #RockstarGames",
+            "hashtags": [
+              "GTA6",
+              "Nightlife",
+              "ViceCity",
+              "RockstarGames"
+            ],
+            "title": "Jason & Lucia Own the Nightclub! 💃🕺"
+          },
+          "x": {
+            "hashtags": [
+              "GTA6",
+              "Nightlife",
+              "Characters",
+              "Rockstar"
+            ],
+            "tweet": "Jason and Lucia hitting the nightclub in GTA 6! New outfits and that lighting? 🔥 Vice City's nightlife is going to be something else. #GTA6 #Nightlife #Characters #Rockstar"
+          },
+          "youtube_shorts": {
+            "description": "Catch Jason and Lucia in their new outfits, dancing in a GTA 6 nightclub! The lighting effects are a game-changer. #GTA6 #Nightlife #Gaming #RockstarGames #Shorts",
+            "title": "GTA 6 Nightclub Dancing (Jason & Lucia)"
+          }
+        },
+        "reasoning": "This clip showcases dynamic character interaction in a vibrant nightclub setting, hinting at the game's social elements and impressive environmental lighting.",
+        "score": 82,
+        "segments": [
+          {
+            "end": 299.898,
+            "start": 280.018,
+            "text": "इसके बाद आता है यह इसके बाद जो अपने आप में ही काफी कमाल दिखता है क्योंकि हम यहां जेसन और लूशिया को इस निव आउटफिट में नाइट कलब के अंदर डांस करते हुए देखते हैं जहां नोटिस करने वाली चीजी है कि यहां की लाइटिंग जेसन और ल�"
+          }
+        ],
+        "start_time": 280.02,
+        "thumbnail_url": "/temp/Clips/Thumbnail_06_nightclub_vibes_jason__lucia_job_1782577881263.jpg",
+        "title": "Nightclub Vibes: Jason & Lucia",
+        "video_url": "/temp/Clips/Clip_06_nightclub_vibes_jason__lucia_job_1782577881263_final.mp4",
+        "words": [
+          {
+            "end": 280.99802,
+            "start": 280.018,
+            "word": "इसके"
+          },
+          {
+            "end": 281.118,
+            "start": 280.99802,
+            "word": "बाद"
+          },
+          {
+            "end": 281.478,
+            "start": 281.118,
+            "word": "आता"
+          },
+          {
+            "end": 281.59802,
+            "start": 281.478,
+            "word": "है"
+          },
+          {
+            "end": 281.698,
+            "start": 281.59802,
+            "word": "यह"
+          },
+          {
+            "end": 281.938,
+            "start": 281.698,
+            "word": "इसके"
+          },
+          {
+            "end": 282.118,
+            "start": 281.938,
+            "word": "बाद"
+          },
+          {
+            "end": 282.558,
+            "start": 282.118,
+            "word": "जो"
+          },
+          {
+            "end": 282.818,
+            "start": 282.558,
+            "word": "अपने"
+          },
+          {
+            "end": 282.918,
+            "start": 282.818,
+            "word": "आप"
+          },
+          {
+            "end": 283.018,
+            "start": 282.918,
+            "word": "में"
+          },
+          {
+            "end": 283.09802,
+            "start": 283.018,
+            "word": "ही"
+          },
+          {
+            "end": 283.418,
+            "start": 283.09802,
+            "word": "काफी"
+          },
+          {
+            "end": 283.798,
+            "start": 283.418,
+            "word": "कमाल"
+          },
+          {
+            "end": 284.078,
+            "start": 283.798,
+            "word": "दिखता"
+          },
+          {
+            "end": 284.21802,
+            "start": 284.078,
+            "word": "है"
+          },
+          {
+            "end": 284.458,
+            "start": 284.21802,
+            "word": "क्योंकि"
+          },
+          {
+            "end": 284.698,
+            "start": 284.458,
+            "word": "हम"
+          },
+          {
+            "end": 284.878,
+            "start": 284.698,
+            "word": "यहां"
+          },
+          {
+            "end": 285.09802,
+            "start": 284.878,
+            "word": "जेसन"
+          },
+          {
+            "end": 285.238,
+            "start": 285.09802,
+            "word": "और"
+          },
+          {
+            "end": 285.558,
+            "start": 285.238,
+            "word": "लूशिया"
+          },
+          {
+            "end": 285.738,
+            "start": 285.558,
+            "word": "को"
+          },
+          {
+            "end": 286.118,
+            "start": 285.738,
+            "word": "इस"
+          },
+          {
+            "end": 286.378,
+            "start": 286.118,
+            "word": "निव"
+          },
+          {
+            "end": 286.778,
+            "start": 286.378,
+            "word": "आउटफिट"
+          },
+          {
+            "end": 286.99802,
+            "start": 286.778,
+            "word": "में"
+          },
+          {
+            "end": 287.278,
+            "start": 286.99802,
+            "word": "नाइट"
+          },
+          {
+            "end": 287.478,
+            "start": 287.278,
+            "word": "कलब"
+          },
+          {
+            "end": 287.638,
+            "start": 287.478,
+            "word": "के"
+          },
+          {
+            "end": 287.898,
+            "start": 287.638,
+            "word": "अंदर"
+          },
+          {
+            "end": 288.378,
+            "start": 287.898,
+            "word": "डांस"
+          },
+          {
+            "end": 288.738,
+            "start": 288.378,
+            "word": "करते"
+          },
+          {
+            "end": 288.818,
+            "start": 288.738,
+            "word": "हुए"
+          },
+          {
+            "end": 289.178,
+            "start": 288.818,
+            "word": "देखते"
+          },
+          {
+            "end": 289.398,
+            "start": 289.178,
+            "word": "हैं"
+          },
+          {
+            "end": 289.638,
+            "start": 289.398,
+            "word": "जहां"
+          },
+          {
+            "end": 289.938,
+            "start": 289.638,
+            "word": "नोटिस"
+          },
+          {
+            "end": 290.21802,
+            "start": 289.938,
+            "word": "करने"
+          },
+          {
+            "end": 290.278,
+            "start": 290.21802,
+            "word": "वाली"
+          },
+          {
+            "end": 290.558,
+            "start": 290.278,
+            "word": "चीजी"
+          },
+          {
+            "end": 290.738,
+            "start": 290.558,
+            "word": "है"
+          },
+          {
+            "end": 290.958,
+            "start": 290.738,
+            "word": "कि"
+          },
+          {
+            "end": 291.178,
+            "start": 290.958,
+            "word": "यहां"
+          },
+          {
+            "end": 291.21802,
+            "start": 291.178,
+            "word": "की"
+          },
+          {
+            "end": 291.518,
+            "start": 291.21802,
+            "word": "लाइटिंग"
+          },
+          {
+            "end": 291.778,
+            "start": 291.518,
+            "word": "जेसन"
+          },
+          {
+            "end": 291.918,
+            "start": 291.778,
+            "word": "और"
+          }
+        ]
+      },
+      {
+        "base_url": "/temp/Clips/Clip_07_lucias_hyper_realistic_face_de_job_1782577881263_base.mp4",
+        "emphasized_words": [
+          "Lucia's eyes",
+          "Rockstar",
+          "detailing",
+          "mol",
+          "eye liner"
+        ],
+        "end_time": 313.62,
+        "metadata": {
+          "instagram": {
+            "description": "Rockstar Games went all out on Lucia's character model! From the incredible detail in her eyes to her subtle moles and perfectly applied eyeliner – it's breathtaking! #GTA6 #CharacterArt #GameDetails #Rockstar #GrandTheftAuto",
+            "title": "✨ GTA 6: Lucia's Flawless Face! ✨"
+          },
+          "linkedin": {
+            "hashtags": [
+              "CharacterModeling",
+              "GameArt",
+              "GTA6",
+              "3DAnimation"
+            ],
+            "post": "The intricate character modeling for Lucia in GTA 6, including nuanced facial details like moles and highly defined eyeliner, demonstrates a significant leap in rendering photorealistic human characters. This level of detail enhances player immersion and narrative impact."
+          },
+          "tiktok": {
+            "description": "Look closely at Lucia's eyes in GTA 6 – the detail is insane! Moles, perfect eyeliner, Rockstar truly pushed character realism. What's your favorite tiny detail? #GTA6 #CharacterDesign #Realism #RockstarGames #GameGraphics",
+            "hashtags": [
+              "GTA6",
+              "CharacterDesign",
+              "Realism",
+              "RockstarGames"
+            ],
+            "title": "Lucia's Face Details are UNREAL! 🤯"
+          },
+          "x": {
+            "hashtags": [
+              "GTA6",
+              "CharacterDesign",
+              "RockstarGames",
+              "Details"
+            ],
+            "tweet": "Did you notice Lucia's eyes in GTA 6? The detail is INSANE! Moles, eyeliner – Rockstar's commitment to realism is next level. #GTA6 #CharacterDesign #RockstarGames #Details"
+          },
+          "youtube_shorts": {
+            "description": "Prepare to be amazed! The extreme detail in Lucia's eyes, moles, and eyeliner in GTA 6 is a testament to Rockstar's artistry. #GTA6 #Graphics #CharacterRealism #RockstarGames #Shorts",
+            "title": "The INSANE Detail in Lucia's Face (GTA 6)"
+          }
+        },
+        "reasoning": "This clip highlights an incredible level of granular detail in a character's face, from eye reflections to moles and eyeliner, demonstrating Rockstar's pursuit of photorealism.",
+        "score": 90,
+        "segments": [
+          {
+            "end": 306.7599998,
+            "start": 300,
+            "text": "लूसिया के आँखों में देखोगे तो यहाँ आपको समझ में आ जाएगा कि रॉक्स्टार्ट ने इस बार करेक्टर्स में कितनी डिटेलिंग की है।"
+          },
+          {
+            "end": 313.62,
+            "start": 306.7599998,
+            "text": "लूसिया के फेस पे आपको ये कुछ मोल भी दिख जाएंगे। साथ ही लूसिया ने जो यहाँ आई लाइनर लगाया है वो भी काफी इंसेंड डिटेल्ड लगता है।"
+          }
+        ],
+        "start_time": 300,
+        "thumbnail_url": "/temp/Clips/Thumbnail_07_lucias_hyper_realistic_face_de_job_1782577881263.jpg",
+        "title": "Lucia's Hyper-Realistic Face Details",
+        "video_url": "/temp/Clips/Clip_07_lucias_hyper_realistic_face_de_job_1782577881263_final.mp4",
+        "words": [
+          {
+            "end": 301.06,
+            "start": 300,
+            "word": "लूसिया"
+          },
+          {
+            "end": 301.16,
+            "start": 301.06,
+            "word": "के"
+          },
+          {
+            "end": 301.54,
+            "start": 301.16,
+            "word": "आँखों"
+          },
+          {
+            "end": 301.6,
+            "start": 301.54,
+            "word": "में"
+          },
+          {
+            "end": 301.94,
+            "start": 301.6,
+            "word": "देखोगे"
+          },
+          {
+            "end": 302.28,
+            "start": 301.94,
+            "word": "तो"
+          },
+          {
+            "end": 302.44,
+            "start": 302.28,
+            "word": "यहाँ"
+          },
+          {
+            "end": 302.62,
+            "start": 302.44,
+            "word": "आपको"
+          },
+          {
+            "end": 302.86,
+            "start": 302.62,
+            "word": "समझ"
+          },
+          {
+            "end": 302.98,
+            "start": 302.86,
+            "word": "में"
+          },
+          {
+            "end": 303.18,
+            "start": 302.98,
+            "word": "आ"
+          },
+          {
+            "end": 303.56,
+            "start": 303.18,
+            "word": "जाएगा"
+          },
+          {
+            "end": 303.88,
+            "start": 303.56,
+            "word": "कि"
+          },
+          {
+            "end": 304.26,
+            "start": 303.88,
+            "word": "रॉक्स्टार्ट"
+          },
+          {
+            "end": 304.36,
+            "start": 304.26,
+            "word": "ने"
+          },
+          {
+            "end": 304.56,
+            "start": 304.36,
+            "word": "इस"
+          },
+          {
+            "end": 304.7,
+            "start": 304.56,
+            "word": "बार"
+          },
+          {
+            "end": 305.18,
+            "start": 304.7,
+            "word": "करेक्टर्स"
+          },
+          {
+            "end": 305.32,
+            "start": 305.18,
+            "word": "में"
+          },
+          {
+            "end": 305.82,
+            "start": 305.32,
+            "word": "कितनी"
+          },
+          {
+            "end": 306.22,
+            "start": 305.82,
+            "word": "डिटेलिंग"
+          },
+          {
+            "end": 306.4,
+            "start": 306.22,
+            "word": "की"
+          },
+          {
+            "end": 306.76,
+            "start": 306.4,
+            "word": "है।"
+          },
+          {
+            "end": 307.12,
+            "start": 306.76,
+            "word": "लूसिया"
+          },
+          {
+            "end": 307.2,
+            "start": 307.12,
+            "word": "के"
+          },
+          {
+            "end": 307.32,
+            "start": 307.2,
+            "word": "फेस"
+          },
+          {
+            "end": 307.52,
+            "start": 307.32,
+            "word": "पे"
+          },
+          {
+            "end": 307.8,
+            "start": 307.52,
+            "word": "आपको"
+          },
+          {
+            "end": 307.96,
+            "start": 307.8,
+            "word": "ये"
+          },
+          {
+            "end": 308.14,
+            "start": 307.96,
+            "word": "कुछ"
+          },
+          {
+            "end": 308.38,
+            "start": 308.14,
+            "word": "मोल"
+          },
+          {
+            "end": 308.48,
+            "start": 308.38,
+            "word": "भी"
+          },
+          {
+            "end": 308.58,
+            "start": 308.48,
+            "word": "दिख"
+          },
+          {
+            "end": 309.12,
+            "start": 308.58,
+            "word": "जाएंगे।"
+          },
+          {
+            "end": 309.32,
+            "start": 309.12,
+            "word": "साथ"
+          },
+          {
+            "end": 309.34,
+            "start": 309.32,
+            "word": "ही"
+          },
+          {
+            "end": 309.64,
+            "start": 309.34,
+            "word": "लूसिया"
+          },
+          {
+            "end": 309.76,
+            "start": 309.64,
+            "word": "ने"
+          },
+          {
+            "end": 309.86,
+            "start": 309.76,
+            "word": "जो"
+          },
+          {
+            "end": 310.12,
+            "start": 309.86,
+            "word": "यहाँ"
+          },
+          {
+            "end": 310.26,
+            "start": 310.12,
+            "word": "आई"
+          },
+          {
+            "end": 310.56,
+            "start": 310.26,
+            "word": "लाइनर"
+          },
+          {
+            "end": 310.98,
+            "start": 310.56,
+            "word": "लगाया"
+          },
+          {
+            "end": 311.06,
+            "start": 310.98,
+            "word": "है"
+          },
+          {
+            "end": 311.38,
+            "start": 311.06,
+            "word": "वो"
+          },
+          {
+            "end": 311.52,
+            "start": 311.38,
+            "word": "भी"
+          },
+          {
+            "end": 311.8,
+            "start": 311.52,
+            "word": "काफी"
+          },
+          {
+            "end": 312.28,
+            "start": 311.8,
+            "word": "इंसेंड"
+          },
+          {
+            "end": 312.7,
+            "start": 312.28,
+            "word": "डिटेल्ड"
+          },
+          {
+            "end": 313.02,
+            "start": 312.7,
+            "word": "लगता"
+          },
+          {
+            "end": 313.54,
+            "start": 313.02,
+            "word": "है।"
+          }
+        ]
+      },
+      {
+        "base_url": "/temp/Clips/Clip_08_simulated_arm_hair_a_new_level_job_1782577881263_base.mp4",
+        "emphasized_words": [
+          "Jason's arm hair",
+          "close-up",
+          "simulated",
+          "game"
+        ],
+        "end_time": 350.96,
+        "metadata": {
+          "instagram": {
+            "description": "You won't believe it! A super close-up of Jason's arm hair in GTA 6 reveals it's fully simulated. Rockstar isn't holding back on realism! #GTA6 #GameDetails #Graphics #Simulated #Rockstar",
+            "title": "🔬 GTA 6's Insane Detail: Arm Hair! 🔬"
+          },
+          "linkedin": {
+            "hashtags": [
+              "GameDevelopment",
+              "3DModeling",
+              "GraphicalRealism",
+              "GTA6"
+            ],
+            "post": "The inclusion of simulated arm hair in GTA 6 exemplifies a commitment to micro-level detail in game design, pushing the boundaries of character realism. Such advancements, while subtle, significantly contribute to overall immersion and graphical fidelity."
+          },
+          "tiktok": {
+            "description": "Rockstar Games really simulated Jason's arm hair in GTA 6?! This close-up view proves it! The dedication to detail is absolutely wild. #GTA6 #GamePhysics #Realism #NextGenGaming #RockstarGames",
+            "hashtags": [
+              "GTA6",
+              "GamePhysics",
+              "Realism",
+              "NextGenGaming"
+            ],
+            "title": "GTA 6 Has SIMULATED ARM HAIR?! 🤯"
+          },
+          "x": {
+            "hashtags": [
+              "GTA6",
+              "Details",
+              "GamePhysics",
+              "Rockstar"
+            ],
+            "tweet": "A SUPER close-up confirms: Jason's arm hair in GTA 6 is SIMULATED! Rockstar's commitment to realism is truly next-level. This is wild! #GTA6 #Details #GamePhysics #Rockstar"
+          },
+          "youtube_shorts": {
+            "description": "It's confirmed: GTA 6 has simulated arm hair! A super close-up of Jason shows just how far Rockstar is going for realism. #GTA6 #RockstarGames #GameGraphics #Simulated #Shorts",
+            "title": "GTA 6's Craziest Detail: Arm Hair!"
+          }
+        },
+        "reasoning": "Highlighting such a granular and often overlooked detail like simulated arm hair can go viral for its absurdity and impressive technical achievement, showcasing extreme dedication to realism.",
+        "score": 87,
+        "segments": [
+          {
+            "end": 350.96,
+            "start": 343.62,
+            "text": "इस प्राप्त पर हमें जेसन के आम हेयर का एक और सूपर क्लोजअप्स व्यू मिलता है। जिसको देखने के बाद साफ साफ पता चल जाता है कि गेम में ये भी सिमुलेटेड होंगे।"
+          }
+        ],
+        "start_time": 343.62,
+        "thumbnail_url": "/temp/Clips/Thumbnail_08_simulated_arm_hair_a_new_level_job_1782577881263.jpg",
+        "title": "Simulated Arm Hair: A New Level",
+        "video_url": "/temp/Clips/Clip_08_simulated_arm_hair_a_new_level_job_1782577881263_final.mp4",
+        "words": [
+          {
+            "end": 343.64,
+            "start": 343.62,
+            "word": "इस"
+          },
+          {
+            "end": 343.98,
+            "start": 343.64,
+            "word": "प्राप्त"
+          },
+          {
+            "end": 344.02,
+            "start": 343.98,
+            "word": "पर"
+          },
+          {
+            "end": 344.18,
+            "start": 344.02,
+            "word": "हमें"
+          },
+          {
+            "end": 344.52,
+            "start": 344.18,
+            "word": "जेसन"
+          },
+          {
+            "end": 344.74,
+            "start": 344.52,
+            "word": "के"
+          },
+          {
+            "end": 344.96,
+            "start": 344.74,
+            "word": "आम"
+          },
+          {
+            "end": 345.24,
+            "start": 344.96,
+            "word": "हेयर"
+          },
+          {
+            "end": 345.36,
+            "start": 345.24,
+            "word": "का"
+          },
+          {
+            "end": 345.58,
+            "start": 345.36,
+            "word": "एक"
+          },
+          {
+            "end": 345.68,
+            "start": 345.58,
+            "word": "और"
+          },
+          {
+            "end": 345.96,
+            "start": 345.68,
+            "word": "सूपर"
+          },
+          {
+            "end": 346.42,
+            "start": 345.96,
+            "word": "क्लोजअप्स"
+          },
+          {
+            "end": 346.58,
+            "start": 346.42,
+            "word": "व्यू"
+          },
+          {
+            "end": 346.98,
+            "start": 346.58,
+            "word": "मिलता"
+          },
+          {
+            "end": 347.22,
+            "start": 346.98,
+            "word": "है।"
+          },
+          {
+            "end": 347.38,
+            "start": 347.22,
+            "word": "जिसको"
+          },
+          {
+            "end": 347.68,
+            "start": 347.38,
+            "word": "देखने"
+          },
+          {
+            "end": 347.72,
+            "start": 347.68,
+            "word": "के"
+          },
+          {
+            "end": 347.82,
+            "start": 347.72,
+            "word": "बाद"
+          },
+          {
+            "end": 348.2,
+            "start": 347.82,
+            "word": "साफ"
+          },
+          {
+            "end": 348.4,
+            "start": 348.2,
+            "word": "साफ"
+          },
+          {
+            "end": 348.62,
+            "start": 348.4,
+            "word": "पता"
+          },
+          {
+            "end": 348.76,
+            "start": 348.62,
+            "word": "चल"
+          },
+          {
+            "end": 349.08,
+            "start": 348.76,
+            "word": "जाता"
+          },
+          {
+            "end": 349.22,
+            "start": 349.08,
+            "word": "है"
+          },
+          {
+            "end": 349.38,
+            "start": 349.22,
+            "word": "कि"
+          },
+          {
+            "end": 349.64,
+            "start": 349.38,
+            "word": "गेम"
+          },
+          {
+            "end": 349.78,
+            "start": 349.64,
+            "word": "में"
+          },
+          {
+            "end": 349.94,
+            "start": 349.78,
+            "word": "ये"
+          },
+          {
+            "end": 350.04,
+            "start": 349.94,
+            "word": "भी"
+          },
+          {
+            "end": 350.52,
+            "start": 350.04,
+            "word": "सिमुलेटेड"
+          },
+          {
+            "end": 350.92,
+            "start": 350.52,
+            "word": "होंगे।"
+          }
+        ]
+      },
+      {
+        "base_url": "/temp/Clips/Clip_09_jasons_flawless_facial_realism_job_1782577881263_base.mp4",
+        "emphasized_words": [
+          "Jason hair",
+          "facial hair",
+          "individual strands",
+          "moles",
+          "sun damage",
+          "Florida"
+        ],
+        "end_time": 409.26,
+        "metadata": {
+          "instagram": {
+            "description": "From individual hair strands to natural moles and sun damage, Jason's face in GTA 6 is a masterclass in realism. Perfectly captures the Florida look! #GTA6 #GameGraphics #CharacterArt #Rockstar #DetailsMatter",
+            "title": "🤯 GTA 6: Jason's Face is FLAWLESS! 🤯"
+          },
+          "linkedin": {
+            "hashtags": [
+              "CharacterDesign",
+              "3DModeling",
+              "EnvironmentalStorytelling",
+              "GTA6"
+            ],
+            "post": "The nuanced facial details observed in GTA 6's character models, such as individual hair strands, moles, and realistic sun damage on Jason, exemplify sophisticated character design. This level of environmental storytelling through character appearance significantly enhances authenticity."
+          },
+          "tiktok": {
+            "description": "GTA 6 character realism is mind-blowing! Jason's hair strands, facial hair, moles, and even sun damage – perfectly normal for Florida! What detail caught your eye? #GTA6 #CharacterRealism #RockstarGames #FloridaVibes #NextGen",
+            "hashtags": [
+              "GTA6",
+              "CharacterRealism",
+              "RockstarGames",
+              "FloridaVibes"
+            ],
+            "title": "Jason's Face: GTA 6 Realism! ☀️"
+          },
+          "x": {
+            "hashtags": [
+              "GTA6",
+              "Realism",
+              "RockstarGames",
+              "Graphics"
+            ],
+            "tweet": "Jason's facial details in GTA 6 are next-level: individual hair strands, moles, even sun damage! So real, especially for a Florida resident. Rockstar's dedication is insane. #GTA6 #Realism #RockstarGames #Graphics"
+          },
+          "youtube_shorts": {
+            "description": "Another close-up of GTA 6 reveals Jason's incredible facial details: individual hair strands, moles, and even sun damage, fitting for a Floridian! #GTA6 #RockstarGames #Graphics #CharacterDesign #Shorts",
+            "title": "GTA 6 Jason's Face: Moles & Sun Damage!"
+          }
+        },
+        "reasoning": "This clip combines several impressive details of Jason's face, from individual hair strands to natural moles and sun damage, highlighting Rockstar's dedication to realistic character portrayal.",
+        "score": 89,
+        "segments": [
+          {
+            "end": 401.01601,
+            "start": 387.64,
+            "text": "Next screenshot is a close up shot of Jason hair and facial hair individual strands eye brows individual strands"
+          },
+          {
+            "end": 409.256004,
+            "start": 401.01601,
+            "text": "जेसन के प्रशान को अर भी करीब से देखने पर कुछ मोल्स एन नोटिसिबल संडामेज भी आपको दिख जाएगा जो फ्लोरिडा में रहने वाले एक आम इंसान के लिए बिलकुली नॉर्मल बात है."
+          },
+          {
+            "end": 434.43600000000004,
+            "start": 409.256004,
+            "text": "पर अगर आप यहाँ पर देखेंगे तो यहाँ वाली टेलर 2 वाली वाइब है जैसा कि हमने टेलर 2 के कुछ बीच पर देखते हैं जहाँ हम जैसन और लूसिया के पूरे आउटफिट को और भी अच्छे तरीके से देख सकते हैं."
+          }
+        ],
+        "start_time": 387.64,
+        "thumbnail_url": "/temp/Clips/Thumbnail_09_jasons_flawless_facial_realism_job_1782577881263.jpg",
+        "title": "Jason's Flawless Facial Realism",
+        "video_url": "/temp/Clips/Clip_09_jasons_flawless_facial_realism_job_1782577881263_final.mp4",
+        "words": [
+          {
+            "end": 387.86,
+            "start": 387.52,
+            "word": "है."
+          },
+          {
+            "end": 388.06,
+            "start": 387.64,
+            "word": "Next"
+          },
+          {
+            "end": 388.48,
+            "start": 388.06,
+            "word": "screenshot"
+          },
+          {
+            "end": 388.86,
+            "start": 388.48,
+            "word": "is"
+          },
+          {
+            "end": 388.94,
+            "start": 388.86,
+            "word": "a"
+          },
+          {
+            "end": 389.38,
+            "start": 388.94,
+            "word": "close"
+          },
+          {
+            "end": 389.65999999999997,
+            "start": 389.38,
+            "word": "up"
+          },
+          {
+            "end": 390.3,
+            "start": 389.65999999999997,
+            "word": "shot"
+          },
+          {
+            "end": 390.86,
+            "start": 390.3,
+            "word": "of"
+          },
+          {
+            "end": 391.24,
+            "start": 390.86,
+            "word": "Jason's"
+          },
+          {
+            "end": 391.32,
+            "start": 391.24,
+            "word": "hair"
+          },
+          {
+            "end": 391.52,
+            "start": 391.32,
+            "word": "and"
+          },
+          {
+            "end": 391.9,
+            "start": 391.52,
+            "word": "facial"
+          },
+          {
+            "end": 394.36,
+            "start": 391.9,
+            "word": "hair."
+          },
+          {
+            "end": 390.856,
+            "start": 389.356,
+            "word": "जेसन"
+          },
+          {
+            "end": 390.976006,
+            "start": 390.856,
+            "word": "के"
+          },
+          {
+            "end": 391.896,
+            "start": 390.976006,
+            "word": "बालों"
+          },
+          {
+            "end": 391.916,
+            "start": 391.896,
+            "word": "के"
+          },
+          {
+            "end": 391.936005,
+            "start": 391.916,
+            "word": "बारे"
+          },
+          {
+            "end": 392.396,
+            "start": 391.936005,
+            "word": "में"
+          },
+          {
+            "end": 392.856,
+            "start": 392.396,
+            "word": "हमें"
+          },
+          {
+            "end": 393.196,
+            "start": 392.856,
+            "word": "काफी"
+          },
+          {
+            "end": 393.496,
+            "start": 393.196,
+            "word": "अच्छी"
+          },
+          {
+            "end": 393.856,
+            "start": 393.496,
+            "word": "डिटेलिंग"
+          },
+          {
+            "end": 394.176,
+            "start": 393.856,
+            "word": "देखने"
+          },
+          {
+            "end": 394.256004,
+            "start": 394.176,
+            "word": "को"
+          },
+          {
+            "end": 394.496,
+            "start": 394.256004,
+            "word": "मिलती"
+          },
+          {
+            "end": 394.836006,
+            "start": 394.496,
+            "word": "है।"
+          },
+          {
+            "end": 395.036,
+            "start": 394.776,
+            "word": "लाइक"
+          },
+          {
+            "end": 395.236,
+            "start": 395.036,
+            "word": "यहाँ"
+          },
+          {
+            "end": 395.336006,
+            "start": 395.236,
+            "word": "पर"
+          },
+          {
+            "end": 395.556,
+            "start": 395.336006,
+            "word": "जेसन"
+          },
+          {
+            "end": 395.676,
+            "start": 395.556,
+            "word": "के"
+          },
+          {
+            "end": 395.976006,
+            "start": 395.676,
+            "word": "बालों"
+          },
+          {
+            "end": 396.036,
+            "start": 395.976006,
+            "word": "के"
+          },
+          {
+            "end": 396.476006,
+            "start": 396.036,
+            "word": "individual"
+          },
+          {
+            "end": 396.856,
+            "start": 396.476006,
+            "word": "strands"
+          },
+          {
+            "end": 397.01601,
+            "start": 396.856,
+            "word": "को"
+          },
+          {
+            "end": 397.156006,
+            "start": 397.01601,
+            "word": "आप"
+          },
+          {
+            "end": 397.37601,
+            "start": 397.156006,
+            "word": "देख"
+          },
+          {
+            "end": 397.81600000000003,
+            "start": 397.37601,
+            "word": "पाओगे।"
+          },
+          {
+            "end": 398.076004,
+            "start": 397.87601,
+            "word": "यहाँ"
+          },
+          {
+            "end": 398.256004,
+            "start": 398.076004,
+            "word": "आप"
+          },
+          {
+            "end": 398.496,
+            "start": 398.256004,
+            "word": "उसके"
+          },
+          {
+            "end": 398.716,
+            "start": 398.496,
+            "word": "eye"
+          },
+          {
+            "end": 398.916,
+            "start": 398.716,
+            "word": "brows"
+          },
+          {
+            "end": 399.076004,
+            "start": 398.916,
+            "word": "के"
+          },
+          {
+            "end": 399.216,
+            "start": 399.076004,
+            "word": "भी"
+          },
+          {
+            "end": 399.836,
+            "start": 399.216,
+            "word": "individual"
+          },
+          {
+            "end": 400.216,
+            "start": 399.836,
+            "word": "strands"
+          },
+          {
+            "end": 400.336,
+            "start": 400.216,
+            "word": "भी"
+          },
+          {
+            "end": 400.51601,
+            "start": 400.336,
+            "word": "देख"
+          },
+          {
+            "end": 400.936005,
+            "start": 400.51601,
+            "word": "पाओगे।"
+          },
+          {
+            "end": 401.576004,
+            "start": 401.01601,
+            "word": "जेसन"
+          },
+          {
+            "end": 401.716,
+            "start": 401.576004,
+            "word": "के"
+          },
+          {
+            "end": 401.896,
+            "start": 401.716,
+            "word": "प्रशान"
+          },
+          {
+            "end": 402.13599999999997,
+            "start": 401.896,
+            "word": "को"
+          },
+          {
+            "end": 402.336,
+            "start": 402.13599999999997,
+            "word": "अर"
+          },
+          {
+            "end": 402.51601,
+            "start": 402.336,
+            "word": "भी"
+          },
+          {
+            "end": 402.676,
+            "start": 402.51601,
+            "word": "करीब"
+          },
+          {
+            "end": 402.81600000000003,
+            "start": 402.676,
+            "word": "से"
+          },
+          {
+            "end": 403.116005,
+            "start": 402.81600000000003,
+            "word": "देखने"
+          },
+          {
+            "end": 403.31600000000003,
+            "start": 403.116005,
+            "word": "पर"
+          },
+          {
+            "end": 403.616005,
+            "start": 403.31600000000003,
+            "word": "कुछ"
+          },
+          {
+            "end": 403.936005,
+            "start": 403.616005,
+            "word": "मोल्स"
+          },
+          {
+            "end": 404.096,
+            "start": 403.936005,
+            "word": "एन"
+          },
+          {
+            "end": 404.576004,
+            "start": 404.096,
+            "word": "नोटिसिबल"
+          },
+          {
+            "end": 405.176,
+            "start": 404.576004,
+            "word": "संडामेज"
+          },
+          {
+            "end": 405.37601,
+            "start": 405.176,
+            "word": "भी"
+          },
+          {
+            "end": 405.616005,
+            "start": 405.37601,
+            "word": "आपको"
+          },
+          {
+            "end": 405.736,
+            "start": 405.616005,
+            "word": "दिख"
+          },
+          {
+            "end": 406.076004,
+            "start": 405.736,
+            "word": "जाएगा"
+          },
+          {
+            "end": 406.31600000000003,
+            "start": 406.076004,
+            "word": "जो"
+          },
+          {
+            "end": 406.656006,
+            "start": 406.31600000000003,
+            "word": "फ्लोरिडा"
+          },
+          {
+            "end": 406.756004,
+            "start": 406.656006,
+            "word": "में"
+          },
+          {
+            "end": 406.996,
+            "start": 406.756004,
+            "word": "रहने"
+          },
+          {
+            "end": 407.196,
+            "start": 406.996,
+            "word": "वाले"
+          },
+          {
+            "end": 407.396,
+            "start": 407.196,
+            "word": "एक"
+          },
+          {
+            "end": 407.556,
+            "start": 407.396,
+            "word": "आम"
+          },
+          {
+            "end": 407.87601,
+            "start": 407.556,
+            "word": "इंसान"
+          },
+          {
+            "end": 408.076004,
+            "start": 407.87601,
+            "word": "के"
+          },
+          {
+            "end": 408.13599999999997,
+            "start": 408.076004,
+            "word": "लिए"
+          },
+          {
+            "end": 408.556,
+            "start": 408.13599999999997,
+            "word": "बिलकुली"
+          },
+          {
+            "end": 408.896,
+            "start": 408.556,
+            "word": "नॉर्मल"
+          },
+          {
+            "end": 409.056,
+            "start": 408.896,
+            "word": "बात"
+          },
+          {
+            "end": 409.456,
+            "start": 409.056,
+            "word": "है."
+          },
+          {
+            "end": 409.536,
+            "start": 409.256004,
+            "word": "पर"
+          }
+        ]
+      },
+      {
+        "base_url": "/temp/Clips/Clip_10_dynamic_hair_lighting_immersio_job_1782577881263_base.mp4",
+        "emphasized_words": [
+          "light",
+          "collector",
+          "hair",
+          "interact"
+        ],
+        "end_time": 450.76,
+        "metadata": {
+          "instagram": {
+            "description": "The dynamic lighting in GTA 6 is truly next-gen, especially how light beautifully interacts with character hair. It's these details that make the game feel alive! #GTA6 #Graphics #Lighting #Rockstar #VideoGameArt",
+            "title": "🌟 GTA 6: Light Meets Hair! 🌟"
+          },
+          "linkedin": {
+            "hashtags": [
+              "GraphicsEngine",
+              "Rendering",
+              "GameInnovation",
+              "GTA6"
+            ],
+            "post": "The sophisticated rendering of light interaction with individual character hair strands in GTA 6 highlights advanced graphics engine capabilities. This contributes significantly to visual realism and overall game immersion, setting new industry benchmarks."
+          },
+          "tiktok": {
+            "description": "One more time, just look at how light interacts with character hair in GTA 6! This attention to dynamic lighting creates incredible immersion. 🔥 #GTA6 #LightingEffects #GameGraphics #RockstarGames #Immersion",
+            "hashtags": [
+              "GTA6",
+              "LightingEffects",
+              "GameGraphics",
+              "RockstarGames"
+            ],
+            "title": "GTA 6 Lighting on Hair is GENIUS! ✨"
+          },
+          "x": {
+            "hashtags": [
+              "GTA6",
+              "Graphics",
+              "GameDev",
+              "Rockstar"
+            ],
+            "tweet": "Again, just marvel at how LIGHT interacts with character hair in GTA 6! Rockstar's engine is built different. True immersion. #GTA6 #Graphics #GameDev #Rockstar"
+          },
+          "youtube_shorts": {
+            "description": "Watch how light dynamically interacts with character hair in GTA 6! This level of detail is truly groundbreaking. #GTA6 #RockstarGames #Lighting #GamePhysics #Shorts",
+            "title": "GTA 6's INSANE Hair Lighting Physics!"
+          }
+        },
+        "reasoning": "This clip re-emphasizes an impressive visual element of dynamic lighting interacting with character hair, reinforcing Rockstar's advanced rendering capabilities and immersive graphics.",
+        "score": 83,
+        "segments": [
+          {
+            "end": 450.756,
+            "start": 445.13599999999997,
+            "text": "साथ ही इस screen shot में हम एक बार फिर से यह देख सकते हैं कि light किस तरह से collector के बालों के साथ interact करता है."
+          }
+        ],
+        "start_time": 445.14,
+        "thumbnail_url": "/temp/Clips/Thumbnail_10_dynamic_hair_lighting_immersio_job_1782577881263.jpg",
+        "title": "Dynamic Hair Lighting Immersion",
+        "video_url": "/temp/Clips/Clip_10_dynamic_hair_lighting_immersio_job_1782577881263_final.mp4",
+        "words": [
+          {
+            "end": 445.276,
+            "start": 445.05600000000004,
+            "word": "है."
+          },
+          {
+            "end": 445.476,
+            "start": 445.276,
+            "word": "साथ"
+          },
+          {
+            "end": 445.53601000000003,
+            "start": 445.476,
+            "word": "ही"
+          },
+          {
+            "end": 445.656,
+            "start": 445.53601000000003,
+            "word": "इस"
+          },
+          {
+            "end": 445.956,
+            "start": 445.656,
+            "word": "screen"
+          },
+          {
+            "end": 446.116,
+            "start": 445.956,
+            "word": "shot"
+          },
+          {
+            "end": 446.25601,
+            "start": 446.116,
+            "word": "में"
+          },
+          {
+            "end": 446.356,
+            "start": 446.25601,
+            "word": "हम"
+          },
+          {
+            "end": 446.496,
+            "start": 446.356,
+            "word": "एक"
+          },
+          {
+            "end": 446.576,
+            "start": 446.496,
+            "word": "बार"
+          },
+          {
+            "end": 446.75601,
+            "start": 446.576,
+            "word": "फिर"
+          },
+          {
+            "end": 446.876,
+            "start": 446.75601,
+            "word": "से"
+          },
+          {
+            "end": 446.996,
+            "start": 446.876,
+            "word": "यह"
+          },
+          {
+            "end": 447.216,
+            "start": 446.996,
+            "word": "देख"
+          },
+          {
+            "end": 447.53601000000003,
+            "start": 447.216,
+            "word": "सकते"
+          },
+          {
+            "end": 447.81601,
+            "start": 447.53601000000003,
+            "word": "हैं"
+          },
+          {
+            "end": 447.916,
+            "start": 447.81601,
+            "word": "कि"
+          },
+          {
+            "end": 448.196,
+            "start": 447.916,
+            "word": "light"
+          },
+          {
+            "end": 448.456,
+            "start": 448.196,
+            "word": "किस"
+          },
+          {
+            "end": 448.576,
+            "start": 448.456,
+            "word": "तरह"
+          },
+          {
+            "end": 448.73600999999996,
+            "start": 448.576,
+            "word": "से"
+          },
+          {
+            "end": 449.076,
+            "start": 448.73600999999996,
+            "word": "collector"
+          },
+          {
+            "end": 449.23600999999996,
+            "start": 449.076,
+            "word": "के"
+          },
+          {
+            "end": 449.53601000000003,
+            "start": 449.23600999999996,
+            "word": "बालों"
+          },
+          {
+            "end": 449.616,
+            "start": 449.53601000000003,
+            "word": "के"
+          },
+          {
+            "end": 449.81601,
+            "start": 449.616,
+            "word": "साथ"
+          },
+          {
+            "end": 450.276,
+            "start": 449.81601,
+            "word": "interact"
+          },
+          {
+            "end": 450.616,
+            "start": 450.276,
+            "word": "करता"
+          },
+          {
+            "end": 450.89599999999996,
+            "start": 450.616,
+            "word": "है."
+          }
+        ]
+      }
+    ],
+    "transcript": " Hello gamers, तो आगे हाँ आप लोग। तो आप सभी को पता है कि GTA 6 का pre-order open हो चुका है और अभी तक Rockstar ने 39 million copies sale भी कर दिया है। ऐसा claim किया जा रहा है कि Rockstar Games ने अभी तक 3 billion dollars सिर्फ pre-order से ही earn कर लिया है। Rockstar Games ने पिछले दिनों में GTA 6 related हमें काफी नई-नई info दिया हैं। जिसमें उन्होंने GTX के 68 नए स्क्रीन सॉट्स भी सेयर किये थे. हब मैंने लाइब आके GTX को प्री ओडर भी कर लिया था. साथ ही मैंने काफी सारे न्यूज भी आपके साथ सेयर भी कर लिया था. जीटेसिस के सभी स्क्रीन सॉर्ट्स को एकदम डिटेल में ब्रेकडाउन करने की। लूसिया के बालों थ्रू लिटरली लाइट यहाँ पे नेचरली डिफ्यूज होते हुई हमें दिख जाती है बट साथ ही जेसन के हाथ पे देखने पर हमें वाई टेलर टू वाली डिटेलिंग नजर आती है जहाँ उसके आम हेयर काफी डिफाइंड नजर आते हैं Ocean View Hotel's neon sign light reflects on Jason and Lucia's backs. This makes this screenshot look beautiful. This effect is most noticeable on Jason's suit jacket and Lucia's dress. But many people say that the light is not reflecting on the plant in the background. So for all of them, my answer is that the sign of this Ocean View Hotel's boat is far ahead of this plant, where the light of this signboard is not reaching. On this plant, we can clearly see that its light is reflecting on this plant, अगर दिखें आप सल्ट लेने के लिए उसके अलग-अलग लीफ्स और ब्रांचिस से इंटरैक्ट हो रही है. 55 इस प्राश्ट पर देखने को मिलता है जहां पर यह लिखा है कि इस क्लासिक सेडान में सोर ड्राइपे क्रूज करो या पर इसे सोर कोट प्रसनल गराज में स्टोर करो जो ओसन बीच के चमकती रेज से बस थोड़ी सी दोरी पे है इसमें एक वेपन लॉकर भी है साथ ही स्ट प्रदेश ने आपको वीडियो में आगे लग जाएगा। इसके बाद आता है यह इसके बाद जो अपने आप में ही काफी कमाल दिखता है क्योंकि हम यहां जेसन और लूशिया को इस निव आउटफिट में नाइट कलब के अंदर डांस करते हुए देखते हैं जहां नोटिस करने वाली चीजी है कि यहां की लाइटिंग जेसन और ल�  लूसिया के आँखों में देखोगे तो यहाँ आपको समझ में आ जाएगा कि रॉक्स्टार्ट ने इस बार करेक्टर्स में कितनी डिटेलिंग की है। लूसिया के फेस पे आपको ये कुछ मोल भी दिख जाएंगे। साथ ही लूसिया ने जो यहाँ आई लाइनर लगाया है वो भी काफी इंसेंड डिटेल्ड लगता है। पर नेक्स्ट आप इस स्किन सोट में जेसन के हाथ में आपको एक माइक्रो SMG दिख जाएगा। इस प्राप्त पर हमें जेसन के आम हेयर का एक और सूपर क्लोजअप्स व्यू मिलता है। जिसको देखने के बाद साफ साफ पता चल जाता है कि गेम में ये भी सिमुलेटेड होंगे। लूसिया के एक और क्लोज़ अप सॉर्ट दिखता है। यहाँ आप देख पाऊँगे कि लूसिया ने एक मार्टिनी ग्लास उठाया हुआ है। साथ ही वो तुथफिक से कुछ ओलिब्स भी बाइट कर रही है। यहाँ की लाइटिंग देखकर ऐसा लगता है कि यहाँ पे आ यहां पर हम एक बार फिर से आने वाली लाइट्स को लूसिया के बालों के थ्रू गुजरते हुए देखते हैं जो यहां भी खाफी ब्यूटिफुल लगता है. Next screenshot is a close up shot of Jason hair and facial hair individual strands eye brows individual strands जेसन के प्रशान को अर भी करीब से देखने पर कुछ मोल्स एन नोटिसिबल संडामेज भी आपको दिख जाएगा जो फ्लोरिडा में रहने वाले एक आम इंसान के लिए बिलकुली नॉर्मल बात है. पर अगर आप यहाँ पर देखेंगे तो यहाँ वाली टेलर 2 वाली वाइब है जैसा कि हमने टेलर 2 के कुछ बीच पर देखते हैं जहाँ हम जैसन और लूसिया के पूरे आउटफिट को और भी अच्छे तरीके से देख सकते हैं. अगर आप यहाँ पर lighting देखोगे तो यहाँ वही trailer 2 वाली vibe है जैसा कि हमने trailer 2 के कुछ यह lighting वाली scene देखे थे. background में यह port यह वही port है जिनको हमने multiple screen shots में already देख लिया है. साथ ही इस screen shot में हम एक बार फिर से यह देख सकते हैं कि light किस तरह से collector के बालों के साथ interact करता है. जो आपको बात दूसरा की प्रकुट्स है ब्रारिका में एस्टीमेट अडिसन में इससे भी कई ज्यादा स्क्रीने शॉट्स हैं जिनको हम इस वीडियो के सेकेंड पार्ट में डिकोट करेंगे सो आशा करता हूँ कि आपको वीडियो पसंद आई होगी मैं हूँ मिस्टर सु"
+  },
+  {
     "id": "job_1782575745389",
     "title": "https://youtu.be/yfyTjRsagzQ?s...",
     "status": "Completed",
