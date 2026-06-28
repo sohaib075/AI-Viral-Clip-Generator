@@ -1,1 +1,6052 @@
-[]
+[
+  {
+    "id": "job_1782624952447",
+    "title": "https://youtu.be/NlBUZvFUA-E?s...",
+    "status": "Completed",
+    "time": "Just now",
+    "clips": 10,
+    "duration": "0:00:00",
+    "thumbnail": "/temp/Clips/Thumbnail_01_gtas_humble_2d_beginnings_job_1782624952447.jpg",
+    "createdAt": 1782624952447,
+    "clipsData": [
+      {
+        "base_url": "/temp/Clips/Clip_01_gtas_humble_2d_beginnings_job_1782624952447_base.mp4",
+        "emphasized_words": [
+          "1997",
+          "DMA Design",
+          "Grand Theft Auto",
+          "simple",
+          "top-down"
+        ],
+        "end_time": 60,
+        "metadata": {
+          "instagram": {
+            "description": "Did you know GTA wasn't always 3D? Go back to 1997 with us and see where the legend began! #GTA #GamingNostalgia #Before3D",
+            "hashtags": [
+              "GTA",
+              "GamingHistory",
+              "RetroGames",
+              "FactCheck",
+              "GrandTheftAuto"
+            ],
+            "title": "The REAL GTA Origin Story 🤯"
+          },
+          "linkedin": {
+            "hashtags": [
+              "GamingIndustry",
+              "GTA",
+              "RockstarNorth",
+              "GameDevelopment",
+              "HistoryOfGaming"
+            ],
+            "post": "Before becoming a global 3D phenomenon, Grand Theft Auto began as a 2D top-down game in 1997. This foundational period by DMA Design (now Rockstar North) highlights the evolution of gaming mechanics and design. #GamingIndustry #GTA #RockstarNorth #GameDevelopment #HistoryOfGaming"
+          },
+          "tiktok": {
+            "description": "Before the 3D open worlds, GTA was a simple top-down game! Mind blown! 🕹️ #GTAHistory #GamingFacts #RetroGaming",
+            "hashtags": [
+              "GTA",
+              "GrandTheftAuto",
+              "GamingHistory",
+              "RetroGaming",
+              "DMAdesign"
+            ],
+            "title": "Wait, GTA started as 2D?! 🤯"
+          },
+          "x": {
+            "hashtags": [
+              "GTA",
+              "GamingFacts",
+              "RetroGaming",
+              "DMAdesign",
+              "VideoGames"
+            ],
+            "tweet": "The first Grand Theft Auto? A simple 2D top-down game from 1997 by DMA Design! 🤯 Who remembers this original chaos? #GTA #GamingFacts #Retro"
+          },
+          "youtube_shorts": {
+            "description": "Uncover the very first Grand Theft Auto game from 1997! It all started with a simple top-down view. #GTALore #GamingEvolution #ClassicGaming",
+            "hashtags": [
+              "GTA",
+              "GamingHistory",
+              "2DGTA",
+              "RockstarGames",
+              "DidYouKnow"
+            ],
+            "title": "GTA Before 3D: The 2D Chaos! 🎮"
+          }
+        },
+        "reasoning": "This clip reveals the surprising 2D origins of the Grand Theft Auto series, sparking curiosity about its evolution from a simple top-down game.",
+        "score": 75,
+        "segments": [
+          {
+            "end": 60,
+            "start": 30,
+            "text": "और ह्यूज ओपन वर्ल्ड से नहीं हुई थी. इसकी सुरुवात हुई थी 1997 में जब रॉक स्टार नौर्थ का पुराना नाम DMA डिजाइन था. उस समय पहला गेम आया जिसका नाम था Grand Theft Auto. आज के इसाब से देखो तो ये गेम बहुत सिंपल लगेगा. क्योंकि इसमें टॉ"
+          }
+        ],
+        "start_time": 30,
+        "thumbnail_url": "/temp/Clips/Thumbnail_01_gtas_humble_2d_beginnings_job_1782624952447.jpg",
+        "title": "GTA's Humble 2D Beginnings",
+        "video_url": "/temp/Clips/Clip_01_gtas_humble_2d_beginnings_job_1782624952447_final.mp4",
+        "words": [
+          {
+            "end": 30.12,
+            "start": 30,
+            "word": "और"
+          },
+          {
+            "end": 30.5,
+            "start": 30.12,
+            "word": "ह्यूज"
+          },
+          {
+            "end": 30.76,
+            "start": 30.5,
+            "word": "ओपन"
+          },
+          {
+            "end": 31.06,
+            "start": 30.76,
+            "word": "वर्ल्ड"
+          },
+          {
+            "end": 31.24,
+            "start": 31.06,
+            "word": "से"
+          },
+          {
+            "end": 31.46,
+            "start": 31.24,
+            "word": "नहीं"
+          },
+          {
+            "end": 31.52,
+            "start": 31.46,
+            "word": "हुई"
+          },
+          {
+            "end": 31.92,
+            "start": 31.52,
+            "word": "थी."
+          },
+          {
+            "end": 32.1,
+            "start": 31.92,
+            "word": "इसकी"
+          },
+          {
+            "end": 32.52,
+            "start": 32.1,
+            "word": "सुरुवात"
+          },
+          {
+            "end": 32.68,
+            "start": 32.52,
+            "word": "हुई"
+          },
+          {
+            "end": 32.82,
+            "start": 32.68,
+            "word": "थी"
+          },
+          {
+            "end": 33.72,
+            "start": 32.82,
+            "word": "1997"
+          },
+          {
+            "end": 34.02,
+            "start": 33.72,
+            "word": "में"
+          },
+          {
+            "end": 34.34,
+            "start": 34.02,
+            "word": "जब"
+          },
+          {
+            "end": 34.58,
+            "start": 34.34,
+            "word": "रॉक"
+          },
+          {
+            "end": 34.82,
+            "start": 34.58,
+            "word": "स्टार"
+          },
+          {
+            "end": 35.08,
+            "start": 34.82,
+            "word": "नौर्थ"
+          },
+          {
+            "end": 35.22,
+            "start": 35.08,
+            "word": "का"
+          },
+          {
+            "end": 35.64,
+            "start": 35.22,
+            "word": "पुराना"
+          },
+          {
+            "end": 35.84,
+            "start": 35.64,
+            "word": "नाम"
+          },
+          {
+            "end": 36.28,
+            "start": 35.84,
+            "word": "DMA"
+          },
+          {
+            "end": 36.66,
+            "start": 36.28,
+            "word": "डिजाइन"
+          },
+          {
+            "end": 37.02,
+            "start": 36.66,
+            "word": "था."
+          },
+          {
+            "end": 37.12,
+            "start": 37.02,
+            "word": "उस"
+          },
+          {
+            "end": 37.34,
+            "start": 37.12,
+            "word": "समय"
+          },
+          {
+            "end": 37.68,
+            "start": 37.34,
+            "word": "पहला"
+          },
+          {
+            "end": 37.86,
+            "start": 37.68,
+            "word": "गेम"
+          },
+          {
+            "end": 38.12,
+            "start": 37.86,
+            "word": "आया"
+          },
+          {
+            "end": 38.42,
+            "start": 38.12,
+            "word": "जिसका"
+          },
+          {
+            "end": 38.62,
+            "start": 38.42,
+            "word": "नाम"
+          },
+          {
+            "end": 38.76,
+            "start": 38.62,
+            "word": "था"
+          },
+          {
+            "end": 39.2,
+            "start": 38.76,
+            "word": "Grand"
+          },
+          {
+            "end": 39.44,
+            "start": 39.2,
+            "word": "Theft"
+          },
+          {
+            "end": 39.84,
+            "start": 39.44,
+            "word": "Auto."
+          },
+          {
+            "end": 40.06,
+            "start": 39.84,
+            "word": "आज"
+          },
+          {
+            "end": 40.2,
+            "start": 40.06,
+            "word": "के"
+          },
+          {
+            "end": 40.38,
+            "start": 40.2,
+            "word": "इसाब"
+          },
+          {
+            "end": 40.5,
+            "start": 40.38,
+            "word": "से"
+          },
+          {
+            "end": 40.76,
+            "start": 40.5,
+            "word": "देखो"
+          },
+          {
+            "end": 40.92,
+            "start": 40.76,
+            "word": "तो"
+          },
+          {
+            "end": 41.02,
+            "start": 40.92,
+            "word": "ये"
+          },
+          {
+            "end": 41.18,
+            "start": 41.02,
+            "word": "गेम"
+          },
+          {
+            "end": 41.42,
+            "start": 41.18,
+            "word": "बहुत"
+          },
+          {
+            "end": 41.8,
+            "start": 41.42,
+            "word": "सिंपल"
+          },
+          {
+            "end": 42.34,
+            "start": 41.8,
+            "word": "लगेगा."
+          },
+          {
+            "end": 42.52,
+            "start": 42.34,
+            "word": "क्योंकि"
+          },
+          {
+            "end": 42.78,
+            "start": 42.52,
+            "word": "इसमें"
+          }
+        ]
+      },
+      {
+        "base_url": "/temp/Clips/Clip_02_the_lost_gta_london_games_job_1782624952447_base.mp4",
+        "emphasized_words": [
+          "London 1969",
+          "1961",
+          "unique chapter",
+          "rarely talk"
+        ],
+        "end_time": 105.37,
+        "metadata": {
+          "instagram": {
+            "description": "Dive into the rarely discussed GTA London 1969 & 1961! These expansions showed GTA could fit any city. A unique piece of history! #GTAHistory #LondonGaming #VintageGames",
+            "hashtags": [
+              "GTA",
+              "GamingNostalgia",
+              "London",
+              "RockstarGames",
+              "ClassicGaming"
+            ],
+            "title": "GTA in 1960s London! 🤯🇬🇧"
+          },
+          "linkedin": {
+            "hashtags": [
+              "GameDesign",
+              "GTA",
+              "RockstarGames",
+              "GamingHistory",
+              "MarketAdaptability"
+            ],
+            "post": "Exploring the lesser-known Grand Theft Auto London expansions (1969 & 1961) reveals an early demonstration of the franchise's adaptability beyond its initial American settings. This period showcased Rockstar's willingness to experiment with cultural backdrops. #GameDesign #GTA #RockstarGames #GamingHistory #MarketAdaptability"
+          },
+          "tiktok": {
+            "description": "Uncovering the unique, often forgotten chapter of GTA history: the London expansions! Set in the 60s, these changed the game. #GTALondon #HiddenGems #GamingLore",
+            "hashtags": [
+              "GTA",
+              "GamingFacts",
+              "London1969",
+              "RetroGaming",
+              "GTALore"
+            ],
+            "title": "Did you know about GTA London? 🇬🇧"
+          },
+          "x": {
+            "hashtags": [
+              "GTA",
+              "GamingHistory",
+              "RetroGaming",
+              "GTALondon",
+              "VideoGames"
+            ],
+            "tweet": "GTA London 1969 & 1961: The unique chapters many forgot! 🇬🇧 Did you ever play these? #GTALore #GamingHistory #Retro"
+          },
+          "youtube_shorts": {
+            "description": "Journey back to 1960s London with GTA! These unique chapters expanded the series' world in surprising ways. #GTALondon #GamingSecrets #ForgottenGames",
+            "hashtags": [
+              "GTA",
+              "GamingHistory",
+              "London",
+              "RetroGaming",
+              "DidYouKnow"
+            ],
+            "title": "The GTA Games You FORGOT Existed! 🤫"
+          }
+        },
+        "reasoning": "This clip highlights lesser-known historical titles that expanded the GTA formula beyond American cities, intriguing long-time fans with unique lore.",
+        "score": 70,
+        "segments": [
+          {
+            "end": 90.546,
+            "start": 85.506,
+            "text": "लंडन 1969 ने दिखाया कि GTA का फॉर्मूला किसी भी सिटी में फिट हो सकता है।"
+          },
+          {
+            "end": 93.826,
+            "start": 90.546,
+            "text": "फिर उसी साल आया Grand Theft Auto London 1961।"
+          },
+          {
+            "end": 98.686,
+            "start": 93.826,
+            "text": "ये लंडन 1969 का छोटा सा एक्सपेंशन था और टाइमलाइन में उससे भी पहले सेट था।"
+          },
+          {
+            "end": 105.366,
+            "start": 98.686,
+            "text": "इसमें ज्यादा बड़ा इनोवेशन नहीं था, लेकिन GTA के फैंस के लिए ये इंटरेस्टिंग था, क्योंकि इसने सेम लंडन वर्ल्ड को थोड़ा और एक्सपैंड किया."
+          },
+          {
+            "end": 116.145996,
+            "start": 105.366,
+            "text": "आप इसे GTA हिस्ट्री का एक छोटा लेकिन यूनीक चैप्टर कह सकते हो। ये उन गेम्स में से है जिनके बारे में बहुत कम लोग बात करते हैं। लेकिन अगर आप पूरी GTA सीरीज समझना चाते हो तो इसे इग्नोर नहीं कर सकते।"
+          }
+        ],
+        "start_time": 85.51,
+        "thumbnail_url": "/temp/Clips/Thumbnail_02_the_lost_gta_london_games_job_1782624952447.jpg",
+        "title": "The Lost GTA London Games",
+        "video_url": "/temp/Clips/Clip_02_the_lost_gta_london_games_job_1782624952447_final.mp4",
+        "words": [
+          {
+            "end": 86.20599,
+            "start": 85.506,
+            "word": "लंडन"
+          },
+          {
+            "end": 87.105995,
+            "start": 86.20599,
+            "word": "1969"
+          },
+          {
+            "end": 87.34599,
+            "start": 87.105995,
+            "word": "ने"
+          },
+          {
+            "end": 87.726,
+            "start": 87.34599,
+            "word": "दिखाया"
+          },
+          {
+            "end": 87.925995,
+            "start": 87.726,
+            "word": "कि"
+          },
+          {
+            "end": 88.285995,
+            "start": 87.925995,
+            "word": "GTA"
+          },
+          {
+            "end": 88.465996,
+            "start": 88.285995,
+            "word": "का"
+          },
+          {
+            "end": 88.885994,
+            "start": 88.465996,
+            "word": "फॉर्मूला"
+          },
+          {
+            "end": 89.245995,
+            "start": 88.885994,
+            "word": "किसी"
+          },
+          {
+            "end": 89.366,
+            "start": 89.245995,
+            "word": "भी"
+          },
+          {
+            "end": 89.605995,
+            "start": 89.366,
+            "word": "सिटी"
+          },
+          {
+            "end": 89.70599,
+            "start": 89.605995,
+            "word": "में"
+          },
+          {
+            "end": 89.885994,
+            "start": 89.70599,
+            "word": "फिट"
+          },
+          {
+            "end": 90.046,
+            "start": 89.885994,
+            "word": "हो"
+          },
+          {
+            "end": 90.385994,
+            "start": 90.046,
+            "word": "सकता"
+          },
+          {
+            "end": 90.526,
+            "start": 90.385994,
+            "word": "है।"
+          },
+          {
+            "end": 90.745995,
+            "start": 90.126,
+            "word": "फिर"
+          },
+          {
+            "end": 91.006,
+            "start": 90.745995,
+            "word": "उसी"
+          },
+          {
+            "end": 91.226,
+            "start": 91.006,
+            "word": "साल"
+          },
+          {
+            "end": 91.48599,
+            "start": 91.226,
+            "word": "आया"
+          },
+          {
+            "end": 91.84599,
+            "start": 91.48599,
+            "word": "Grand"
+          },
+          {
+            "end": 92.046,
+            "start": 91.84599,
+            "word": "Theft"
+          },
+          {
+            "end": 92.266,
+            "start": 92.046,
+            "word": "Auto"
+          },
+          {
+            "end": 92.70599,
+            "start": 92.266,
+            "word": "London"
+          },
+          {
+            "end": 93.745995,
+            "start": 92.70599,
+            "word": "1961।"
+          },
+          {
+            "end": 93.946,
+            "start": 93.686,
+            "word": "ये"
+          },
+          {
+            "end": 94.366,
+            "start": 93.946,
+            "word": "लंडन"
+          },
+          {
+            "end": 95.20599,
+            "start": 94.366,
+            "word": "1969"
+          },
+          {
+            "end": 95.465996,
+            "start": 95.20599,
+            "word": "का"
+          },
+          {
+            "end": 95.84599,
+            "start": 95.465996,
+            "word": "छोटा"
+          },
+          {
+            "end": 95.925995,
+            "start": 95.84599,
+            "word": "सा"
+          },
+          {
+            "end": 96.385994,
+            "start": 95.925995,
+            "word": "एक्सपेंशन"
+          },
+          {
+            "end": 96.586,
+            "start": 96.385994,
+            "word": "था"
+          },
+          {
+            "end": 96.84599,
+            "start": 96.586,
+            "word": "और"
+          },
+          {
+            "end": 97.326,
+            "start": 96.84599,
+            "word": "टाइमलाइन"
+          },
+          {
+            "end": 97.465996,
+            "start": 97.326,
+            "word": "में"
+          },
+          {
+            "end": 97.766,
+            "start": 97.465996,
+            "word": "उससे"
+          },
+          {
+            "end": 97.906,
+            "start": 97.766,
+            "word": "भी"
+          },
+          {
+            "end": 98.145996,
+            "start": 97.906,
+            "word": "पहले"
+          },
+          {
+            "end": 98.385994,
+            "start": 98.145996,
+            "word": "सेट"
+          },
+          {
+            "end": 98.645996,
+            "start": 98.385994,
+            "word": "था।"
+          },
+          {
+            "end": 98.925995,
+            "start": 98.686,
+            "word": "इसमें"
+          },
+          {
+            "end": 99.266,
+            "start": 98.925995,
+            "word": "ज्यादा"
+          },
+          {
+            "end": 99.406,
+            "start": 99.266,
+            "word": "बड़ा"
+          },
+          {
+            "end": 99.866,
+            "start": 99.406,
+            "word": "इनोवेशन"
+          },
+          {
+            "end": 100.086,
+            "start": 99.866,
+            "word": "नहीं"
+          },
+          {
+            "end": 100.306,
+            "start": 100.086,
+            "word": "था,"
+          },
+          {
+            "end": 100.526,
+            "start": 100.306,
+            "word": "लेकिन"
+          },
+          {
+            "end": 100.965996,
+            "start": 100.526,
+            "word": "GTA"
+          },
+          {
+            "end": 101.126,
+            "start": 100.965996,
+            "word": "के"
+          },
+          {
+            "end": 101.425995,
+            "start": 101.126,
+            "word": "फैंस"
+          },
+          {
+            "end": 101.586,
+            "start": 101.425995,
+            "word": "के"
+          },
+          {
+            "end": 101.666,
+            "start": 101.586,
+            "word": "लिए"
+          },
+          {
+            "end": 101.826,
+            "start": 101.666,
+            "word": "ये"
+          },
+          {
+            "end": 102.285995,
+            "start": 101.826,
+            "word": "इंटरेस्टिंग"
+          },
+          {
+            "end": 102.686,
+            "start": 102.285995,
+            "word": "था,"
+          },
+          {
+            "end": 102.806,
+            "start": 102.686,
+            "word": "क्योंकि"
+          },
+          {
+            "end": 103.006,
+            "start": 102.806,
+            "word": "इसने"
+          },
+          {
+            "end": 103.406,
+            "start": 103.006,
+            "word": "सेम"
+          },
+          {
+            "end": 103.726,
+            "start": 103.406,
+            "word": "लंडन"
+          },
+          {
+            "end": 104.046,
+            "start": 103.726,
+            "word": "वर्ल्ड"
+          },
+          {
+            "end": 104.20599,
+            "start": 104.046,
+            "word": "को"
+          },
+          {
+            "end": 104.425995,
+            "start": 104.20599,
+            "word": "थोड़ा"
+          },
+          {
+            "end": 104.70599,
+            "start": 104.425995,
+            "word": "और"
+          },
+          {
+            "end": 105.086,
+            "start": 104.70599,
+            "word": "एक्सपैंड"
+          },
+          {
+            "end": 105.425995,
+            "start": 105.086,
+            "word": "किया."
+          },
+          {
+            "end": 105.666,
+            "start": 105.366,
+            "word": "आप"
+          }
+        ]
+      },
+      {
+        "base_url": "/temp/Clips/Clip_03_gta_2s_innovative_respect_syst_job_1782624952447_base.mp4",
+        "emphasized_words": [
+          "Grand Theft Auto 2",
+          "Anywhere City",
+          "respect system",
+          "smart idea"
+        ],
+        "end_time": 140.53,
+        "metadata": {
+          "instagram": {
+            "description": "Ever heard of GTA 2's 'respect system'? If you worked for one gang, others hated you! A brilliant idea that made the world feel alive. #GTAHistory #Innovation #GamingInsights",
+            "hashtags": [
+              "GTA",
+              "GTA2",
+              "GamingInnovation",
+              "RetroGames",
+              "RockstarGames"
+            ],
+            "title": "The GTA 2 Feature That Changed Everything!"
+          },
+          "linkedin": {
+            "hashtags": [
+              "GameDevelopment",
+              "GTA",
+              "InnovationInGaming",
+              "InteractiveDesign",
+              "GamingHistory"
+            ],
+            "post": "Grand Theft Auto 2 introduced an innovative 'respect system' where player actions influenced gang allegiances. This early design choice was a smart mechanic for its era, demonstrating a foundational approach to dynamic player relationships within an open world. #GameDevelopment #GTA #InnovationInGaming #InteractiveDesign #GamingHistory"
+          },
+          "tiktok": {
+            "description": "Way back in GTA 2, they introduced a 'respect system' that was super smart for its time! Loyalty changed everything. #GTA2 #GameDesign #Innovation",
+            "hashtags": [
+              "GTA",
+              "GTA2",
+              "GamingFacts",
+              "GameDesign",
+              "RetroGaming"
+            ],
+            "title": "GTA 2's Genius Mechanic 🧠"
+          },
+          "x": {
+            "hashtags": [
+              "GTA",
+              "GTA2",
+              "GamingFacts",
+              "RetroGaming",
+              "GameDesign"
+            ],
+            "tweet": "GTA 2's respect system was a game-changer! Work for one gang, get hated by another. Smart design for its time. #GTA #GTA2 #GamingHistory"
+          },
+          "youtube_shorts": {
+            "description": "Before open-world choices were common, GTA 2 had a 'respect system'! See how it influenced gameplay. #GTA2 #GamingInnovation #ClassicGTA",
+            "hashtags": [
+              "GTA",
+              "GamingHistory",
+              "GTA2",
+              "RespectSystem",
+              "DidYouKnow"
+            ],
+            "title": "GTA 2: Way Ahead of Its Time! ⏳"
+          }
+        },
+        "reasoning": "This clip showcases an early innovation in GTA 2 – the respect system – which laid foundational groundwork for deeper player interaction and narrative choices in later titles.",
+        "score": 65,
+        "segments": [
+          {
+            "end": 129.32599,
+            "start": 116.145996,
+            "text": "फिर 1999 में आया Grand Theft Auto 2. इस गेम ने पहले GTA के फॉर्मुला को और पॉलिश किया. इस बार City का नाम था Anywhere City. ये थोड़ा फ्यूचरिस्टिक, थोड़ा साइबर पंक टाइप वर्ल्ड था जहां अलग-अलग गैंग सिटी को कंट्रोल करती थी."
+          },
+          {
+            "end": 135.566,
+            "start": 129.32599,
+            "text": "GTA 2 में रिस्पेक्ट सिस्टम भी था। अगर आप एक गैंग के लिए काम करते थे तो दूसरी गैंग आपसे नफरत करने लगती थी।"
+          },
+          {
+            "end": 140.526,
+            "start": 135.566,
+            "text": "यह छोटा सा मेकानिक आज के गेम्स में नॉर्मल लग सकता है। लेकिन उस टाइम यह बहुत स्मार्ट आइडिया था।"
+          },
+          {
+            "end": 175.012,
+            "start": 140.526,
+            "text": "2001 Grand Theft Auto 3 GTA cultural phenomenon GTA 3D open world Liberty City living city"
+          }
+        ],
+        "start_time": 116.15,
+        "thumbnail_url": "/temp/Clips/Thumbnail_03_gta_2s_innovative_respect_syst_job_1782624952447.jpg",
+        "title": "GTA 2's Innovative Respect System",
+        "video_url": "/temp/Clips/Clip_03_gta_2s_innovative_respect_syst_job_1782624952447_final.mp4",
+        "words": [
+          {
+            "end": 116.326,
+            "start": 116.145996,
+            "word": "फिर"
+          },
+          {
+            "end": 117.226,
+            "start": 116.326,
+            "word": "1999"
+          },
+          {
+            "end": 117.506,
+            "start": 117.226,
+            "word": "में"
+          },
+          {
+            "end": 117.726,
+            "start": 117.506,
+            "word": "आया"
+          },
+          {
+            "end": 118.145996,
+            "start": 117.726,
+            "word": "Grand"
+          },
+          {
+            "end": 118.34599,
+            "start": 118.145996,
+            "word": "Theft"
+          },
+          {
+            "end": 118.70599,
+            "start": 118.34599,
+            "word": "Auto"
+          },
+          {
+            "end": 119.065994,
+            "start": 118.70599,
+            "word": "2."
+          },
+          {
+            "end": 119.20599,
+            "start": 119.065994,
+            "word": "इस"
+          },
+          {
+            "end": 119.386,
+            "start": 119.20599,
+            "word": "गेम"
+          },
+          {
+            "end": 119.546,
+            "start": 119.386,
+            "word": "ने"
+          },
+          {
+            "end": 119.886,
+            "start": 119.546,
+            "word": "पहले"
+          },
+          {
+            "end": 120.26599,
+            "start": 119.886,
+            "word": "GTA"
+          },
+          {
+            "end": 120.406,
+            "start": 120.26599,
+            "word": "के"
+          },
+          {
+            "end": 120.84599,
+            "start": 120.406,
+            "word": "फॉर्मुला"
+          },
+          {
+            "end": 121.026,
+            "start": 120.84599,
+            "word": "को"
+          },
+          {
+            "end": 121.306,
+            "start": 121.026,
+            "word": "और"
+          },
+          {
+            "end": 121.605995,
+            "start": 121.306,
+            "word": "पॉलिश"
+          },
+          {
+            "end": 122.026,
+            "start": 121.605995,
+            "word": "किया."
+          },
+          {
+            "end": 122.20599,
+            "start": 122.026,
+            "word": "इस"
+          },
+          {
+            "end": 122.34599,
+            "start": 122.20599,
+            "word": "बार"
+          },
+          {
+            "end": 122.645996,
+            "start": 122.34599,
+            "word": "City"
+          },
+          {
+            "end": 122.785995,
+            "start": 122.645996,
+            "word": "का"
+          },
+          {
+            "end": 122.965996,
+            "start": 122.785995,
+            "word": "नाम"
+          },
+          {
+            "end": 123.166,
+            "start": 122.965996,
+            "word": "था"
+          },
+          {
+            "end": 123.70599,
+            "start": 123.166,
+            "word": "Anywhere"
+          },
+          {
+            "end": 124.20599,
+            "start": 123.70599,
+            "word": "City."
+          },
+          {
+            "end": 124.285995,
+            "start": 124.20599,
+            "word": "ये"
+          },
+          {
+            "end": 124.506,
+            "start": 124.285995,
+            "word": "थोड़ा"
+          },
+          {
+            "end": 125.326,
+            "start": 124.506,
+            "word": "फ्यूचरिस्टिक,"
+          },
+          {
+            "end": 125.546,
+            "start": 125.326,
+            "word": "थोड़ा"
+          },
+          {
+            "end": 125.946,
+            "start": 125.546,
+            "word": "साइबर"
+          },
+          {
+            "end": 126.105995,
+            "start": 125.946,
+            "word": "पंक"
+          },
+          {
+            "end": 126.366,
+            "start": 126.105995,
+            "word": "टाइप"
+          },
+          {
+            "end": 126.645996,
+            "start": 126.366,
+            "word": "वर्ल्ड"
+          },
+          {
+            "end": 126.866,
+            "start": 126.645996,
+            "word": "था"
+          },
+          {
+            "end": 127.20599,
+            "start": 126.866,
+            "word": "जहां"
+          },
+          {
+            "end": 127.686,
+            "start": 127.20599,
+            "word": "अलग-अलग"
+          },
+          {
+            "end": 128.026,
+            "start": 127.686,
+            "word": "गैंग"
+          },
+          {
+            "end": 128.346,
+            "start": 128.026,
+            "word": "सिटी"
+          },
+          {
+            "end": 128.486,
+            "start": 128.346,
+            "word": "को"
+          },
+          {
+            "end": 128.866,
+            "start": 128.486,
+            "word": "कंट्रोल"
+          },
+          {
+            "end": 129.166,
+            "start": 128.866,
+            "word": "करती"
+          },
+          {
+            "end": 129.486,
+            "start": 129.166,
+            "word": "थी."
+          },
+          {
+            "end": 129.846,
+            "start": 129.32599,
+            "word": "GTA"
+          },
+          {
+            "end": 130.146,
+            "start": 129.846,
+            "word": "2"
+          },
+          {
+            "end": 130.32599,
+            "start": 130.146,
+            "word": "में"
+          },
+          {
+            "end": 130.76599,
+            "start": 130.32599,
+            "word": "रिस्पेक्ट"
+          },
+          {
+            "end": 131.066,
+            "start": 130.76599,
+            "word": "सिस्टम"
+          },
+          {
+            "end": 131.26599,
+            "start": 131.066,
+            "word": "भी"
+          },
+          {
+            "end": 131.566,
+            "start": 131.26599,
+            "word": "था।"
+          },
+          {
+            "end": 131.76599,
+            "start": 131.566,
+            "word": "अगर"
+          },
+          {
+            "end": 131.886,
+            "start": 131.76599,
+            "word": "आप"
+          },
+          {
+            "end": 132.006,
+            "start": 131.886,
+            "word": "एक"
+          },
+          {
+            "end": 132.26599,
+            "start": 132.006,
+            "word": "गैंग"
+          },
+          {
+            "end": 132.406,
+            "start": 132.26599,
+            "word": "के"
+          },
+          {
+            "end": 132.486,
+            "start": 132.406,
+            "word": "लिए"
+          },
+          {
+            "end": 132.746,
+            "start": 132.486,
+            "word": "काम"
+          },
+          {
+            "end": 133.066,
+            "start": 132.746,
+            "word": "करते"
+          },
+          {
+            "end": 133.206,
+            "start": 133.066,
+            "word": "थे"
+          },
+          {
+            "end": 133.446,
+            "start": 133.206,
+            "word": "तो"
+          },
+          {
+            "end": 133.906,
+            "start": 133.446,
+            "word": "दूसरी"
+          },
+          {
+            "end": 134.126,
+            "start": 133.906,
+            "word": "गैंग"
+          },
+          {
+            "end": 134.406,
+            "start": 134.126,
+            "word": "आपसे"
+          },
+          {
+            "end": 134.76599,
+            "start": 134.406,
+            "word": "नफरत"
+          },
+          {
+            "end": 135.04599,
+            "start": 134.76599,
+            "word": "करने"
+          },
+          {
+            "end": 135.306,
+            "start": 135.04599,
+            "word": "लगती"
+          },
+          {
+            "end": 135.54599,
+            "start": 135.306,
+            "word": "थी।"
+          },
+          {
+            "end": 135.746,
+            "start": 135.286,
+            "word": "यह"
+          },
+          {
+            "end": 136.126,
+            "start": 135.746,
+            "word": "छोटा"
+          },
+          {
+            "end": 136.246,
+            "start": 136.126,
+            "word": "सा"
+          },
+          {
+            "end": 136.586,
+            "start": 136.246,
+            "word": "मेकानिक"
+          },
+          {
+            "end": 136.966,
+            "start": 136.586,
+            "word": "आज"
+          },
+          {
+            "end": 137.066,
+            "start": 136.966,
+            "word": "के"
+          },
+          {
+            "end": 137.38599,
+            "start": 137.066,
+            "word": "गेम्स"
+          },
+          {
+            "end": 137.486,
+            "start": 137.38599,
+            "word": "में"
+          },
+          {
+            "end": 137.866,
+            "start": 137.486,
+            "word": "नॉर्मल"
+          },
+          {
+            "end": 138.006,
+            "start": 137.866,
+            "word": "लग"
+          },
+          {
+            "end": 138.346,
+            "start": 138.006,
+            "word": "सकता"
+          },
+          {
+            "end": 138.506,
+            "start": 138.346,
+            "word": "है।"
+          },
+          {
+            "end": 138.746,
+            "start": 138.506,
+            "word": "लेकिन"
+          },
+          {
+            "end": 138.986,
+            "start": 138.746,
+            "word": "उस"
+          },
+          {
+            "end": 139.146,
+            "start": 138.986,
+            "word": "टाइम"
+          },
+          {
+            "end": 139.306,
+            "start": 139.146,
+            "word": "यह"
+          },
+          {
+            "end": 139.626,
+            "start": 139.306,
+            "word": "बहुत"
+          },
+          {
+            "end": 139.926,
+            "start": 139.626,
+            "word": "स्मार्ट"
+          },
+          {
+            "end": 140.206,
+            "start": 139.926,
+            "word": "आइडिया"
+          },
+          {
+            "end": 140.54599,
+            "start": 140.206,
+            "word": "था।"
+          },
+          {
+            "end": 141.026,
+            "start": 140.526,
+            "word": "इसके"
+          }
+        ]
+      },
+      {
+        "base_url": "/temp/Clips/Clip_04_gta_3_the_3d_revolution_job_1782624952447_base.mp4",
+        "emphasized_words": [
+          "Grand Theft Auto 3",
+          "3D open world",
+          "cultural phenomenon",
+          "Liberty City"
+        ],
+        "end_time": 175.01,
+        "metadata": {
+          "instagram": {
+            "description": "Remember when GTA 3 dropped? It redefined what open-world gaming could be, turning Liberty City into a living, breathing cultural phenomenon! #GTA3 #GamingLegends #3DGaming",
+            "hashtags": [
+              "GTA",
+              "GTA3",
+              "GamingNostalgia",
+              "LibertyCity",
+              "RockstarGames"
+            ],
+            "title": "The 3D Revolution: Grand Theft Auto 3"
+          },
+          "linkedin": {
+            "hashtags": [
+              "GamingInnovation",
+              "GTA",
+              "OpenWorldGames",
+              "CulturalImpact",
+              "GameDevelopment"
+            ],
+            "post": "Grand Theft Auto 3 in 2001 was a landmark title, pioneering the 3D open-world genre and becoming a cultural phenomenon. Its impact on game design and player freedom set new industry standards. #GamingInnovation #GTA #OpenWorldGames #CulturalImpact #GameDevelopment"
+          },
+          "tiktok": {
+            "description": "In 2001, GTA 3 brought a 3D open world to life like never before. It wasn't just a game, it was a cultural phenomenon! #GTA3 #GamingRevolution #OpenWorld",
+            "hashtags": [
+              "GTA",
+              "GTA3",
+              "GamingHistory",
+              "OpenWorldGames",
+              "Revolution"
+            ],
+            "title": "GTA 3 Changed EVERYTHING! 🤯"
+          },
+          "x": {
+            "hashtags": [
+              "GTA",
+              "GTA3",
+              "GamingHistory",
+              "OpenWorld",
+              "VideoGames"
+            ],
+            "tweet": "GTA 3 (2001): The game that made 3D open-worlds mainstream and became a cultural phenomenon. A true revolution! #GTA #GTA3 #Gaming"
+          },
+          "youtube_shorts": {
+            "description": "Experience the game that launched a thousand imitators! GTA 3 wasn't just good; it was revolutionary. #GTA3 #GamingRevolution #OpenWorldGaming",
+            "hashtags": [
+              "GTA",
+              "GamingHistory",
+              "GTA3",
+              "LibertyCity",
+              "VideoGames"
+            ],
+            "title": "GTA 3: The 3D Open World Masterpiece!"
+          }
+        },
+        "reasoning": "This clip captures the pivotal moment GTA transitioned into a full 3D open-world experience, transforming the gaming landscape and becoming a true cultural phenomenon.",
+        "score": 85,
+        "segments": [
+          {
+            "end": 175.012,
+            "start": 140.526,
+            "text": "2001 Grand Theft Auto 3 GTA cultural phenomenon GTA 3D open world Liberty City living city"
+          }
+        ],
+        "start_time": 140.53,
+        "thumbnail_url": "/temp/Clips/Thumbnail_04_gta_3_the_3d_revolution_job_1782624952447.jpg",
+        "title": "GTA 3: The 3D Revolution",
+        "video_url": "/temp/Clips/Clip_04_gta_3_the_3d_revolution_job_1782624952447_final.mp4",
+        "words": [
+          {
+            "end": 140.54599,
+            "start": 140.206,
+            "word": "था।"
+          },
+          {
+            "end": 141.026,
+            "start": 140.526,
+            "word": "इसके"
+          },
+          {
+            "end": 141.066,
+            "start": 141.026,
+            "word": "लिए"
+          },
+          {
+            "end": 141.406,
+            "start": 141.066,
+            "word": "प्लेयर"
+          },
+          {
+            "end": 141.76599,
+            "start": 141.406,
+            "word": "लगता"
+          },
+          {
+            "end": 141.88599,
+            "start": 141.76599,
+            "word": "था"
+          },
+          {
+            "end": 142.10599,
+            "start": 141.88599,
+            "word": "कि"
+          },
+          {
+            "end": 142.426,
+            "start": 142.10599,
+            "word": "वर्ल्ड"
+          },
+          {
+            "end": 142.82599,
+            "start": 142.426,
+            "word": "रियाक्ट"
+          },
+          {
+            "end": 143.086,
+            "start": 142.82599,
+            "word": "कर"
+          },
+          {
+            "end": 143.26599,
+            "start": 143.086,
+            "word": "रहा"
+          },
+          {
+            "end": 143.426,
+            "start": 143.26599,
+            "word": "है।"
+          },
+          {
+            "end": 143.76599,
+            "start": 143.426,
+            "word": "लेकिन"
+          },
+          {
+            "end": 144.166,
+            "start": 143.76599,
+            "word": "असली"
+          },
+          {
+            "end": 144.38599,
+            "start": 144.166,
+            "word": "दमा"
+          },
+          {
+            "end": 144.566,
+            "start": 144.38599,
+            "word": "का"
+          },
+          {
+            "end": 144.726,
+            "start": 144.566,
+            "word": "हुआ"
+          },
+          {
+            "end": 144.88599,
+            "start": 144.726,
+            "word": "था"
+          },
+          {
+            "end": 145.54599,
+            "start": 144.88599,
+            "word": "2001"
+          },
+          {
+            "end": 145.866,
+            "start": 145.54599,
+            "word": "में"
+          },
+          {
+            "end": 146.126,
+            "start": 145.866,
+            "word": "जब"
+          },
+          {
+            "end": 146.38599,
+            "start": 146.126,
+            "word": "आया"
+          },
+          {
+            "end": 146.82599,
+            "start": 146.38599,
+            "word": "Grand"
+          },
+          {
+            "end": 147.066,
+            "start": 146.82599,
+            "word": "Theft"
+          },
+          {
+            "end": 147.366,
+            "start": 147.066,
+            "word": "Auto"
+          },
+          {
+            "end": 147.82599,
+            "start": 147.366,
+            "word": "3।"
+          },
+          {
+            "end": 148.10599,
+            "start": 147.82599,
+            "word": "यही"
+          },
+          {
+            "end": 148.226,
+            "start": 148.10599,
+            "word": "वो"
+          },
+          {
+            "end": 148.406,
+            "start": 148.226,
+            "word": "गेम"
+          },
+          {
+            "end": 148.646,
+            "start": 148.406,
+            "word": "था"
+          },
+          {
+            "end": 148.946,
+            "start": 148.646,
+            "word": "जिसने"
+          },
+          {
+            "end": 149.346,
+            "start": 148.946,
+            "word": "GTA"
+          },
+          {
+            "end": 149.486,
+            "start": 149.346,
+            "word": "को"
+          },
+          {
+            "end": 149.786,
+            "start": 149.486,
+            "word": "पूरी"
+          },
+          {
+            "end": 150.232,
+            "start": 149.812,
+            "word": "दुनिया"
+          },
+          {
+            "end": 150.372,
+            "start": 150.232,
+            "word": "में"
+          },
+          {
+            "end": 150.57199,
+            "start": 150.372,
+            "word": "एक"
+          },
+          {
+            "end": 151.05199,
+            "start": 150.57199,
+            "word": "cultural"
+          },
+          {
+            "end": 151.532,
+            "start": 151.05199,
+            "word": "phenomenon"
+          },
+          {
+            "end": 151.832,
+            "start": 151.532,
+            "word": "बना"
+          },
+          {
+            "end": 152.092,
+            "start": 151.832,
+            "word": "दिया."
+          },
+          {
+            "end": 152.43199,
+            "start": 152.092,
+            "word": "पहली"
+          },
+          {
+            "end": 152.652,
+            "start": 152.43199,
+            "word": "बार"
+          },
+          {
+            "end": 152.972,
+            "start": 152.652,
+            "word": "GTA"
+          },
+          {
+            "end": 153.392,
+            "start": 152.972,
+            "word": "फुली"
+          },
+          {
+            "end": 153.77199,
+            "start": 153.392,
+            "word": "3D"
+          },
+          {
+            "end": 154.05199,
+            "start": 153.77199,
+            "word": "open"
+          },
+          {
+            "end": 154.35199,
+            "start": 154.05199,
+            "word": "world"
+          },
+          {
+            "end": 154.49199,
+            "start": 154.35199,
+            "word": "में"
+          },
+          {
+            "end": 154.832,
+            "start": 154.49199,
+            "word": "आया."
+          },
+          {
+            "end": 155.172,
+            "start": 154.832,
+            "word": "Liberty"
+          },
+          {
+            "end": 155.43199,
+            "start": 155.172,
+            "word": "City"
+          },
+          {
+            "end": 155.592,
+            "start": 155.43199,
+            "word": "अब"
+          },
+          {
+            "end": 155.79199,
+            "start": 155.592,
+            "word": "सिर्फ"
+          },
+          {
+            "end": 156.21199,
+            "start": 155.79199,
+            "word": "उपर"
+          },
+          {
+            "end": 156.332,
+            "start": 156.21199,
+            "word": "से"
+          },
+          {
+            "end": 156.612,
+            "start": 156.332,
+            "word": "दिखने"
+          },
+          {
+            "end": 156.752,
+            "start": 156.612,
+            "word": "वाली"
+          },
+          {
+            "end": 156.972,
+            "start": 156.752,
+            "word": "जगा"
+          },
+          {
+            "end": 157.152,
+            "start": 156.972,
+            "word": "नहीं"
+          },
+          {
+            "end": 157.392,
+            "start": 157.152,
+            "word": "थी"
+          },
+          {
+            "end": 157.752,
+            "start": 157.392,
+            "word": "बलकि"
+          },
+          {
+            "end": 157.91199,
+            "start": 157.752,
+            "word": "एक"
+          },
+          {
+            "end": 158.252,
+            "start": 157.91199,
+            "word": "living"
+          },
+          {
+            "end": 158.49199,
+            "start": 158.252,
+            "word": "city"
+          },
+          {
+            "end": 158.79199,
+            "start": 158.49199,
+            "word": "लगती"
+          },
+          {
+            "end": 159.13199,
+            "start": 158.79199,
+            "word": "थी."
+          },
+          {
+            "end": 159.29199,
+            "start": 159.13199,
+            "word": "आप"
+          },
+          {
+            "end": 159.55199,
+            "start": 159.29199,
+            "word": "कार्ड"
+          },
+          {
+            "end": 159.77199,
+            "start": 159.55199,
+            "word": "सला"
+          },
+          {
+            "end": 160.07199,
+            "start": 159.77199,
+            "word": "सकते"
+          },
+          {
+            "end": 160.472,
+            "start": 160.07199,
+            "word": "थे,"
+          },
+          {
+            "end": 160.79199,
+            "start": 160.472,
+            "word": "रेडियो"
+          },
+          {
+            "end": 160.952,
+            "start": 160.79199,
+            "word": "सुन"
+          },
+          {
+            "end": 161.29199,
+            "start": 160.952,
+            "word": "सकते"
+          },
+          {
+            "end": 161.63199,
+            "start": 161.29199,
+            "word": "थे,"
+          },
+          {
+            "end": 162.012,
+            "start": 161.63199,
+            "word": "मिशन्स"
+          },
+          {
+            "end": 162.152,
+            "start": 162.012,
+            "word": "कर"
+          },
+          {
+            "end": 162.47198,
+            "start": 162.152,
+            "word": "सकते"
+          },
+          {
+            "end": 162.612,
+            "start": 162.47198,
+            "word": "थे"
+          }
+        ]
+      },
+      {
+        "base_url": "/temp/Clips/Clip_05_vice_city_pure_80s_nostalgia_job_1782624952447_base.mp4",
+        "emphasized_words": [
+          "Vice City",
+          "80s Miami vibe",
+          "legendary",
+          "nostalgia",
+          "Panzer cheat code"
+        ],
+        "end_time": 214.01,
+        "metadata": {
+          "instagram": {
+            "description": "For many, Vice City was the true beginning of GTA love. The neon, the bikes, the 80s Miami feels, and of course, the Panzer cheat! Absolute legend. #ViceCity #GTA #GamingLegends",
+            "hashtags": [
+              "ViceCity",
+              "GTA",
+              "GamingNostalgia",
+              "80sMiami",
+              "TommyVercetti"
+            ],
+            "title": "If you know, you know! 🌴 Vice City Forever!"
+          },
+          "linkedin": {
+            "hashtags": [
+              "GamingCulture",
+              "ViceCity",
+              "RockstarGames",
+              "GameDesign",
+              "NostalgiaMarketing"
+            ],
+            "post": "Grand Theft Auto: Vice City holds a special place in gaming history, particularly for its immersive 80s Miami aesthetic and engaging narrative. It represents a pinnacle of cultural integration in game design, leaving an indelible mark on players globally. #GamingCulture #ViceCity #RockstarGames #GameDesign #NostalgiaMarketing"
+          },
+          "tiktok": {
+            "description": "The neon lights, the 80s Miami vibe, the PANZER cheat code! Vice City wasn't just GTA, it was pure nostalgia! #ViceCity #GTANostalgia #80sVibes",
+            "hashtags": [
+              "GTA",
+              "ViceCity",
+              "Nostalgia",
+              "80sGaming",
+              "PanzerCheat"
+            ],
+            "title": "Vice City: More than just a game, it was a MOOD! 🌴☀️"
+          },
+          "x": {
+            "hashtags": [
+              "ViceCity",
+              "GTA",
+              "Nostalgia",
+              "Gaming",
+              "80s"
+            ],
+            "tweet": "Vice City: Not just a game, a whole 80s mood! Neon lights, Miami vibes, and who can forget the PANZER cheat? Pure nostalgia! #ViceCity #GTA #80s"
+          },
+          "youtube_shorts": {
+            "description": "Step into the iconic world of Vice City! Neon lights, rad music, and building a criminal empire – pure 80s gold. #ViceCity #GTANostalgia #80sGames",
+            "hashtags": [
+              "GTA",
+              "ViceCity",
+              "80sGaming",
+              "Nostalgia",
+              "ClassicGTA"
+            ],
+            "title": "Vice City: The Ultimate 80s Vibe! 🎶"
+          }
+        },
+        "reasoning": "This clip powerfully evokes strong nostalgia by detailing how Vice City's iconic 80s aesthetic, unforgettable atmosphere, and famous cheat codes cemented its legendary status for countless players.",
+        "score": 95,
+        "segments": [
+          {
+            "end": 175.012,
+            "start": 140.526,
+            "text": "2001 Grand Theft Auto 3 GTA cultural phenomenon GTA 3D open world Liberty City living city"
+          },
+          {
+            "end": 185.91199,
+            "start": 175.012,
+            "text": "इसके बाद 2002 में आया Grand Theft Auto Vice City और अनेस्ली कहूं तो इंडिया में बहुत सारे लोगों के लिए GTA की असली शुरुवात यही गेम था."
+          },
+          {
+            "end": 193.85199,
+            "start": 185.91199,
+            "text": "वाइस सिटी की नियॉन लाइट्स, बीचेज, बाइक्स, हेलिकॉप्टर्स, रेडियो स्टेशन्स और 80s मायामी वाइब ने इसे लेजेंडरी बना दिया."
+          },
+          {
+            "end": 197.832,
+            "start": 193.85199,
+            "text": "इस गेम का प्रोटागनिश टॉमी वर्सेटी था, जिसे रे लियोटा ने वॉइस दी थी."
+          },
+          {
+            "end": 204.392,
+            "start": 197.832,
+            "text": "तॉमी प्रिजन से बाहर आता है, वाइस सिटी में डील खराब हो जाती है और फिर वो धीरे धीरे पूरा क्रिमिनल एमपायर बिल्ड करता है."
+          },
+          {
+            "end": 214.012,
+            "start": 204.392,
+            "text": "वाइस सीटी सिफ गेम नहीं था, ये मूड था. आज भी अगर किसी को GTA Nostalgia बोलो, तो सबसे पहले उसके दिमाग में वाइस सीटी की स्ट्रीट्स, बाइक्स और पैंजर चीट कोड आता है."
+          }
+        ],
+        "start_time": 175.01,
+        "thumbnail_url": "/temp/Clips/Thumbnail_05_vice_city_pure_80s_nostalgia_job_1782624952447.jpg",
+        "title": "Vice City: Pure 80s Nostalgia",
+        "video_url": "/temp/Clips/Clip_05_vice_city_pure_80s_nostalgia_job_1782624952447_final.mp4",
+        "words": [
+          {
+            "end": 178.27199,
+            "start": 175.012,
+            "word": "इसके"
+          },
+          {
+            "end": 178.392,
+            "start": 178.27199,
+            "word": "बाद"
+          },
+          {
+            "end": 178.952,
+            "start": 178.392,
+            "word": "2002"
+          },
+          {
+            "end": 179.172,
+            "start": 178.952,
+            "word": "में"
+          },
+          {
+            "end": 179.41199,
+            "start": 179.172,
+            "word": "आया"
+          },
+          {
+            "end": 179.85199,
+            "start": 179.41199,
+            "word": "Grand"
+          },
+          {
+            "end": 180.052,
+            "start": 179.85199,
+            "word": "Theft"
+          },
+          {
+            "end": 180.372,
+            "start": 180.052,
+            "word": "Auto"
+          },
+          {
+            "end": 180.732,
+            "start": 180.372,
+            "word": "Vice"
+          },
+          {
+            "end": 180.97198,
+            "start": 180.732,
+            "word": "City"
+          },
+          {
+            "end": 181.332,
+            "start": 180.97198,
+            "word": "और"
+          },
+          {
+            "end": 181.77199,
+            "start": 181.332,
+            "word": "अनेस्ली"
+          },
+          {
+            "end": 181.97198,
+            "start": 181.77199,
+            "word": "कहूं"
+          },
+          {
+            "end": 182.092,
+            "start": 181.97198,
+            "word": "तो"
+          },
+          {
+            "end": 182.47198,
+            "start": 182.092,
+            "word": "इंडिया"
+          },
+          {
+            "end": 182.57199,
+            "start": 182.47198,
+            "word": "में"
+          },
+          {
+            "end": 182.91199,
+            "start": 182.57199,
+            "word": "बहुत"
+          },
+          {
+            "end": 183.172,
+            "start": 182.91199,
+            "word": "सारे"
+          },
+          {
+            "end": 183.43199,
+            "start": 183.172,
+            "word": "लोगों"
+          },
+          {
+            "end": 183.57199,
+            "start": 183.43199,
+            "word": "के"
+          },
+          {
+            "end": 183.69199,
+            "start": 183.57199,
+            "word": "लिए"
+          },
+          {
+            "end": 184.152,
+            "start": 183.69199,
+            "word": "GTA"
+          },
+          {
+            "end": 184.372,
+            "start": 184.152,
+            "word": "की"
+          },
+          {
+            "end": 184.71199,
+            "start": 184.372,
+            "word": "असली"
+          },
+          {
+            "end": 185.152,
+            "start": 184.71199,
+            "word": "शुरुवात"
+          },
+          {
+            "end": 185.41199,
+            "start": 185.152,
+            "word": "यही"
+          },
+          {
+            "end": 185.652,
+            "start": 185.41199,
+            "word": "गेम"
+          },
+          {
+            "end": 185.97198,
+            "start": 185.652,
+            "word": "था."
+          },
+          {
+            "end": 186.27199,
+            "start": 185.91199,
+            "word": "वाइस"
+          },
+          {
+            "end": 186.512,
+            "start": 186.27199,
+            "word": "सिटी"
+          },
+          {
+            "end": 186.672,
+            "start": 186.512,
+            "word": "की"
+          },
+          {
+            "end": 187.07199,
+            "start": 186.672,
+            "word": "नियॉन"
+          },
+          {
+            "end": 187.612,
+            "start": 187.07199,
+            "word": "लाइट्स,"
+          },
+          {
+            "end": 188.372,
+            "start": 187.612,
+            "word": "बीचेज,"
+          },
+          {
+            "end": 189.112,
+            "start": 188.372,
+            "word": "बाइक्स,"
+          },
+          {
+            "end": 190.052,
+            "start": 189.112,
+            "word": "हेलिकॉप्टर्स,"
+          },
+          {
+            "end": 190.392,
+            "start": 190.052,
+            "word": "रेडियो"
+          },
+          {
+            "end": 190.952,
+            "start": 190.392,
+            "word": "स्टेशन्स"
+          },
+          {
+            "end": 191.252,
+            "start": 190.952,
+            "word": "और"
+          },
+          {
+            "end": 191.77199,
+            "start": 191.252,
+            "word": "80s"
+          },
+          {
+            "end": 192.19199,
+            "start": 191.77199,
+            "word": "मायामी"
+          },
+          {
+            "end": 192.47198,
+            "start": 192.19199,
+            "word": "वाइब"
+          },
+          {
+            "end": 192.612,
+            "start": 192.47198,
+            "word": "ने"
+          },
+          {
+            "end": 192.892,
+            "start": 192.612,
+            "word": "इसे"
+          },
+          {
+            "end": 193.41199,
+            "start": 192.892,
+            "word": "लेजेंडरी"
+          },
+          {
+            "end": 193.672,
+            "start": 193.41199,
+            "word": "बना"
+          },
+          {
+            "end": 193.93199,
+            "start": 193.672,
+            "word": "दिया."
+          },
+          {
+            "end": 194.13199,
+            "start": 194.012,
+            "word": "इस"
+          },
+          {
+            "end": 194.29199,
+            "start": 194.13199,
+            "word": "गेम"
+          },
+          {
+            "end": 194.43199,
+            "start": 194.29199,
+            "word": "का"
+          },
+          {
+            "end": 194.952,
+            "start": 194.43199,
+            "word": "प्रोटागनिश"
+          },
+          {
+            "end": 195.332,
+            "start": 194.952,
+            "word": "टॉमी"
+          },
+          {
+            "end": 195.85199,
+            "start": 195.332,
+            "word": "वर्सेटी"
+          },
+          {
+            "end": 196.252,
+            "start": 195.85199,
+            "word": "था,"
+          },
+          {
+            "end": 196.41199,
+            "start": 196.252,
+            "word": "जिसे"
+          },
+          {
+            "end": 196.612,
+            "start": 196.41199,
+            "word": "रे"
+          },
+          {
+            "end": 197.07199,
+            "start": 196.612,
+            "word": "लियोटा"
+          },
+          {
+            "end": 197.21199,
+            "start": 197.07199,
+            "word": "ने"
+          },
+          {
+            "end": 197.47198,
+            "start": 197.21199,
+            "word": "वॉइस"
+          },
+          {
+            "end": 197.652,
+            "start": 197.47198,
+            "word": "दी"
+          },
+          {
+            "end": 197.872,
+            "start": 197.652,
+            "word": "थी."
+          },
+          {
+            "end": 198.21199,
+            "start": 197.832,
+            "word": "तॉमी"
+          },
+          {
+            "end": 198.592,
+            "start": 198.21199,
+            "word": "प्रिजन"
+          },
+          {
+            "end": 198.752,
+            "start": 198.592,
+            "word": "से"
+          },
+          {
+            "end": 198.99199,
+            "start": 198.752,
+            "word": "बाहर"
+          },
+          {
+            "end": 199.252,
+            "start": 198.99199,
+            "word": "आता"
+          },
+          {
+            "end": 199.57199,
+            "start": 199.252,
+            "word": "है,"
+          },
+          {
+            "end": 199.812,
+            "start": 199.57199,
+            "word": "वाइस"
+          },
+          {
+            "end": 199.99199,
+            "start": 199.812,
+            "word": "सिटी"
+          },
+          {
+            "end": 200.13199,
+            "start": 199.99199,
+            "word": "में"
+          },
+          {
+            "end": 200.41199,
+            "start": 200.13199,
+            "word": "डील"
+          },
+          {
+            "end": 200.732,
+            "start": 200.41199,
+            "word": "खराब"
+          },
+          {
+            "end": 200.85199,
+            "start": 200.732,
+            "word": "हो"
+          },
+          {
+            "end": 201.092,
+            "start": 200.85199,
+            "word": "जाती"
+          },
+          {
+            "end": 201.19199,
+            "start": 201.092,
+            "word": "है"
+          },
+          {
+            "end": 201.47198,
+            "start": 201.19199,
+            "word": "और"
+          },
+          {
+            "end": 201.63199,
+            "start": 201.47198,
+            "word": "फिर"
+          },
+          {
+            "end": 201.752,
+            "start": 201.63199,
+            "word": "वो"
+          },
+          {
+            "end": 202.112,
+            "start": 201.752,
+            "word": "धीरे"
+          },
+          {
+            "end": 202.392,
+            "start": 202.112,
+            "word": "धीरे"
+          },
+          {
+            "end": 202.832,
+            "start": 202.392,
+            "word": "पूरा"
+          },
+          {
+            "end": 203.29199,
+            "start": 202.832,
+            "word": "क्रिमिनल"
+          },
+          {
+            "end": 203.71199,
+            "start": 203.29199,
+            "word": "एमपायर"
+          },
+          {
+            "end": 203.93199,
+            "start": 203.71199,
+            "word": "बिल्ड"
+          },
+          {
+            "end": 204.27199,
+            "start": 203.93199,
+            "word": "करता"
+          },
+          {
+            "end": 204.49199,
+            "start": 204.27199,
+            "word": "है."
+          },
+          {
+            "end": 204.77199,
+            "start": 204.392,
+            "word": "वाइस"
+          },
+          {
+            "end": 205.032,
+            "start": 204.77199,
+            "word": "सीटी"
+          },
+          {
+            "end": 205.21199,
+            "start": 205.032,
+            "word": "सिफ"
+          },
+          {
+            "end": 205.532,
+            "start": 205.21199,
+            "word": "गेम"
+          },
+          {
+            "end": 205.812,
+            "start": 205.532,
+            "word": "नहीं"
+          },
+          {
+            "end": 206.112,
+            "start": 205.812,
+            "word": "था,"
+          },
+          {
+            "end": 206.19199,
+            "start": 206.112,
+            "word": "ये"
+          },
+          {
+            "end": 206.49199,
+            "start": 206.19199,
+            "word": "मूड"
+          },
+          {
+            "end": 206.872,
+            "start": 206.49199,
+            "word": "था."
+          },
+          {
+            "end": 207.152,
+            "start": 206.872,
+            "word": "आज"
+          },
+          {
+            "end": 207.27199,
+            "start": 207.152,
+            "word": "भी"
+          },
+          {
+            "end": 207.41199,
+            "start": 207.27199,
+            "word": "अगर"
+          },
+          {
+            "end": 207.69199,
+            "start": 207.41199,
+            "word": "किसी"
+          },
+          {
+            "end": 207.812,
+            "start": 207.69199,
+            "word": "को"
+          },
+          {
+            "end": 208.232,
+            "start": 207.812,
+            "word": "GTA"
+          },
+          {
+            "end": 208.752,
+            "start": 208.232,
+            "word": "Nostalgia"
+          },
+          {
+            "end": 209.232,
+            "start": 208.752,
+            "word": "बोलो,"
+          },
+          {
+            "end": 209.372,
+            "start": 209.232,
+            "word": "तो"
+          },
+          {
+            "end": 209.592,
+            "start": 209.372,
+            "word": "सबसे"
+          },
+          {
+            "end": 209.91199,
+            "start": 209.592,
+            "word": "पहले"
+          },
+          {
+            "end": 210.112,
+            "start": 209.91199,
+            "word": "उसके"
+          },
+          {
+            "end": 210.452,
+            "start": 210.112,
+            "word": "दिमाग"
+          },
+          {
+            "end": 210.57199,
+            "start": 210.452,
+            "word": "में"
+          },
+          {
+            "end": 210.892,
+            "start": 210.57199,
+            "word": "वाइस"
+          },
+          {
+            "end": 211.13199,
+            "start": 210.892,
+            "word": "सीटी"
+          },
+          {
+            "end": 211.272,
+            "start": 211.13199,
+            "word": "की"
+          },
+          {
+            "end": 211.952,
+            "start": 211.272,
+            "word": "स्ट्रीट्स,"
+          },
+          {
+            "end": 212.452,
+            "start": 211.952,
+            "word": "बाइक्स"
+          },
+          {
+            "end": 212.71199,
+            "start": 212.452,
+            "word": "और"
+          },
+          {
+            "end": 213.21199,
+            "start": 212.71199,
+            "word": "पैंजर"
+          },
+          {
+            "end": 213.452,
+            "start": 213.21199,
+            "word": "चीट"
+          },
+          {
+            "end": 213.672,
+            "start": 213.452,
+            "word": "कोड"
+          },
+          {
+            "end": 213.93199,
+            "start": 213.672,
+            "word": "आता"
+          },
+          {
+            "end": 214.092,
+            "start": 213.93199,
+            "word": "है."
+          }
+        ]
+      },
+      {
+        "base_url": "/temp/Clips/Clip_06_san_andreas_bigger_bolder_pers_job_1782624952447_base.mp4",
+        "emphasized_words": [
+          "San Andreas",
+          "whole state",
+          "three cities",
+          "personal",
+          "customization"
+        ],
+        "end_time": 256.4,
+        "metadata": {
+          "instagram": {
+            "description": "It wasn't just a city; it was a whole state! San Andreas brought unprecedented scale and personal choices to GTA. What was your favorite customization? #SanAndreas #GTA #OpenWorldGaming",
+            "hashtags": [
+              "SanAndreas",
+              "GTA",
+              "GamingNostalgia",
+              "RockstarGames",
+              "CJ"
+            ],
+            "title": "San Andreas: Beyond the City Limits! 🗺️"
+          },
+          "linkedin": {
+            "hashtags": [
+              "GameDesign",
+              "GTA",
+              "OpenWorldGames",
+              "GamingInnovation",
+              "RockstarGames"
+            ],
+            "post": "Grand Theft Auto: San Andreas marked a significant leap in open-world game design, expanding the playable area to an entire state and introducing deep player customization. This level of immersion and scale set new industry benchmarks for player agency and world-building. #GameDesign #GTA #OpenWorldGames #GamingInnovation #RockstarGames"
+          },
+          "tiktok": {
+            "description": "From Los Santos to Las Venturas, San Andreas was HUGE! Gyms, tattoos, girlfriends – it made the open world PERSONAL! #SanAndreas #GTA #GamingHistory",
+            "hashtags": [
+              "GTA",
+              "SanAndreas",
+              "GamingLegends",
+              "OpenWorld",
+              "CJ"
+            ],
+            "title": "San Andreas: The GTA that changed it all! 🤯"
+          },
+          "x": {
+            "hashtags": [
+              "GTA",
+              "SanAndreas",
+              "GamingHistory",
+              "OpenWorld",
+              "CJ"
+            ],
+            "tweet": "San Andreas wasn't just big, it was personal! A whole state, 3 cities, and customization like never before. A true masterpiece! #GTA #SanAndreas #Gaming"
+          },
+          "youtube_shorts": {
+            "description": "Discover how San Andreas revolutionized GTA with its massive state-wide map and deep customization options. #SanAndreas #GTALore #GamingEvolution",
+            "hashtags": [
+              "GTA",
+              "SanAndreas",
+              "GamingHistory",
+              "OpenWorld",
+              "VideoGames"
+            ],
+            "title": "GTA San Andreas: Scale & Personalization! ✨"
+          }
+        },
+        "reasoning": "This clip showcases San Andreas' groundbreaking expansion of the open world into an entire state and its introduction of unparalleled player customization and depth.",
+        "score": 90,
+        "segments": [
+          {
+            "end": 239.39801,
+            "start": 234.39801,
+            "text": "San Andreas's biggest strength was its scale. It was not just a city but a whole state."
+          },
+          {
+            "end": 244.39801,
+            "start": 239.39801,
+            "text": "It had three big cities like Los Santos, San Fierro, and Las Venturas."
+          },
+          {
+            "end": 252.39801,
+            "start": 244.39801,
+            "text": "Gym, food, clothes, tattoos, driving school, flying school, girlfriends, gang territories, train missions, everything."
+          },
+          {
+            "end": 256.398,
+            "start": 252.39801,
+            "text": "GTA San Andreas didn't just make the open world bigger, it made it personal."
+          },
+          {
+            "end": 261.398,
+            "start": 256.398,
+            "text": "In 2004, another GTA game came out, Grand Theft Auto Advance."
+          }
+        ],
+        "start_time": 234.4,
+        "thumbnail_url": "/temp/Clips/Thumbnail_06_san_andreas_bigger_bolder_pers_job_1782624952447.jpg",
+        "title": "San Andreas: Bigger, Bolder, Personal",
+        "video_url": "/temp/Clips/Clip_06_san_andreas_bigger_bolder_pers_job_1782624952447_final.mp4",
+        "words": [
+          {
+            "end": 234.438,
+            "start": 234.298,
+            "word": "है."
+          },
+          {
+            "end": 234.778,
+            "start": 234.39801,
+            "word": "San"
+          },
+          {
+            "end": 235.378,
+            "start": 234.778,
+            "word": "Andreas's"
+          },
+          {
+            "end": 235.658,
+            "start": 235.378,
+            "word": "biggest"
+          },
+          {
+            "end": 236.17801,
+            "start": 235.658,
+            "word": "strength"
+          },
+          {
+            "end": 236.39801,
+            "start": 236.17801,
+            "word": "was"
+          },
+          {
+            "end": 236.658,
+            "start": 236.39801,
+            "word": "its"
+          },
+          {
+            "end": 237.218,
+            "start": 236.658,
+            "word": "scale."
+          },
+          {
+            "end": 237.358,
+            "start": 237.218,
+            "word": "It"
+          },
+          {
+            "end": 237.378,
+            "start": 237.358,
+            "word": "was"
+          },
+          {
+            "end": 237.39801,
+            "start": 237.378,
+            "word": "not"
+          },
+          {
+            "end": 237.418,
+            "start": 237.39801,
+            "word": "just"
+          },
+          {
+            "end": 237.438,
+            "start": 237.418,
+            "word": "a"
+          },
+          {
+            "end": 237.83801,
+            "start": 237.438,
+            "word": "city"
+          },
+          {
+            "end": 238.31801,
+            "start": 237.83801,
+            "word": "but"
+          },
+          {
+            "end": 238.438,
+            "start": 238.31801,
+            "word": "a"
+          },
+          {
+            "end": 238.658,
+            "start": 238.438,
+            "word": "whole"
+          },
+          {
+            "end": 239.478,
+            "start": 238.658,
+            "word": "state."
+          },
+          {
+            "end": 239.75801,
+            "start": 239.45801,
+            "word": "It"
+          },
+          {
+            "end": 239.778,
+            "start": 239.75801,
+            "word": "had"
+          },
+          {
+            "end": 239.798,
+            "start": 239.778,
+            "word": "three"
+          },
+          {
+            "end": 239.81801,
+            "start": 239.798,
+            "word": "big"
+          },
+          {
+            "end": 239.83801,
+            "start": 239.81801,
+            "word": "cities"
+          },
+          {
+            "end": 239.858,
+            "start": 239.83801,
+            "word": "like"
+          },
+          {
+            "end": 240.098,
+            "start": 239.858,
+            "word": "Los"
+          },
+          {
+            "end": 240.778,
+            "start": 240.098,
+            "word": "Santos,"
+          },
+          {
+            "end": 241.138,
+            "start": 240.778,
+            "word": "San"
+          },
+          {
+            "end": 241.738,
+            "start": 241.138,
+            "word": "Fierro,"
+          },
+          {
+            "end": 241.938,
+            "start": 241.738,
+            "word": "and"
+          },
+          {
+            "end": 242.158,
+            "start": 241.938,
+            "word": "Las"
+          },
+          {
+            "end": 243.638,
+            "start": 242.158,
+            "word": "Venturas."
+          },
+          {
+            "end": 244.858,
+            "start": 243.89801,
+            "word": "Gym,"
+          },
+          {
+            "end": 245.498,
+            "start": 244.858,
+            "word": "food,"
+          },
+          {
+            "end": 246.17801,
+            "start": 245.498,
+            "word": "clothes,"
+          },
+          {
+            "end": 246.858,
+            "start": 246.17801,
+            "word": "tattoos,"
+          },
+          {
+            "end": 247.25801,
+            "start": 246.858,
+            "word": "driving"
+          },
+          {
+            "end": 247.918,
+            "start": 247.25801,
+            "word": "school,"
+          },
+          {
+            "end": 248.198,
+            "start": 247.918,
+            "word": "flying"
+          },
+          {
+            "end": 248.798,
+            "start": 248.198,
+            "word": "school,"
+          },
+          {
+            "end": 249.698,
+            "start": 248.798,
+            "word": "girlfriends,"
+          },
+          {
+            "end": 250.018,
+            "start": 249.698,
+            "word": "gang"
+          },
+          {
+            "end": 250.75801,
+            "start": 250.018,
+            "word": "territories,"
+          },
+          {
+            "end": 251.098,
+            "start": 250.75801,
+            "word": "train"
+          },
+          {
+            "end": 251.658,
+            "start": 251.098,
+            "word": "missions,"
+          },
+          {
+            "end": 252.298,
+            "start": 251.658,
+            "word": "everything."
+          },
+          {
+            "end": 252.83801,
+            "start": 252.45801,
+            "word": "GTA"
+          },
+          {
+            "end": 253.078,
+            "start": 252.83801,
+            "word": "San"
+          },
+          {
+            "end": 253.418,
+            "start": 253.078,
+            "word": "Andreas"
+          },
+          {
+            "end": 253.578,
+            "start": 253.418,
+            "word": "didn't"
+          },
+          {
+            "end": 253.638,
+            "start": 253.578,
+            "word": "just"
+          },
+          {
+            "end": 253.658,
+            "start": 253.638,
+            "word": "make"
+          },
+          {
+            "end": 253.75801,
+            "start": 253.658,
+            "word": "the"
+          },
+          {
+            "end": 253.89801,
+            "start": 253.75801,
+            "word": "open"
+          },
+          {
+            "end": 254.278,
+            "start": 253.89801,
+            "word": "world"
+          },
+          {
+            "end": 255.418,
+            "start": 254.278,
+            "word": "bigger,"
+          },
+          {
+            "end": 255.55801,
+            "start": 255.418,
+            "word": "it"
+          },
+          {
+            "end": 255.67801,
+            "start": 255.55801,
+            "word": "made"
+          },
+          {
+            "end": 255.698,
+            "start": 255.67801,
+            "word": "it"
+          },
+          {
+            "end": 256.618,
+            "start": 255.698,
+            "word": "personal."
+          }
+        ]
+      },
+      {
+        "base_url": "/temp/Clips/Clip_07_gta_goes_portable_psp_job_1782624952447_base.mp4",
+        "emphasized_words": [
+          "3D GTA",
+          "PSP",
+          "portable",
+          "achievement",
+          "handheld"
+        ],
+        "end_time": 316.66,
+        "metadata": {
+          "instagram": {
+            "description": "Bringing the full 3D GTA experience from PlayStation 2 to the PSP was a massive achievement. This was a game-changer for handheld gaming! #GTALibertyCityStories #GTAViceCityStories #PSPGaming",
+            "hashtags": [
+              "GTA",
+              "PSP",
+              "PortableGaming",
+              "GamingInnovation",
+              "RetroTech"
+            ],
+            "title": "The moment GTA became truly portable! 🕹️"
+          },
+          "linkedin": {
+            "hashtags": [
+              "GamingTechnology",
+              "GTA",
+              "PortableGaming",
+              "PSP",
+              "GameDevelopment"
+            ],
+            "post": "The Grand Theft Auto series' successful transition to handheld devices like the PSP, delivering a proper 3D experience, represented a significant technological achievement. This expanded the franchise's reach and demonstrated the potential for immersive gaming on portable platforms. #GamingTechnology #GTA #PortableGaming #PSP #GameDevelopment"
+          },
+          "tiktok": {
+            "description": "Remember when GTA went portable on the PSP? Getting that full 3D experience on a handheld was mind-blowing for its time! #GTAPSP #PortableGaming #TechHistory",
+            "hashtags": [
+              "GTA",
+              "PSP",
+              "HandheldGaming",
+              "GamingHistory",
+              "Tech"
+            ],
+            "title": "GTA on PSP?! A HUGE Achievement! 🤯"
+          },
+          "x": {
+            "hashtags": [
+              "GTA",
+              "PSP",
+              "GamingTech",
+              "Handheld",
+              "RetroGaming"
+            ],
+            "tweet": "Getting a full 3D GTA on PSP was HUGE! A true achievement in portable gaming. Who played Liberty City Stories on the go? #GTA #PSP #GamingHistory"
+          },
+          "youtube_shorts": {
+            "description": "The PSP brought full 3D GTA to your hands! This was a monumental achievement for portable gaming. #GTAPortable #GamingTech #PSP",
+            "hashtags": [
+              "GTA",
+              "PSP",
+              "GamingHistory",
+              "HandheldGaming",
+              "TechEvolution"
+            ],
+            "title": "GTA's Leap to Handheld Gaming! 🎮"
+          }
+        },
+        "reasoning": "This clip highlights a significant technological leap for the GTA series, bringing full 3D experiences to portable devices and expanding its accessibility to a new audience.",
+        "score": 78,
+        "segments": [
+          {
+            "end": 305.46,
+            "start": 300,
+            "text": "प्रापर थ्रीडी जीटी एक्सपीरियंस देने की कोशिश की और उस टाइम के हिसाब से ये बहुत बड़ी अचीवमेंट थी."
+          },
+          {
+            "end": 316.66,
+            "start": 305.46,
+            "text": "जो जीटीए थ्री जैसा ओपन वर्ल्ड पहले प्लेस्टेशन टू पर मिलता था वो अब पीसपी में पोर्टेबल फॉर्म में आ गया था. ये वही मोमेंट था जब जीटीए ने कंसोल से निकल कर हैंडल गेमिंग में भी अपनी पावर दिखा दी."
+          }
+        ],
+        "start_time": 299.9,
+        "thumbnail_url": "/temp/Clips/Thumbnail_07_gta_goes_portable_psp_job_1782624952447.jpg",
+        "title": "GTA Goes Portable (PSP)",
+        "video_url": "/temp/Clips/Clip_07_gta_goes_portable_psp_job_1782624952447_final.mp4",
+        "words": [
+          {
+            "end": 300.15802,
+            "start": 299.858,
+            "word": "के"
+          },
+          {
+            "end": 300.178,
+            "start": 300.15802,
+            "word": "लिए"
+          },
+          {
+            "end": 300.378,
+            "start": 300.178,
+            "word": "काम"
+          },
+          {
+            "end": 300.398,
+            "start": 300.378,
+            "word": "करता"
+          },
+          {
+            "end": 300.418,
+            "start": 300.398,
+            "word": "है।"
+          },
+          {
+            "end": 300.82,
+            "start": 300,
+            "word": "प्रापर"
+          },
+          {
+            "end": 301.26,
+            "start": 300.82,
+            "word": "थ्रीडी"
+          },
+          {
+            "end": 301.58,
+            "start": 301.26,
+            "word": "जीटी"
+          },
+          {
+            "end": 302.1,
+            "start": 301.58,
+            "word": "एक्सपीरियंस"
+          },
+          {
+            "end": 302.38,
+            "start": 302.1,
+            "word": "देने"
+          },
+          {
+            "end": 302.48,
+            "start": 302.38,
+            "word": "की"
+          },
+          {
+            "end": 302.76,
+            "start": 302.48,
+            "word": "कोशिश"
+          },
+          {
+            "end": 302.96,
+            "start": 302.76,
+            "word": "की"
+          },
+          {
+            "end": 303.28,
+            "start": 302.96,
+            "word": "और"
+          },
+          {
+            "end": 303.44,
+            "start": 303.28,
+            "word": "उस"
+          },
+          {
+            "end": 303.64,
+            "start": 303.44,
+            "word": "टाइम"
+          },
+          {
+            "end": 303.82,
+            "start": 303.64,
+            "word": "के"
+          },
+          {
+            "end": 304.04,
+            "start": 303.82,
+            "word": "हिसाब"
+          },
+          {
+            "end": 304.18,
+            "start": 304.04,
+            "word": "से"
+          },
+          {
+            "end": 304.28,
+            "start": 304.18,
+            "word": "ये"
+          },
+          {
+            "end": 304.62,
+            "start": 304.28,
+            "word": "बहुत"
+          },
+          {
+            "end": 304.8,
+            "start": 304.62,
+            "word": "बड़ी"
+          },
+          {
+            "end": 305.28,
+            "start": 304.8,
+            "word": "अचीवमेंट"
+          },
+          {
+            "end": 305.56,
+            "start": 305.28,
+            "word": "थी."
+          },
+          {
+            "end": 306.16,
+            "start": 305.46,
+            "word": "जो"
+          },
+          {
+            "end": 306.64,
+            "start": 306.16,
+            "word": "जीटीए"
+          },
+          {
+            "end": 306.92,
+            "start": 306.64,
+            "word": "थ्री"
+          },
+          {
+            "end": 307.24,
+            "start": 306.92,
+            "word": "जैसा"
+          },
+          {
+            "end": 307.52,
+            "start": 307.24,
+            "word": "ओपन"
+          },
+          {
+            "end": 307.78,
+            "start": 307.52,
+            "word": "वर्ल्ड"
+          },
+          {
+            "end": 308.1,
+            "start": 307.78,
+            "word": "पहले"
+          },
+          {
+            "end": 308.58,
+            "start": 308.1,
+            "word": "प्लेस्टेशन"
+          },
+          {
+            "end": 308.8,
+            "start": 308.58,
+            "word": "टू"
+          },
+          {
+            "end": 309,
+            "start": 308.8,
+            "word": "पर"
+          },
+          {
+            "end": 309.32,
+            "start": 309,
+            "word": "मिलता"
+          },
+          {
+            "end": 309.44,
+            "start": 309.32,
+            "word": "था"
+          },
+          {
+            "end": 309.82,
+            "start": 309.44,
+            "word": "वो"
+          },
+          {
+            "end": 309.98,
+            "start": 309.82,
+            "word": "अब"
+          },
+          {
+            "end": 310.38,
+            "start": 309.98,
+            "word": "पीसपी"
+          },
+          {
+            "end": 310.52,
+            "start": 310.38,
+            "word": "में"
+          },
+          {
+            "end": 310.98,
+            "start": 310.52,
+            "word": "पोर्टेबल"
+          },
+          {
+            "end": 311.22,
+            "start": 310.98,
+            "word": "फॉर्म"
+          },
+          {
+            "end": 311.36,
+            "start": 311.22,
+            "word": "में"
+          },
+          {
+            "end": 311.46,
+            "start": 311.36,
+            "word": "आ"
+          },
+          {
+            "end": 311.6,
+            "start": 311.46,
+            "word": "गया"
+          },
+          {
+            "end": 311.96,
+            "start": 311.6,
+            "word": "था."
+          },
+          {
+            "end": 312.06,
+            "start": 311.96,
+            "word": "ये"
+          },
+          {
+            "end": 312.32,
+            "start": 312.06,
+            "word": "वही"
+          },
+          {
+            "end": 312.64,
+            "start": 312.32,
+            "word": "मोमेंट"
+          },
+          {
+            "end": 312.86,
+            "start": 312.64,
+            "word": "था"
+          },
+          {
+            "end": 313.14,
+            "start": 312.86,
+            "word": "जब"
+          },
+          {
+            "end": 313.52,
+            "start": 313.14,
+            "word": "जीटीए"
+          },
+          {
+            "end": 313.68,
+            "start": 313.52,
+            "word": "ने"
+          },
+          {
+            "end": 314.12,
+            "start": 313.68,
+            "word": "कंसोल"
+          },
+          {
+            "end": 314.24,
+            "start": 314.12,
+            "word": "से"
+          },
+          {
+            "end": 314.48,
+            "start": 314.24,
+            "word": "निकल"
+          },
+          {
+            "end": 314.7,
+            "start": 314.48,
+            "word": "कर"
+          },
+          {
+            "end": 315.14,
+            "start": 314.7,
+            "word": "हैंडल"
+          },
+          {
+            "end": 315.46,
+            "start": 315.14,
+            "word": "गेमिंग"
+          },
+          {
+            "end": 315.6,
+            "start": 315.46,
+            "word": "में"
+          },
+          {
+            "end": 315.74,
+            "start": 315.6,
+            "word": "भी"
+          },
+          {
+            "end": 315.88,
+            "start": 315.74,
+            "word": "अपनी"
+          },
+          {
+            "end": 316.22,
+            "start": 315.88,
+            "word": "पावर"
+          },
+          {
+            "end": 316.56,
+            "start": 316.22,
+            "word": "दिखा"
+          },
+          {
+            "end": 316.74,
+            "start": 316.56,
+            "word": "दी."
+          }
+        ]
+      },
+      {
+        "base_url": "/temp/Clips/Clip_08_gta_4_different_perspectives_job_1782624952447_base.mp4",
+        "emphasized_words": [
+          "Lost and Damned",
+          "biker gang",
+          "different angle",
+          "gang politics",
+          "same city"
+        ],
+        "end_time": 423.46,
+        "metadata": {
+          "instagram": {
+            "description": "The Lost and Damned gave us Johnny Klebitz and a deep dive into biker gang life in Liberty City. Same city, completely different perspective and vibe! Genius. #GTA4 #RockstarGames #Storytelling",
+            "hashtags": [
+              "GTA4",
+              "TheLostAndDamned",
+              "GamingNarrative",
+              "LibertyCity",
+              "Expansion"
+            ],
+            "title": "GTA 4's Genius Expansions 🤯"
+          },
+          "linkedin": {
+            "hashtags": [
+              "GameNarrative",
+              "GTA",
+              "RockstarGames",
+              "Storytelling",
+              "GameDesign"
+            ],
+            "post": "Grand Theft Auto 4's expansions, particularly 'The Lost and Damned,' showcased a sophisticated approach to narrative design. By presenting Liberty City from diverse character perspectives, Rockstar deepened the game's world-building and demonstrated advanced storytelling techniques within an established universe. #GameNarrative #GTA #RockstarGames #Storytelling #GameDesign"
+          },
+          "tiktok": {
+            "description": "GTA 4's expansions showed Liberty City from whole new angles! From biker brotherhood to gang politics – same city, different story! #GTA4 #TheLostAndDamned #Storytelling",
+            "hashtags": [
+              "GTA",
+              "GTA4",
+              "GamingStory",
+              "LibertyCity",
+              "BikerGang"
+            ],
+            "title": "Same City, DIFFERENT VIBE! GTA 4 Expansions 🏍️"
+          },
+          "x": {
+            "hashtags": [
+              "GTA4",
+              "TheLostAndDamned",
+              "GamingFacts",
+              "LibertyCity",
+              "Rockstar"
+            ],
+            "tweet": "GTA 4's expansions like 'The Lost and Damned' gave us totally fresh perspectives on Liberty City. Same place, different struggles. Brilliant storytelling! #GTA4 #Gaming #Storytelling"
+          },
+          "youtube_shorts": {
+            "description": "The Lost and Damned showed Liberty City from a biker's perspective. It's a masterclass in unique storytelling within the same world! #GTA4 #GTALore #GamingStory",
+            "hashtags": [
+              "GTA",
+              "GTA4",
+              "GamingHistory",
+              "LibertyCity",
+              "DLC"
+            ],
+            "title": "GTA 4: Exploring Liberty City Anew! 🏙️"
+          }
+        },
+        "reasoning": "This clip illustrates how GTA 4's expansions ingeniously explored the same Liberty City through vastly different narrative lenses and character experiences, highlighting Rockstar's storytelling depth.",
+        "score": 80,
+        "segments": [
+          {
+            "end": 393.457,
+            "start": 389.257,
+            "text": "इसमें हम जॉनी क्लेविट्स की स्टोरी देखते हैं जो The Lost MC Biker Gang का मेंबर है."
+          },
+          {
+            "end": 423.457,
+            "start": 393.457,
+            "text": "यह गेम लिबर्टी सिटी को एक अलग एंगल से दिखाता है जहाँ GTA 4 में इमिगरेंट स्ट्रगल था वही दा लॉस्ट और डैम्ड में बाइकर ब्रदरहुड, लॉयल्टी और गैंग पॉलिटिक्स थी. सेम सिटी, सेम टाइमलाइन लेकिन बिलकुल अलग नजरिया. यही GTA"
+          },
+          {
+            "end": 459.69399999999996,
+            "start": 423.457,
+            "text": ""
+          }
+        ],
+        "start_time": 389.26,
+        "thumbnail_url": "/temp/Clips/Thumbnail_08_gta_4_different_perspectives_job_1782624952447.jpg",
+        "title": "GTA 4: Different Perspectives",
+        "video_url": "/temp/Clips/Clip_08_gta_4_different_perspectives_job_1782624952447_final.mp4",
+        "words": [
+          {
+            "end": 389.477005,
+            "start": 389.277,
+            "word": "इसमें"
+          },
+          {
+            "end": 389.557,
+            "start": 389.477005,
+            "word": "हम"
+          },
+          {
+            "end": 389.877,
+            "start": 389.557,
+            "word": "जॉनी"
+          },
+          {
+            "end": 390.277,
+            "start": 389.877,
+            "word": "क्लेविट्स"
+          },
+          {
+            "end": 390.377,
+            "start": 390.277,
+            "word": "की"
+          },
+          {
+            "end": 390.69701,
+            "start": 390.377,
+            "word": "स्टोरी"
+          },
+          {
+            "end": 391.057,
+            "start": 390.69701,
+            "word": "देखते"
+          },
+          {
+            "end": 391.19701,
+            "start": 391.057,
+            "word": "हैं"
+          },
+          {
+            "end": 391.377,
+            "start": 391.19701,
+            "word": "जो"
+          },
+          {
+            "end": 391.557,
+            "start": 391.377,
+            "word": "The"
+          },
+          {
+            "end": 391.897,
+            "start": 391.557,
+            "word": "Lost"
+          },
+          {
+            "end": 392.257,
+            "start": 391.897,
+            "word": "MC"
+          },
+          {
+            "end": 392.617004,
+            "start": 392.257,
+            "word": "Biker"
+          },
+          {
+            "end": 392.817,
+            "start": 392.617004,
+            "word": "Gang"
+          },
+          {
+            "end": 392.977005,
+            "start": 392.817,
+            "word": "का"
+          },
+          {
+            "end": 393.337006,
+            "start": 392.977005,
+            "word": "मेंबर"
+          },
+          {
+            "end": 393.517,
+            "start": 393.337006,
+            "word": "है."
+          },
+          {
+            "end": 393.717,
+            "start": 393.457,
+            "word": "यह"
+          },
+          {
+            "end": 393.937004,
+            "start": 393.717,
+            "word": "गेम"
+          },
+          {
+            "end": 394.35699999999997,
+            "start": 393.937004,
+            "word": "लिबर्टी"
+          },
+          {
+            "end": 394.577,
+            "start": 394.35699999999997,
+            "word": "सिटी"
+          },
+          {
+            "end": 394.73699999999997,
+            "start": 394.577,
+            "word": "को"
+          },
+          {
+            "end": 394.85699999999997,
+            "start": 394.73699999999997,
+            "word": "एक"
+          },
+          {
+            "end": 395.137,
+            "start": 394.85699999999997,
+            "word": "अलग"
+          },
+          {
+            "end": 395.437004,
+            "start": 395.137,
+            "word": "एंगल"
+          },
+          {
+            "end": 395.557,
+            "start": 395.437004,
+            "word": "से"
+          },
+          {
+            "end": 395.977005,
+            "start": 395.557,
+            "word": "दिखाता"
+          },
+          {
+            "end": 396.057,
+            "start": 395.977005,
+            "word": "है"
+          },
+          {
+            "end": 396.41700000000003,
+            "start": 396.057,
+            "word": "जहाँ"
+          },
+          {
+            "end": 396.817,
+            "start": 396.41700000000003,
+            "word": "GTA"
+          },
+          {
+            "end": 397.057,
+            "start": 396.817,
+            "word": "4"
+          },
+          {
+            "end": 397.257,
+            "start": 397.057,
+            "word": "में"
+          },
+          {
+            "end": 397.69701,
+            "start": 397.257,
+            "word": "इमिगरेंट"
+          },
+          {
+            "end": 398.03700000000003,
+            "start": 397.69701,
+            "word": "स्ट्रगल"
+          },
+          {
+            "end": 398.257,
+            "start": 398.03700000000003,
+            "word": "था"
+          },
+          {
+            "end": 398.577,
+            "start": 398.257,
+            "word": "वही"
+          },
+          {
+            "end": 398.73699999999997,
+            "start": 398.577,
+            "word": "दा"
+          },
+          {
+            "end": 399.077,
+            "start": 398.73699999999997,
+            "word": "लॉस्ट"
+          },
+          {
+            "end": 399.217,
+            "start": 399.077,
+            "word": "और"
+          },
+          {
+            "end": 399.617004,
+            "start": 399.217,
+            "word": "डैम्ड"
+          },
+          {
+            "end": 399.897,
+            "start": 399.617004,
+            "word": "में"
+          },
+          {
+            "end": 400.377,
+            "start": 399.897,
+            "word": "बाइकर"
+          },
+          {
+            "end": 400.977005,
+            "start": 400.377,
+            "word": "ब्रदरहुड,"
+          },
+          {
+            "end": 401.53700000000003,
+            "start": 400.977005,
+            "word": "लॉयल्टी"
+          },
+          {
+            "end": 401.73699999999997,
+            "start": 401.53700000000003,
+            "word": "और"
+          },
+          {
+            "end": 402.03700000000003,
+            "start": 401.73699999999997,
+            "word": "गैंग"
+          },
+          {
+            "end": 402.517,
+            "start": 402.03700000000003,
+            "word": "पॉलिटिक्स"
+          },
+          {
+            "end": 402.877,
+            "start": 402.517,
+            "word": "थी."
+          },
+          {
+            "end": 403.157,
+            "start": 402.877,
+            "word": "सेम"
+          },
+          {
+            "end": 403.817,
+            "start": 403.157,
+            "word": "सिटी,"
+          },
+          {
+            "end": 403.977005,
+            "start": 403.817,
+            "word": "सेम"
+          },
+          {
+            "end": 404.497,
+            "start": 403.977005,
+            "word": "टाइमलाइन"
+          },
+          {
+            "end": 404.837006,
+            "start": 404.497,
+            "word": "लेकिन"
+          },
+          {
+            "end": 405.257,
+            "start": 404.837006,
+            "word": "बिलकुल"
+          },
+          {
+            "end": 405.53700000000003,
+            "start": 405.257,
+            "word": "अलग"
+          },
+          {
+            "end": 406.157,
+            "start": 405.53700000000003,
+            "word": "नजरिया."
+          },
+          {
+            "end": 406.35699999999997,
+            "start": 406.157,
+            "word": "यही"
+          },
+          {
+            "end": 423.437,
+            "start": 406.35699999999997,
+            "word": "GTA"
+          },
+          {
+            "end": 430.377,
+            "start": 423.457,
+            "word": "अगर"
+          }
+        ]
+      },
+      {
+        "base_url": "/temp/Clips/Clip_09_gta_5__onlines_legacy_job_1782624952447_base.mp4",
+        "emphasized_words": [
+          "Grand Theft Auto 5",
+          "records",
+          "social commentary",
+          "GTA Online",
+          "live service"
+        ],
+        "end_time": 549.21,
+        "metadata": {
+          "instagram": {
+            "description": "GTA 5 didn't just break records; it redefined gaming with its iconic characters, sharp satire, and the revolutionary GTA Online – an ongoing criminal empire! #GTA5 #GTAOnline #GamingPhenomenon",
+            "hashtags": [
+              "GTA5",
+              "GTAOnline",
+              "GamingLegends",
+              "RockstarGames",
+              "OpenWorld"
+            ],
+            "title": "The Ever-Evolving World of GTA 5 & Online"
+          },
+          "linkedin": {
+            "hashtags": [
+              "GamingIndustry",
+              "GTA5",
+              "GTAOnline",
+              "LiveServiceGames",
+              "RockstarGames"
+            ],
+            "post": "Grand Theft Auto V's record-breaking launch and the sustained success of GTA Online have cemented its place as a gaming industry titan. It serves as a prime example of a 'live service' platform, continuously evolving and engaging millions of players years after its initial release. #GamingIndustry #GTA5 #GTAOnline #LiveServiceGames #RockstarGames"
+          },
+          "tiktok": {
+            "description": "GTA 5 broke ALL the records! With Michael, Franklin, Trevor, and the endless world of GTA Online, it's a legacy that just keeps growing! #GTA5 #GTAOnline #GamingLegend",
+            "hashtags": [
+              "GTA",
+              "GTA5",
+              "GTAOnline",
+              "GamingRecords",
+              "LiveServiceGame"
+            ],
+            "title": "GTA 5: The Undisputed King! 👑"
+          },
+          "x": {
+            "hashtags": [
+              "GTA5",
+              "GTAOnline",
+              "GamingNews",
+              "Rockstar",
+              "VideoGames"
+            ],
+            "tweet": "GTA 5: Broke ALL the records. GTA Online: Keeps the game relevant years later. A true gaming phenomenon with sharp social commentary! #GTA5 #GTAOnline #Gaming"
+          },
+          "youtube_shorts": {
+            "description": "From breaking sales records to building an online empire, GTA 5 and GTA Online are a testament to enduring game design and continuous innovation. #GTA5 #GTAOnline #GamingLegacy",
+            "hashtags": [
+              "GTA",
+              "GTA5",
+              "GTAOnline",
+              "GamingRecords",
+              "VideoGames"
+            ],
+            "title": "GTA 5: Still Relevant After a Decade! 🤯"
+          }
+        },
+        "reasoning": "This clip captures the immense impact of GTA 5's record-breaking success, its sharp social commentary, and the transformative power of GTA Online as a persistent digital world.",
+        "score": 98,
+        "segments": [
+          {
+            "end": 472.334,
+            "start": 470.154,
+            "text": "Same city लेकिन vibe बिलकुल अलग।"
+          },
+          {
+            "end": 476.95401000000004,
+            "start": 472.334,
+            "text": "फिर 2013 में आया Grand Theft Auto 5 और इस game ने तो records ही तोड़ दिये।"
+          },
+          {
+            "end": 482.714,
+            "start": 476.95401000000004,
+            "text": "GTA 5 ने हमें Los Santos वापस दिया लेकिन इस बार modern Los Angeles inspired world के रूप में।"
+          },
+          {
+            "end": 486.87401,
+            "start": 482.714,
+            "text": "प्राइकल फ्रैंकलिन और ट्रेवर"
+          },
+          {
+            "end": 493.754,
+            "start": 486.87401,
+            "text": "माइकल रेटायर्ड क्रिमिनल था, फ्रैंकलिन स्ट्रीट लाइफ से बाहर निकलना चाता था और ट्रेवर प्योर केओस का हुमन फॉर्म था."
+          },
+          {
+            "end": 502.034,
+            "start": 493.754,
+            "text": "इन तीनों कैरेक्टर्स के थूरू रॉक्स्टार ने क्राइम, कैपिटलिजम, फेम, मीडिया, सोशल मीडिया और अमेरिकन लाइफस्टायल की जबरदस्त सैटायर की।"
+          },
+          {
+            "end": 511.95401000000004,
+            "start": 502.034,
+            "text": "GTA 5 की हाइस्ट्स, ओपन वर्ल्ड डिटेल्स, ड्राइविंग, फ्लाइंग, अंडरवोर्टर एक्स्प्लोरेशन और सिनिमाटिक मिशन्स ने इसे गेमिंग हिस्ट्री के सबसे सक्सेसफुल गेम्स में से एक बना दिया।"
+          },
+          {
+            "end": 531.1510000000001,
+            "start": 511.95401000000004,
+            "text": "GTA 5 Grand Theft Auto Online GTA 5 GTA Online Players Character Los Santos Entry Missions Businesses Heists Night Clubs Bunkers Online Criminal Empire"
+          },
+          {
+            "end": 538.991,
+            "start": 531.331,
+            "text": "GTA Online ने Rockstar के लिए GTA को एक Live Service Platform बना दिया. यही रीजन है कि GTA 5 आज भी इतने सालों बाद Relevant है."
+          },
+          {
+            "end": 543.17099,
+            "start": 538.991,
+            "text": "Every update has new cars, missions, businesses and stories in the game."
+          },
+          {
+            "end": 549.211,
+            "start": 543.17099,
+            "text": "GTA Online has proved that GTA is not only a single player story but also an ongoing digital world."
+          }
+        ],
+        "start_time": 472.33,
+        "thumbnail_url": "/temp/Clips/Thumbnail_09_gta_5__onlines_legacy_job_1782624952447.jpg",
+        "title": "GTA 5 & Online's Legacy",
+        "video_url": "/temp/Clips/Clip_09_gta_5__onlines_legacy_job_1782624952447_final.mp4",
+        "words": [
+          {
+            "end": 472.474,
+            "start": 472.294,
+            "word": "फिर"
+          },
+          {
+            "end": 473.134,
+            "start": 472.474,
+            "word": "2013"
+          },
+          {
+            "end": 473.37401,
+            "start": 473.134,
+            "word": "में"
+          },
+          {
+            "end": 473.61400000000003,
+            "start": 473.37401,
+            "word": "आया"
+          },
+          {
+            "end": 474.034,
+            "start": 473.61400000000003,
+            "word": "Grand"
+          },
+          {
+            "end": 474.17401,
+            "start": 474.034,
+            "word": "Theft"
+          },
+          {
+            "end": 474.43399999999997,
+            "start": 474.17401,
+            "word": "Auto"
+          },
+          {
+            "end": 474.754,
+            "start": 474.43399999999997,
+            "word": "5"
+          },
+          {
+            "end": 475.134,
+            "start": 474.754,
+            "word": "और"
+          },
+          {
+            "end": 475.35400000000004,
+            "start": 475.134,
+            "word": "इस"
+          },
+          {
+            "end": 475.554,
+            "start": 475.35400000000004,
+            "word": "game"
+          },
+          {
+            "end": 475.714,
+            "start": 475.554,
+            "word": "ने"
+          },
+          {
+            "end": 475.834,
+            "start": 475.714,
+            "word": "तो"
+          },
+          {
+            "end": 476.274,
+            "start": 475.834,
+            "word": "records"
+          },
+          {
+            "end": 476.394,
+            "start": 476.274,
+            "word": "ही"
+          },
+          {
+            "end": 476.69399999999996,
+            "start": 476.394,
+            "word": "तोड़"
+          },
+          {
+            "end": 476.914,
+            "start": 476.69399999999996,
+            "word": "दिये।"
+          },
+          {
+            "end": 477.35400000000004,
+            "start": 476.774,
+            "word": "GTA"
+          },
+          {
+            "end": 477.67401,
+            "start": 477.35400000000004,
+            "word": "5"
+          },
+          {
+            "end": 477.834,
+            "start": 477.67401,
+            "word": "ने"
+          },
+          {
+            "end": 477.994,
+            "start": 477.834,
+            "word": "हमें"
+          },
+          {
+            "end": 478.294,
+            "start": 477.994,
+            "word": "Los"
+          },
+          {
+            "end": 478.634,
+            "start": 478.294,
+            "word": "Santos"
+          },
+          {
+            "end": 479.014,
+            "start": 478.634,
+            "word": "वापस"
+          },
+          {
+            "end": 479.294,
+            "start": 479.014,
+            "word": "दिया"
+          },
+          {
+            "end": 479.654,
+            "start": 479.294,
+            "word": "लेकिन"
+          },
+          {
+            "end": 479.85400000000004,
+            "start": 479.654,
+            "word": "इस"
+          },
+          {
+            "end": 479.994,
+            "start": 479.85400000000004,
+            "word": "बार"
+          },
+          {
+            "end": 480.494,
+            "start": 479.994,
+            "word": "modern"
+          },
+          {
+            "end": 480.87401,
+            "start": 480.494,
+            "word": "Los"
+          },
+          {
+            "end": 481.23401,
+            "start": 480.87401,
+            "word": "Angeles"
+          },
+          {
+            "end": 481.714,
+            "start": 481.23401,
+            "word": "inspired"
+          },
+          {
+            "end": 482.094,
+            "start": 481.714,
+            "word": "world"
+          },
+          {
+            "end": 482.23401,
+            "start": 482.094,
+            "word": "के"
+          },
+          {
+            "end": 482.414,
+            "start": 482.23401,
+            "word": "रूप"
+          },
+          {
+            "end": 482.654,
+            "start": 482.414,
+            "word": "में।"
+          },
+          {
+            "end": 485.494,
+            "start": 482.714,
+            "word": "प्राइकल"
+          },
+          {
+            "end": 486.274,
+            "start": 485.494,
+            "word": "फ्रैंकलिन"
+          },
+          {
+            "end": 486.474,
+            "start": 486.274,
+            "word": "और"
+          },
+          {
+            "end": 486.85400000000004,
+            "start": 486.474,
+            "word": "ट्रेवर"
+          },
+          {
+            "end": 487.334,
+            "start": 486.95401000000004,
+            "word": "माइकल"
+          },
+          {
+            "end": 487.87401,
+            "start": 487.334,
+            "word": "रेटायर्ड"
+          },
+          {
+            "end": 488.274,
+            "start": 487.87401,
+            "word": "क्रिमिनल"
+          },
+          {
+            "end": 488.61400000000003,
+            "start": 488.274,
+            "word": "था,"
+          },
+          {
+            "end": 489.11400000000003,
+            "start": 488.61400000000003,
+            "word": "फ्रैंकलिन"
+          },
+          {
+            "end": 489.534,
+            "start": 489.11400000000003,
+            "word": "स्ट्रीट"
+          },
+          {
+            "end": 489.774,
+            "start": 489.534,
+            "word": "लाइफ"
+          },
+          {
+            "end": 489.914,
+            "start": 489.774,
+            "word": "से"
+          },
+          {
+            "end": 490.23401,
+            "start": 489.914,
+            "word": "बाहर"
+          },
+          {
+            "end": 490.61400000000003,
+            "start": 490.23401,
+            "word": "निकलना"
+          },
+          {
+            "end": 490.89401,
+            "start": 490.61400000000003,
+            "word": "चाता"
+          },
+          {
+            "end": 491.094,
+            "start": 490.89401,
+            "word": "था"
+          },
+          {
+            "end": 491.35400000000004,
+            "start": 491.094,
+            "word": "और"
+          },
+          {
+            "end": 491.774,
+            "start": 491.35400000000004,
+            "word": "ट्रेवर"
+          },
+          {
+            "end": 492.294,
+            "start": 491.774,
+            "word": "प्योर"
+          },
+          {
+            "end": 492.69399999999996,
+            "start": 492.294,
+            "word": "केओस"
+          },
+          {
+            "end": 492.85400000000004,
+            "start": 492.69399999999996,
+            "word": "का"
+          },
+          {
+            "end": 493.17401,
+            "start": 492.85400000000004,
+            "word": "हुमन"
+          },
+          {
+            "end": 493.494,
+            "start": 493.17401,
+            "word": "फॉर्म"
+          },
+          {
+            "end": 493.774,
+            "start": 493.494,
+            "word": "था."
+          },
+          {
+            "end": 493.994,
+            "start": 493.754,
+            "word": "इन"
+          },
+          {
+            "end": 494.474,
+            "start": 493.994,
+            "word": "तीनों"
+          },
+          {
+            "end": 494.89401,
+            "start": 494.474,
+            "word": "कैरेक्टर्स"
+          },
+          {
+            "end": 494.994,
+            "start": 494.89401,
+            "word": "के"
+          },
+          {
+            "end": 495.294,
+            "start": 494.994,
+            "word": "थूरू"
+          },
+          {
+            "end": 495.794,
+            "start": 495.294,
+            "word": "रॉक्स्टार"
+          },
+          {
+            "end": 495.93399999999997,
+            "start": 495.794,
+            "word": "ने"
+          },
+          {
+            "end": 496.474,
+            "start": 495.93399999999997,
+            "word": "क्राइम,"
+          },
+          {
+            "end": 497.294,
+            "start": 496.474,
+            "word": "कैपिटलिजम,"
+          },
+          {
+            "end": 497.85400000000004,
+            "start": 497.294,
+            "word": "फेम,"
+          },
+          {
+            "end": 498.43399999999997,
+            "start": 497.85400000000004,
+            "word": "मीडिया,"
+          },
+          {
+            "end": 498.794,
+            "start": 498.43399999999997,
+            "word": "सोशल"
+          },
+          {
+            "end": 499.214,
+            "start": 498.794,
+            "word": "मीडिया"
+          },
+          {
+            "end": 499.45401000000004,
+            "start": 499.214,
+            "word": "और"
+          },
+          {
+            "end": 499.95401000000004,
+            "start": 499.45401000000004,
+            "word": "अमेरिकन"
+          },
+          {
+            "end": 500.474,
+            "start": 499.95401000000004,
+            "word": "लाइफस्टायल"
+          },
+          {
+            "end": 500.594,
+            "start": 500.474,
+            "word": "की"
+          },
+          {
+            "end": 501.19399999999996,
+            "start": 500.594,
+            "word": "जबरदस्त"
+          },
+          {
+            "end": 501.714,
+            "start": 501.19399999999996,
+            "word": "सैटायर"
+          },
+          {
+            "end": 501.974,
+            "start": 501.714,
+            "word": "की।"
+          },
+          {
+            "end": 502.39401,
+            "start": 502.034,
+            "word": "GTA"
+          },
+          {
+            "end": 502.67401,
+            "start": 502.39401,
+            "word": "5"
+          },
+          {
+            "end": 502.834,
+            "start": 502.67401,
+            "word": "की"
+          },
+          {
+            "end": 503.514,
+            "start": 502.834,
+            "word": "हाइस्ट्स,"
+          },
+          {
+            "end": 503.794,
+            "start": 503.514,
+            "word": "ओपन"
+          },
+          {
+            "end": 504.034,
+            "start": 503.794,
+            "word": "वर्ल्ड"
+          },
+          {
+            "end": 504.634,
+            "start": 504.034,
+            "word": "डिटेल्स,"
+          },
+          {
+            "end": 505.294,
+            "start": 504.634,
+            "word": "ड्राइविंग,"
+          },
+          {
+            "end": 505.87401,
+            "start": 505.294,
+            "word": "फ्लाइंग,"
+          },
+          {
+            "end": 506.474,
+            "start": 505.87401,
+            "word": "अंडरवोर्टर"
+          },
+          {
+            "end": 507.11400000000003,
+            "start": 506.474,
+            "word": "एक्स्प्लोरेशन"
+          },
+          {
+            "end": 507.414,
+            "start": 507.11400000000003,
+            "word": "और"
+          },
+          {
+            "end": 507.994,
+            "start": 507.414,
+            "word": "सिनिमाटिक"
+          },
+          {
+            "end": 508.514,
+            "start": 507.994,
+            "word": "मिशन्स"
+          },
+          {
+            "end": 508.61400000000003,
+            "start": 508.514,
+            "word": "ने"
+          },
+          {
+            "end": 508.914,
+            "start": 508.61400000000003,
+            "word": "इसे"
+          },
+          {
+            "end": 509.294,
+            "start": 508.914,
+            "word": "गेमिंग"
+          },
+          {
+            "end": 509.634,
+            "start": 509.294,
+            "word": "हिस्ट्री"
+          },
+          {
+            "end": 509.754,
+            "start": 509.634,
+            "word": "के"
+          },
+          {
+            "end": 510.154,
+            "start": 509.754,
+            "word": "सबसे"
+          },
+          {
+            "end": 510.654,
+            "start": 510.154,
+            "word": "सक्सेसफुल"
+          },
+          {
+            "end": 511.034,
+            "start": 510.654,
+            "word": "गेम्स"
+          },
+          {
+            "end": 511.154,
+            "start": 511.034,
+            "word": "में"
+          },
+          {
+            "end": 511.254,
+            "start": 511.154,
+            "word": "से"
+          },
+          {
+            "end": 511.534,
+            "start": 511.254,
+            "word": "एक"
+          },
+          {
+            "end": 511.85400000000004,
+            "start": 511.534,
+            "word": "बना"
+          },
+          {
+            "end": 512.11401,
+            "start": 511.85400000000004,
+            "word": "दिया।"
+          },
+          {
+            "end": 512.254,
+            "start": 511.95401000000004,
+            "word": "और"
+          },
+          {
+            "end": 512.434,
+            "start": 512.254,
+            "word": "फिर"
+          },
+          {
+            "end": 512.774,
+            "start": 512.434,
+            "word": "GTA"
+          },
+          {
+            "end": 513.034,
+            "start": 512.774,
+            "word": "5"
+          },
+          {
+            "end": 513.254,
+            "start": 513.034,
+            "word": "के"
+          },
+          {
+            "end": 513.45401,
+            "start": 513.254,
+            "word": "साथ"
+          },
+          {
+            "end": 513.5740000000001,
+            "start": 513.45401,
+            "word": "ही"
+          },
+          {
+            "end": 513.814,
+            "start": 513.5740000000001,
+            "word": "आया"
+          },
+          {
+            "end": 514.274,
+            "start": 513.814,
+            "word": "Grand"
+          },
+          {
+            "end": 514.434,
+            "start": 514.274,
+            "word": "Theft"
+          },
+          {
+            "end": 514.73401,
+            "start": 514.434,
+            "word": "Auto"
+          },
+          {
+            "end": 515.3340000000001,
+            "start": 514.73401,
+            "word": "Online."
+          },
+          {
+            "end": 515.73401,
+            "start": 515.3340000000001,
+            "word": "सुरुआत"
+          },
+          {
+            "end": 515.874,
+            "start": 515.73401,
+            "word": "में"
+          },
+          {
+            "end": 516.014,
+            "start": 515.874,
+            "word": "ये"
+          },
+          {
+            "end": 516.354,
+            "start": 516.014,
+            "word": "GTA"
+          },
+          {
+            "end": 516.61401,
+            "start": 516.354,
+            "word": "5"
+          },
+          {
+            "end": 516.754,
+            "start": 516.61401,
+            "word": "का"
+          },
+          {
+            "end": 517.314,
+            "start": 516.754,
+            "word": "मल्टीप्लेयर"
+          },
+          {
+            "end": 517.4739999999999,
+            "start": 517.314,
+            "word": "मोड"
+          },
+          {
+            "end": 517.754,
+            "start": 517.4739999999999,
+            "word": "लगा"
+          },
+          {
+            "end": 518.054,
+            "start": 517.754,
+            "word": "लेकिन"
+          },
+          {
+            "end": 518.354,
+            "start": 518.054,
+            "word": "धीरे"
+          },
+          {
+            "end": 518.61401,
+            "start": 518.354,
+            "word": "धीरे"
+          },
+          {
+            "end": 518.8340000000001,
+            "start": 518.61401,
+            "word": "ये"
+          },
+          {
+            "end": 519.014,
+            "start": 518.8340000000001,
+            "word": "अपनी"
+          },
+          {
+            "end": 519.314,
+            "start": 519.014,
+            "word": "अलग"
+          },
+          {
+            "end": 519.654,
+            "start": 519.314,
+            "word": "दुनिया"
+          },
+          {
+            "end": 519.794,
+            "start": 519.654,
+            "word": "बन"
+          },
+          {
+            "end": 520.054,
+            "start": 519.794,
+            "word": "गया."
+          },
+          {
+            "end": 520.414,
+            "start": 520.054,
+            "word": "GTA"
+          },
+          {
+            "end": 520.854,
+            "start": 520.414,
+            "word": "Online"
+          },
+          {
+            "end": 521.034,
+            "start": 520.854,
+            "word": "में"
+          },
+          {
+            "end": 521.414,
+            "start": 521.034,
+            "word": "प्लेयर्स"
+          },
+          {
+            "end": 521.494,
+            "start": 521.414,
+            "word": "ने"
+          },
+          {
+            "end": 521.67401,
+            "start": 521.494,
+            "word": "अपना"
+          },
+          {
+            "end": 522.094,
+            "start": 521.67401,
+            "word": "कैरेक्टर"
+          },
+          {
+            "end": 522.694,
+            "start": 522.094,
+            "word": "बनाया,"
+          },
+          {
+            "end": 522.874,
+            "start": 522.694,
+            "word": "लॉस"
+          },
+          {
+            "end": 523.211,
+            "start": 522.871,
+            "word": "Santos"
+          },
+          {
+            "end": 523.39099,
+            "start": 523.211,
+            "word": "में"
+          },
+          {
+            "end": 523.731,
+            "start": 523.39099,
+            "word": "Entry"
+          },
+          {
+            "end": 524.071,
+            "start": 523.731,
+            "word": "ली,"
+          },
+          {
+            "end": 524.471,
+            "start": 524.071,
+            "word": "Missions"
+          },
+          {
+            "end": 524.951,
+            "start": 524.471,
+            "word": "किये,"
+          },
+          {
+            "end": 525.491,
+            "start": 524.951,
+            "word": "Businesses"
+          },
+          {
+            "end": 526.011,
+            "start": 525.491,
+            "word": "खरीदे,"
+          },
+          {
+            "end": 526.39099,
+            "start": 526.011,
+            "word": "Heists"
+          },
+          {
+            "end": 526.931,
+            "start": 526.39099,
+            "word": "किये,"
+          },
+          {
+            "end": 527.191,
+            "start": 526.931,
+            "word": "Night"
+          },
+          {
+            "end": 527.4110000000001,
+            "start": 527.191,
+            "word": "Clubs"
+          },
+          {
+            "end": 527.9110000000001,
+            "start": 527.4110000000001,
+            "word": "चलाये,"
+          },
+          {
+            "end": 528.351,
+            "start": 527.9110000000001,
+            "word": "Bunkers"
+          },
+          {
+            "end": 528.691,
+            "start": 528.351,
+            "word": "मनाये"
+          },
+          {
+            "end": 528.951,
+            "start": 528.691,
+            "word": "और"
+          },
+          {
+            "end": 529.2909999999999,
+            "start": 528.951,
+            "word": "पूरी"
+          },
+          {
+            "end": 529.711,
+            "start": 529.2909999999999,
+            "word": "Online"
+          },
+          {
+            "end": 530.1510000000001,
+            "start": 529.711,
+            "word": "Criminal"
+          },
+          {
+            "end": 530.611,
+            "start": 530.1510000000001,
+            "word": "Empire"
+          },
+          {
+            "end": 530.951,
+            "start": 530.611,
+            "word": "क्रियेट"
+          },
+          {
+            "end": 531.231,
+            "start": 530.951,
+            "word": "की."
+          },
+          {
+            "end": 531.691,
+            "start": 531.371,
+            "word": "GTA"
+          },
+          {
+            "end": 532.111,
+            "start": 531.691,
+            "word": "Online"
+          },
+          {
+            "end": 532.271,
+            "start": 532.111,
+            "word": "ने"
+          },
+          {
+            "end": 532.711,
+            "start": 532.271,
+            "word": "Rockstar"
+          },
+          {
+            "end": 532.89099,
+            "start": 532.711,
+            "word": "के"
+          },
+          {
+            "end": 533.011,
+            "start": 532.89099,
+            "word": "लिए"
+          },
+          {
+            "end": 533.511,
+            "start": 533.011,
+            "word": "GTA"
+          },
+          {
+            "end": 533.67099,
+            "start": 533.511,
+            "word": "को"
+          },
+          {
+            "end": 533.811,
+            "start": 533.67099,
+            "word": "एक"
+          },
+          {
+            "end": 534.1510000000001,
+            "start": 533.811,
+            "word": "Live"
+          },
+          {
+            "end": 534.491,
+            "start": 534.1510000000001,
+            "word": "Service"
+          },
+          {
+            "end": 534.9110000000001,
+            "start": 534.491,
+            "word": "Platform"
+          },
+          {
+            "end": 535.231,
+            "start": 534.9110000000001,
+            "word": "बना"
+          },
+          {
+            "end": 535.571,
+            "start": 535.231,
+            "word": "दिया."
+          },
+          {
+            "end": 535.7909999999999,
+            "start": 535.571,
+            "word": "यही"
+          },
+          {
+            "end": 536.071,
+            "start": 535.7909999999999,
+            "word": "रीजन"
+          },
+          {
+            "end": 536.25099,
+            "start": 536.071,
+            "word": "है"
+          },
+          {
+            "end": 536.39099,
+            "start": 536.25099,
+            "word": "कि"
+          },
+          {
+            "end": 536.811,
+            "start": 536.39099,
+            "word": "GTA"
+          },
+          {
+            "end": 537.17099,
+            "start": 536.811,
+            "word": "5"
+          },
+          {
+            "end": 537.511,
+            "start": 537.17099,
+            "word": "आज"
+          },
+          {
+            "end": 537.611,
+            "start": 537.511,
+            "word": "भी"
+          },
+          {
+            "end": 537.851,
+            "start": 537.611,
+            "word": "इतने"
+          },
+          {
+            "end": 538.211,
+            "start": 537.851,
+            "word": "सालों"
+          },
+          {
+            "end": 538.351,
+            "start": 538.211,
+            "word": "बाद"
+          },
+          {
+            "end": 538.811,
+            "start": 538.351,
+            "word": "Relevant"
+          },
+          {
+            "end": 539.091,
+            "start": 538.811,
+            "word": "है."
+          },
+          {
+            "end": 539.211,
+            "start": 538.991,
+            "word": "Every"
+          },
+          {
+            "end": 539.591,
+            "start": 539.211,
+            "word": "update"
+          },
+          {
+            "end": 539.95099,
+            "start": 539.591,
+            "word": "has"
+          },
+          {
+            "end": 540.431,
+            "start": 539.95099,
+            "word": "new"
+          },
+          {
+            "end": 541.031,
+            "start": 540.431,
+            "word": "cars,"
+          },
+          {
+            "end": 541.571,
+            "start": 541.031,
+            "word": "missions,"
+          },
+          {
+            "end": 542.091,
+            "start": 541.571,
+            "word": "businesses"
+          },
+          {
+            "end": 542.25099,
+            "start": 542.091,
+            "word": "and"
+          },
+          {
+            "end": 543.031,
+            "start": 542.25099,
+            "word": "stories"
+          },
+          {
+            "end": 543.0509999999999,
+            "start": 543.031,
+            "word": "in"
+          },
+          {
+            "end": 543.071,
+            "start": 543.0509999999999,
+            "word": "the"
+          },
+          {
+            "end": 543.25099,
+            "start": 543.071,
+            "word": "game."
+          },
+          {
+            "end": 543.711,
+            "start": 543.351,
+            "word": "GTA"
+          },
+          {
+            "end": 544.1510000000001,
+            "start": 543.711,
+            "word": "Online"
+          },
+          {
+            "end": 544.25099,
+            "start": 544.1510000000001,
+            "word": "has"
+          },
+          {
+            "end": 544.6510000000001,
+            "start": 544.25099,
+            "word": "proved"
+          },
+          {
+            "end": 544.991,
+            "start": 544.6510000000001,
+            "word": "that"
+          },
+          {
+            "end": 545.4110000000001,
+            "start": 544.991,
+            "word": "GTA"
+          },
+          {
+            "end": 545.571,
+            "start": 545.4110000000001,
+            "word": "is"
+          },
+          {
+            "end": 545.611,
+            "start": 545.571,
+            "word": "not"
+          },
+          {
+            "end": 545.631,
+            "start": 545.611,
+            "word": "only"
+          },
+          {
+            "end": 545.811,
+            "start": 545.631,
+            "word": "a"
+          },
+          {
+            "end": 545.991,
+            "start": 545.811,
+            "word": "single"
+          },
+          {
+            "end": 546.25099,
+            "start": 545.991,
+            "word": "player"
+          },
+          {
+            "end": 546.6510000000001,
+            "start": 546.25099,
+            "word": "story"
+          },
+          {
+            "end": 547.031,
+            "start": 546.6510000000001,
+            "word": "but"
+          },
+          {
+            "end": 547.211,
+            "start": 547.031,
+            "word": "also"
+          },
+          {
+            "end": 547.371,
+            "start": 547.211,
+            "word": "an"
+          },
+          {
+            "end": 547.731,
+            "start": 547.371,
+            "word": "ongoing"
+          },
+          {
+            "end": 548.17099,
+            "start": 547.731,
+            "word": "digital"
+          },
+          {
+            "end": 549.191,
+            "start": 548.17099,
+            "word": "world."
+          }
+        ]
+      },
+      {
+        "base_url": "/temp/Clips/Clip_10_gta_more_than_just_a_game_job_1782624952447_base.mp4",
+        "emphasized_words": [
+          "freedom",
+          "mirrored society",
+          "social commentary",
+          "gaming culture",
+          "true meaning"
+        ],
+        "end_time": 629.98,
+        "metadata": {
+          "instagram": {
+            "description": "More than just a game, GTA is a cultural phenomenon that mirrors society in every era. Its true power is the freedom it gives us, and the commentary it makes. #GTA #GamingCulture #DeepThoughts",
+            "hashtags": [
+              "GTA",
+              "GamingAnalysis",
+              "SocialCommentary",
+              "Freedom",
+              "RockstarGames"
+            ],
+            "title": "GTA: A Mirror to Our World 🌎"
+          },
+          "linkedin": {
+            "hashtags": [
+              "GamingIndustry",
+              "GTA",
+              "SocialCommentary",
+              "CulturalImpact",
+              "GameDesign"
+            ],
+            "post": "Beyond its entertainment value, Grand Theft Auto has consistently served as a powerful form of social commentary, mirroring societal trends from 80s culture to modern influencer dynamics. Its enduring appeal lies in offering players unparalleled freedom and a critical lens on contemporary life. #GamingIndustry #GTA #SocialCommentary #CulturalImpact #GameDesign"
+          },
+          "tiktok": {
+            "description": "GTA isn't just about guns and cars; it's a reflection of our society! From 80s crime to influencer culture, it mirrors every era. #GTALore #SocialCommentary #GamingFacts",
+            "hashtags": [
+              "GTA",
+              "GamingInsights",
+              "SocialCommentary",
+              "Freedom",
+              "VideoGames"
+            ],
+            "title": "GTA: The ULTIMATE Social Commentary! 🤔"
+          },
+          "x": {
+            "hashtags": [
+              "GTA",
+              "Gaming",
+              "SocialCommentary",
+              "Freedom",
+              "VideoGames"
+            ],
+            "tweet": "GTA's real power? FREEDOM & its ability to mirror society! From 80s crime to influencer culture, it's always been a sharp social commentary. #GTA #GamingFacts #SocialCommentary"
+          },
+          "youtube_shorts": {
+            "description": "From 2D chaos to online empires, GTA's greatest strength is player freedom and its ability to mirror society, offering sharp social commentary. #GTADeepDive #GamingPhilosophy #SocialCritique",
+            "hashtags": [
+              "GTA",
+              "GamingCulture",
+              "SocialCommentary",
+              "Freedom",
+              "GamingAnalysis"
+            ],
+            "title": "GTA's True Power: Freedom & Social Commentary! 💥"
+          }
+        },
+        "reasoning": "This clip delivers a powerful overarching message about GTA's evolution, its core value of player freedom, and its consistent role as a compelling social commentary on contemporary society.",
+        "score": 92,
+        "segments": [
+          {
+            "end": 549.211,
+            "start": 543.17099,
+            "text": "GTA Online has proved that GTA is not only a single player story but also an ongoing digital world."
+          },
+          {
+            "end": 554.011,
+            "start": 549.211,
+            "text": "So if we look at the entire GTA journey, then this series started with 2D top-down chaos,"
+          },
+          {
+            "end": 560.471,
+            "start": 554.011,
+            "text": "then became a 3D open world revolution and then reached the cinematic storytelling and online world in the HD universe."
+          },
+          {
+            "end": 565.451,
+            "start": 560.471,
+            "text": "The greatest power of GTA is not only guns, cars or crime, its real power is freedom."
+          },
+          {
+            "end": 567.7909999999999,
+            "start": 565.451,
+            "text": "Every player plays GTA in his own way."
+          },
+          {
+            "end": 578.211,
+            "start": 567.7909999999999,
+            "text": "Some complete missions, some roam in the city, some drive while listening to the video, some take out the tank with cheats, and some go online and make a criminal empire with their friends."
+          },
+          {
+            "end": 582.611,
+            "start": 578.211,
+            "text": "The interesting thing is that GTA has mirrored the society of that time in every era."
+          },
+          {
+            "end": 586.1510000000001,
+            "start": 582.611,
+            "text": "Vice City captured the 80s crime movies and Miami culture."
+          },
+          {
+            "end": 590.351,
+            "start": 586.1510000000001,
+            "text": "San Andreas showed the 90s gang culture, police corruption and hip-hop era."
+          },
+          {
+            "end": 594.351,
+            "start": 590.351,
+            "text": "GTA IV explored immigrant struggle and broken American dream."
+          },
+          {
+            "end": 599.8910000000001,
+            "start": 594.351,
+            "text": "जीटीए फाइव ने इंफ्लुएंसर कल्चर, कैपिटलिजम, रिच लाइफस्टाइल और मौडर्न अमेरिका की मैडनेस पर से जाता है।"
+          },
+          {
+            "end": 629.98,
+            "start": 600,
+            "text": "जीटीए सिर्फ गेम नहीं, अपने टाइम का सोसल कमेंटरी भी है।"
+          }
+        ],
+        "start_time": 549.21,
+        "thumbnail_url": "/temp/Clips/Thumbnail_10_gta_more_than_just_a_game_job_1782624952447.jpg",
+        "title": "GTA: More Than Just a Game",
+        "video_url": "/temp/Clips/Clip_10_gta_more_than_just_a_game_job_1782624952447_final.mp4",
+        "words": [
+          {
+            "end": 549.371,
+            "start": 549.271,
+            "word": "So"
+          },
+          {
+            "end": 549.5509999999999,
+            "start": 549.371,
+            "word": "if"
+          },
+          {
+            "end": 549.75099,
+            "start": 549.5509999999999,
+            "word": "we"
+          },
+          {
+            "end": 549.771,
+            "start": 549.75099,
+            "word": "look"
+          },
+          {
+            "end": 549.7909999999999,
+            "start": 549.771,
+            "word": "at"
+          },
+          {
+            "end": 550.111,
+            "start": 549.7909999999999,
+            "word": "the"
+          },
+          {
+            "end": 550.131,
+            "start": 550.111,
+            "word": "entire"
+          },
+          {
+            "end": 550.431,
+            "start": 550.131,
+            "word": "GTA"
+          },
+          {
+            "end": 551.371,
+            "start": 550.431,
+            "word": "journey,"
+          },
+          {
+            "end": 551.431,
+            "start": 551.371,
+            "word": "then"
+          },
+          {
+            "end": 551.631,
+            "start": 551.431,
+            "word": "this"
+          },
+          {
+            "end": 551.991,
+            "start": 551.631,
+            "word": "series"
+          },
+          {
+            "end": 552.111,
+            "start": 551.991,
+            "word": "started"
+          },
+          {
+            "end": 552.17099,
+            "start": 552.111,
+            "word": "with"
+          },
+          {
+            "end": 552.531,
+            "start": 552.17099,
+            "word": "2D"
+          },
+          {
+            "end": 553.071,
+            "start": 552.531,
+            "word": "top-down"
+          },
+          {
+            "end": 554.091,
+            "start": 553.071,
+            "word": "chaos,"
+          },
+          {
+            "end": 554.2909999999999,
+            "start": 554.091,
+            "word": "then"
+          },
+          {
+            "end": 554.331,
+            "start": 554.2909999999999,
+            "word": "became"
+          },
+          {
+            "end": 554.45099,
+            "start": 554.331,
+            "word": "a"
+          },
+          {
+            "end": 554.75099,
+            "start": 554.45099,
+            "word": "3D"
+          },
+          {
+            "end": 555.031,
+            "start": 554.75099,
+            "word": "open"
+          },
+          {
+            "end": 555.351,
+            "start": 555.031,
+            "word": "world"
+          },
+          {
+            "end": 555.971,
+            "start": 555.351,
+            "word": "revolution"
+          },
+          {
+            "end": 556.3910000000001,
+            "start": 555.971,
+            "word": "and"
+          },
+          {
+            "end": 557.531,
+            "start": 556.3910000000001,
+            "word": "then"
+          },
+          {
+            "end": 557.691,
+            "start": 557.531,
+            "word": "reached"
+          },
+          {
+            "end": 557.8109999999999,
+            "start": 557.691,
+            "word": "the"
+          },
+          {
+            "end": 558.031,
+            "start": 557.8109999999999,
+            "word": "cinematic"
+          },
+          {
+            "end": 558.7909999999999,
+            "start": 558.031,
+            "word": "storytelling"
+          },
+          {
+            "end": 559.07098,
+            "start": 558.7909999999999,
+            "word": "and"
+          },
+          {
+            "end": 559.57098,
+            "start": 559.07098,
+            "word": "online"
+          },
+          {
+            "end": 560.191,
+            "start": 559.57098,
+            "word": "world"
+          },
+          {
+            "end": 560.211,
+            "start": 560.191,
+            "word": "in"
+          },
+          {
+            "end": 560.231,
+            "start": 560.211,
+            "word": "the"
+          },
+          {
+            "end": 560.251,
+            "start": 560.231,
+            "word": "HD"
+          },
+          {
+            "end": 560.451,
+            "start": 560.251,
+            "word": "universe."
+          },
+          {
+            "end": 560.63098,
+            "start": 560.591,
+            "word": "The"
+          },
+          {
+            "end": 560.6510000000001,
+            "start": 560.63098,
+            "word": "greatest"
+          },
+          {
+            "end": 560.671,
+            "start": 560.6510000000001,
+            "word": "power"
+          },
+          {
+            "end": 560.691,
+            "start": 560.671,
+            "word": "of"
+          },
+          {
+            "end": 561.13098,
+            "start": 560.691,
+            "word": "GTA"
+          },
+          {
+            "end": 562.0509999999999,
+            "start": 561.13098,
+            "word": "is"
+          },
+          {
+            "end": 562.111,
+            "start": 562.0509999999999,
+            "word": "not"
+          },
+          {
+            "end": 562.171,
+            "start": 562.111,
+            "word": "only"
+          },
+          {
+            "end": 562.691,
+            "start": 562.171,
+            "word": "guns,"
+          },
+          {
+            "end": 562.991,
+            "start": 562.691,
+            "word": "cars"
+          },
+          {
+            "end": 563.171,
+            "start": 562.991,
+            "word": "or"
+          },
+          {
+            "end": 563.8910000000001,
+            "start": 563.171,
+            "word": "crime,"
+          },
+          {
+            "end": 564.07098,
+            "start": 563.8910000000001,
+            "word": "its"
+          },
+          {
+            "end": 564.3910000000001,
+            "start": 564.07098,
+            "word": "real"
+          },
+          {
+            "end": 564.731,
+            "start": 564.3910000000001,
+            "word": "power"
+          },
+          {
+            "end": 564.991,
+            "start": 564.731,
+            "word": "is"
+          },
+          {
+            "end": 565.491,
+            "start": 564.991,
+            "word": "freedom."
+          },
+          {
+            "end": 565.671,
+            "start": 565.451,
+            "word": "Every"
+          },
+          {
+            "end": 566.0509999999999,
+            "start": 565.671,
+            "word": "player"
+          },
+          {
+            "end": 566.111,
+            "start": 566.0509999999999,
+            "word": "plays"
+          },
+          {
+            "end": 566.511,
+            "start": 566.111,
+            "word": "GTA"
+          },
+          {
+            "end": 566.691,
+            "start": 566.511,
+            "word": "in"
+          },
+          {
+            "end": 566.8109999999999,
+            "start": 566.691,
+            "word": "his"
+          },
+          {
+            "end": 567.031,
+            "start": 566.8109999999999,
+            "word": "own"
+          },
+          {
+            "end": 567.851,
+            "start": 567.031,
+            "word": "way."
+          },
+          {
+            "end": 567.991,
+            "start": 567.971,
+            "word": "Some"
+          },
+          {
+            "end": 568.011,
+            "start": 567.991,
+            "word": "complete"
+          },
+          {
+            "end": 569.171,
+            "start": 568.011,
+            "word": "missions,"
+          },
+          {
+            "end": 569.471,
+            "start": 569.171,
+            "word": "some"
+          },
+          {
+            "end": 569.491,
+            "start": 569.471,
+            "word": "roam"
+          },
+          {
+            "end": 569.611,
+            "start": 569.491,
+            "word": "in"
+          },
+          {
+            "end": 569.8109999999999,
+            "start": 569.611,
+            "word": "the"
+          },
+          {
+            "end": 570.171,
+            "start": 569.8109999999999,
+            "word": "city,"
+          },
+          {
+            "end": 570.731,
+            "start": 570.171,
+            "word": "some"
+          },
+          {
+            "end": 570.751,
+            "start": 570.731,
+            "word": "drive"
+          },
+          {
+            "end": 570.771,
+            "start": 570.751,
+            "word": "while"
+          },
+          {
+            "end": 570.7909999999999,
+            "start": 570.771,
+            "word": "listening"
+          },
+          {
+            "end": 570.8109999999999,
+            "start": 570.7909999999999,
+            "word": "to"
+          },
+          {
+            "end": 570.851,
+            "start": 570.8109999999999,
+            "word": "the"
+          },
+          {
+            "end": 572.3910000000001,
+            "start": 570.851,
+            "word": "video,"
+          },
+          {
+            "end": 572.591,
+            "start": 572.3910000000001,
+            "word": "some"
+          },
+          {
+            "end": 572.671,
+            "start": 572.591,
+            "word": "take"
+          },
+          {
+            "end": 572.691,
+            "start": 572.671,
+            "word": "out"
+          },
+          {
+            "end": 572.711,
+            "start": 572.691,
+            "word": "the"
+          },
+          {
+            "end": 572.731,
+            "start": 572.711,
+            "word": "tank"
+          },
+          {
+            "end": 572.751,
+            "start": 572.731,
+            "word": "with"
+          },
+          {
+            "end": 573.931,
+            "start": 572.751,
+            "word": "cheats,"
+          },
+          {
+            "end": 574.471,
+            "start": 573.931,
+            "word": "and"
+          },
+          {
+            "end": 574.711,
+            "start": 574.471,
+            "word": "some"
+          },
+          {
+            "end": 574.7909999999999,
+            "start": 574.711,
+            "word": "go"
+          },
+          {
+            "end": 575.251,
+            "start": 574.7909999999999,
+            "word": "online"
+          },
+          {
+            "end": 576.3910000000001,
+            "start": 575.251,
+            "word": "and"
+          },
+          {
+            "end": 576.611,
+            "start": 576.3910000000001,
+            "word": "make"
+          },
+          {
+            "end": 576.63098,
+            "start": 576.611,
+            "word": "a"
+          },
+          {
+            "end": 577.1510000000001,
+            "start": 576.63098,
+            "word": "criminal"
+          },
+          {
+            "end": 577.851,
+            "start": 577.1510000000001,
+            "word": "empire"
+          },
+          {
+            "end": 577.871,
+            "start": 577.851,
+            "word": "with"
+          },
+          {
+            "end": 577.8910000000001,
+            "start": 577.871,
+            "word": "their"
+          },
+          {
+            "end": 578.191,
+            "start": 577.8910000000001,
+            "word": "friends."
+          },
+          {
+            "end": 578.351,
+            "start": 578.271,
+            "word": "The"
+          },
+          {
+            "end": 578.771,
+            "start": 578.351,
+            "word": "interesting"
+          },
+          {
+            "end": 578.9110000000001,
+            "start": 578.771,
+            "word": "thing"
+          },
+          {
+            "end": 579.3109999999999,
+            "start": 578.9110000000001,
+            "word": "is"
+          },
+          {
+            "end": 579.491,
+            "start": 579.3109999999999,
+            "word": "that"
+          },
+          {
+            "end": 580.011,
+            "start": 579.491,
+            "word": "GTA"
+          },
+          {
+            "end": 580.07098,
+            "start": 580.011,
+            "word": "has"
+          },
+          {
+            "end": 580.091,
+            "start": 580.07098,
+            "word": "mirrored"
+          },
+          {
+            "end": 580.591,
+            "start": 580.091,
+            "word": "the"
+          },
+          {
+            "end": 580.611,
+            "start": 580.591,
+            "word": "society"
+          },
+          {
+            "end": 580.8109999999999,
+            "start": 580.611,
+            "word": "of"
+          },
+          {
+            "end": 580.991,
+            "start": 580.8109999999999,
+            "word": "that"
+          },
+          {
+            "end": 581.8109999999999,
+            "start": 580.991,
+            "word": "time"
+          },
+          {
+            "end": 582.171,
+            "start": 581.8109999999999,
+            "word": "in"
+          },
+          {
+            "end": 582.191,
+            "start": 582.171,
+            "word": "every"
+          },
+          {
+            "end": 582.63098,
+            "start": 582.191,
+            "word": "era."
+          },
+          {
+            "end": 582.991,
+            "start": 582.691,
+            "word": "Vice"
+          },
+          {
+            "end": 583.271,
+            "start": 582.991,
+            "word": "City"
+          },
+          {
+            "end": 583.4110000000001,
+            "start": 583.271,
+            "word": "captured"
+          },
+          {
+            "end": 583.471,
+            "start": 583.4110000000001,
+            "word": "the"
+          },
+          {
+            "end": 583.8910000000001,
+            "start": 583.471,
+            "word": "80s"
+          },
+          {
+            "end": 584.13098,
+            "start": 583.8910000000001,
+            "word": "crime"
+          },
+          {
+            "end": 584.471,
+            "start": 584.13098,
+            "word": "movies"
+          },
+          {
+            "end": 584.711,
+            "start": 584.471,
+            "word": "and"
+          },
+          {
+            "end": 585.0509999999999,
+            "start": 584.711,
+            "word": "Miami"
+          },
+          {
+            "end": 586.171,
+            "start": 585.0509999999999,
+            "word": "culture."
+          },
+          {
+            "end": 586.471,
+            "start": 586.231,
+            "word": "San"
+          },
+          {
+            "end": 586.8910000000001,
+            "start": 586.471,
+            "word": "Andreas"
+          },
+          {
+            "end": 587.011,
+            "start": 586.8910000000001,
+            "word": "showed"
+          },
+          {
+            "end": 587.111,
+            "start": 587.011,
+            "word": "the"
+          },
+          {
+            "end": 587.591,
+            "start": 587.111,
+            "word": "90s"
+          },
+          {
+            "end": 587.79102,
+            "start": 587.591,
+            "word": "gang"
+          },
+          {
+            "end": 588.29102,
+            "start": 587.79102,
+            "word": "culture,"
+          },
+          {
+            "end": 588.591,
+            "start": 588.29102,
+            "word": "police"
+          },
+          {
+            "end": 589.011,
+            "start": 588.591,
+            "word": "corruption"
+          },
+          {
+            "end": 589.251,
+            "start": 589.011,
+            "word": "and"
+          },
+          {
+            "end": 589.611,
+            "start": 589.251,
+            "word": "hip-hop"
+          },
+          {
+            "end": 590.371,
+            "start": 589.611,
+            "word": "era."
+          },
+          {
+            "end": 590.851,
+            "start": 590.431,
+            "word": "GTA"
+          },
+          {
+            "end": 591.231,
+            "start": 590.851,
+            "word": "IV"
+          },
+          {
+            "end": 591.371,
+            "start": 591.231,
+            "word": "explored"
+          },
+          {
+            "end": 591.8109999999999,
+            "start": 591.371,
+            "word": "immigrant"
+          },
+          {
+            "end": 592.231,
+            "start": 591.8109999999999,
+            "word": "struggle"
+          },
+          {
+            "end": 592.451,
+            "start": 592.231,
+            "word": "and"
+          },
+          {
+            "end": 592.851,
+            "start": 592.451,
+            "word": "broken"
+          },
+          {
+            "end": 593.3109999999999,
+            "start": 592.851,
+            "word": "American"
+          },
+          {
+            "end": 594.4110000000001,
+            "start": 593.3109999999999,
+            "word": "dream."
+          },
+          {
+            "end": 594.831,
+            "start": 594.351,
+            "word": "जीटीए"
+          },
+          {
+            "end": 595.1909800000001,
+            "start": 594.831,
+            "word": "फाइव"
+          },
+          {
+            "end": 595.331,
+            "start": 595.1909800000001,
+            "word": "ने"
+          },
+          {
+            "end": 596.011,
+            "start": 595.331,
+            "word": "इंफ्लुएंसर"
+          },
+          {
+            "end": 596.491,
+            "start": 596.011,
+            "word": "कल्चर,"
+          },
+          {
+            "end": 597.271,
+            "start": 596.491,
+            "word": "कैपिटलिजम,"
+          },
+          {
+            "end": 597.451,
+            "start": 597.271,
+            "word": "रिच"
+          },
+          {
+            "end": 597.991,
+            "start": 597.451,
+            "word": "लाइफस्टाइल"
+          },
+          {
+            "end": 598.231,
+            "start": 597.991,
+            "word": "और"
+          },
+          {
+            "end": 598.63098,
+            "start": 598.231,
+            "word": "मौडर्न"
+          },
+          {
+            "end": 599.111,
+            "start": 598.63098,
+            "word": "अमेरिका"
+          },
+          {
+            "end": 599.211,
+            "start": 599.111,
+            "word": "की"
+          },
+          {
+            "end": 599.671,
+            "start": 599.211,
+            "word": "मैडनेस"
+          },
+          {
+            "end": 599.871,
+            "start": 599.671,
+            "word": "पर"
+          },
+          {
+            "end": 600.011,
+            "start": 599.871,
+            "word": "से"
+          },
+          {
+            "end": 600.1909800000001,
+            "start": 600.011,
+            "word": "जाता"
+          },
+          {
+            "end": 600.211,
+            "start": 600.1909800000001,
+            "word": "है।"
+          },
+          {
+            "end": 601.06,
+            "start": 600,
+            "word": "जीटीए"
+          },
+          {
+            "end": 601.32,
+            "start": 601.06,
+            "word": "सिर्फ"
+          },
+          {
+            "end": 601.6,
+            "start": 601.32,
+            "word": "गेम"
+          },
+          {
+            "end": 601.92,
+            "start": 601.6,
+            "word": "नहीं,"
+          },
+          {
+            "end": 602.22,
+            "start": 601.92,
+            "word": "अपने"
+          },
+          {
+            "end": 602.44,
+            "start": 602.22,
+            "word": "टाइम"
+          },
+          {
+            "end": 602.58,
+            "start": 602.44,
+            "word": "का"
+          },
+          {
+            "end": 602.96,
+            "start": 602.58,
+            "word": "सोसल"
+          },
+          {
+            "end": 603.42,
+            "start": 602.96,
+            "word": "कमेंटरी"
+          },
+          {
+            "end": 603.54,
+            "start": 603.42,
+            "word": "भी"
+          },
+          {
+            "end": 603.76,
+            "start": 603.54,
+            "word": "है।"
+          }
+        ]
+      }
+    ],
+    "transcript": " तो गाइस जीटिये गेम्स खेलना किसको पसंद नहीं है? मुझे तो बहुत पसंद है. वाइस सीटी से लेकर सैन अंड्रियास, जीटिये 4 से लेकर जीटिये 5 तक. लेकिन क्या आप बता सकते हो आपने अब तक कितने जीटिये गेम्स खेले हैं? दो, तीन, चार. असल में जी और ह्यूज ओपन वर्ल्ड से नहीं हुई थी. इसकी सुरुवात हुई थी 1997 में जब रॉक स्टार नौर्थ का पुराना नाम DMA डिजाइन था. उस समय पहला गेम आया जिसका नाम था Grand Theft Auto. आज के इसाब से देखो तो ये गेम बहुत सिंपल लगेगा. क्योंकि इसमें टॉ 1960s British Culture Old School Cars London Streets Criminal Underworld GTA rare moment GTA fictional American cities based लंडन 1969 ने दिखाया कि GTA का फॉर्मूला किसी भी सिटी में फिट हो सकता है। फिर उसी साल आया Grand Theft Auto London 1961। ये लंडन 1969 का छोटा सा एक्सपेंशन था और टाइमलाइन में उससे भी पहले सेट था। इसमें ज्यादा बड़ा इनोवेशन नहीं था, लेकिन GTA के फैंस के लिए ये इंटरेस्टिंग था, क्योंकि इसने सेम लंडन वर्ल्ड को थोड़ा और एक्सपैंड किया. आप इसे GTA हिस्ट्री का एक छोटा लेकिन यूनीक चैप्टर कह सकते हो। ये उन गेम्स में से है जिनके बारे में बहुत कम लोग बात करते हैं। लेकिन अगर आप पूरी GTA सीरीज समझना चाते हो तो इसे इग्नोर नहीं कर सकते। फिर 1999 में आया Grand Theft Auto 2. इस गेम ने पहले GTA के फॉर्मुला को और पॉलिश किया. इस बार City का नाम था Anywhere City. ये थोड़ा फ्यूचरिस्टिक, थोड़ा साइबर पंक टाइप वर्ल्ड था जहां अलग-अलग गैंग सिटी को कंट्रोल करती थी. GTA 2 में रिस्पेक्ट सिस्टम भी था। अगर आप एक गैंग के लिए काम करते थे तो दूसरी गैंग आपसे नफरत करने लगती थी। यह छोटा सा मेकानिक आज के गेम्स में नॉर्मल लग सकता है। लेकिन उस टाइम यह बहुत स्मार्ट आइडिया था। 2001 Grand Theft Auto 3 GTA cultural phenomenon GTA 3D open world Liberty City living city इसके बाद 2002 में आया Grand Theft Auto Vice City और अनेस्ली कहूं तो इंडिया में बहुत सारे लोगों के लिए GTA की असली शुरुवात यही गेम था. वाइस सिटी की नियॉन लाइट्स, बीचेज, बाइक्स, हेलिकॉप्टर्स, रेडियो स्टेशन्स और 80s मायामी वाइब ने इसे लेजेंडरी बना दिया. इस गेम का प्रोटागनिश टॉमी वर्सेटी था, जिसे रे लियोटा ने वॉइस दी थी. तॉमी प्रिजन से बाहर आता है, वाइस सिटी में डील खराब हो जाती है और फिर वो धीरे धीरे पूरा क्रिमिनल एमपायर बिल्ड करता है. वाइस सीटी सिफ गेम नहीं था, ये मूड था. आज भी अगर किसी को GTA Nostalgia बोलो, तो सबसे पहले उसके दिमाग में वाइस सीटी की स्ट्रीट्स, बाइक्स और पैंजर चीट कोड आता है. 2004 Grand Theft Auto San Andreas San Andreas's biggest strength was its scale. It was not just a city but a whole state. It had three big cities like Los Santos, San Fierro, and Las Venturas. Gym, food, clothes, tattoos, driving school, flying school, girlfriends, gang territories, train missions, everything. GTA San Andreas didn't just make the open world bigger, it made it personal. In 2004, another GTA game came out, Grand Theft Auto Advance. ये गेम बॉय अडवांस के लिए बना था इसलिए ग्राफिक्स फिर से टॉप डाउन स्टाइल में थे. लेकिन स्टोरी वाइज ये GTA 3 की दुनिया से कनेक्टेट था. इसमें प्रोटागनिस्ट माईक होता है जो लिबर्टी सिटी छोड़कर नई लाइफ सुरू करना चाता लिबर्टी सिटी स्टोरीज ने हैंडल के लिए काम करता है।  प्रापर थ्रीडी जीटी एक्सपीरियंस देने की कोशिश की और उस टाइम के हिसाब से ये बहुत बड़ी अचीवमेंट थी. जो जीटीए थ्री जैसा ओपन वर्ल्ड पहले प्लेस्टेशन टू पर मिलता था वो अब पीसपी में पोर्टेबल फॉर्म में आ गया था. ये वही मोमेंट था जब जीटीए ने कंसोल से निकल कर हैंडल गेमिंग में भी अपनी पावर दिखा दी. फिर 2006 में आया ग्रांड ठेप टॉटो वाइस सिटी स्टोरीज. ये वाइस सिटी का प्रीक्वेल था और इसमें हम विक्टर विक वैंस की कहानी देखते हैं. विक इनिशियली आर्मी में होता है लेकिन करप्षन और गलत लोगों की वज़े से क्राइम वर्ल्ड में खिसता च 4 GTA 4 GTA 2009 में GTA 4 का पहला एक्सपेंशन आया. Grand Theft Auto 4 The Lost and Damned. इसमें हम जॉनी क्लेविट्स की स्टोरी देखते हैं जो The Lost MC Biker Gang का मेंबर है. यह गेम लिबर्टी सिटी को एक अलग एंगल से दिखाता है जहाँ GTA 4 में इमिगरेंट स्ट्रगल था वही दा लॉस्ट और डैम्ड में बाइकर ब्रदरहुड, लॉयल्टी और गैंग पॉलिटिक्स थी. सेम सिटी, सेम टाइमलाइन लेकिन बिलकुल अलग नजरिया. यही GTA इस expansion में helicopters, clubs, rich criminals, diamonds, explosions और over the top missions थे। इसने GTA 4 की serious liberty city को एक flashy side से दिखाया। Same city लेकिन vibe बिलकुल अलग। फिर 2013 में आया Grand Theft Auto 5 और इस game ने तो records ही तोड़ दिये। GTA 5 ने हमें Los Santos वापस दिया लेकिन इस बार modern Los Angeles inspired world के रूप में। प्राइकल फ्रैंकलिन और ट्रेवर माइकल रेटायर्ड क्रिमिनल था, फ्रैंकलिन स्ट्रीट लाइफ से बाहर निकलना चाता था और ट्रेवर प्योर केओस का हुमन फॉर्म था. इन तीनों कैरेक्टर्स के थूरू रॉक्स्टार ने क्राइम, कैपिटलिजम, फेम, मीडिया, सोशल मीडिया और अमेरिकन लाइफस्टायल की जबरदस्त सैटायर की। GTA 5 की हाइस्ट्स, ओपन वर्ल्ड डिटेल्स, ड्राइविंग, फ्लाइंग, अंडरवोर्टर एक्स्प्लोरेशन और सिनिमाटिक मिशन्स ने इसे गेमिंग हिस्ट्री के सबसे सक्सेसफुल गेम्स में से एक बना दिया। GTA 5 Grand Theft Auto Online GTA 5 GTA Online Players Character Los Santos Entry Missions Businesses Heists Night Clubs Bunkers Online Criminal Empire GTA Online ने Rockstar के लिए GTA को एक Live Service Platform बना दिया. यही रीजन है कि GTA 5 आज भी इतने सालों बाद Relevant है. Every update has new cars, missions, businesses and stories in the game. GTA Online has proved that GTA is not only a single player story but also an ongoing digital world. So if we look at the entire GTA journey, then this series started with 2D top-down chaos, then became a 3D open world revolution and then reached the cinematic storytelling and online world in the HD universe. The greatest power of GTA is not only guns, cars or crime, its real power is freedom. Every player plays GTA in his own way. Some complete missions, some roam in the city, some drive while listening to the video, some take out the tank with cheats, and some go online and make a criminal empire with their friends. The interesting thing is that GTA has mirrored the society of that time in every era. Vice City captured the 80s crime movies and Miami culture. San Andreas showed the 90s gang culture, police corruption and hip-hop era. GTA IV explored immigrant struggle and broken American dream. जीटीए फाइव ने इंफ्लुएंसर कल्चर, कैपिटलिजम, रिच लाइफस्टाइल और मौडर्न अमेरिका की मैडनेस पर से जाता है।  जीटीए सिर्फ गेम नहीं, अपने टाइम का सोसल कमेंटरी भी है। उन्हें बहुत पूरी जर्नी बताती है कि GTA सिर्फ एक गेमिंग फ्रेंचाइज नहीं बलकि गेमिंग कल्चर का वो हिस्सा है जिसने लाखों प्लेयर्स को ओपन वर्ल्ड का असली मतलब समझाया. एंडिंग में बस एक सवाल, आपने इन में से कितने GTA गेम्स खेले हैं? सिर्फ Vice City और San Andreas या पूरी सीडीज? कमेंट में बताना क्योंकि हो सकता है आपने GTA खेला हो, लेकिन GTA की पूरी हिस्ट्री आज पहली बार समझी हो."
+  },
+  {
+    "id": "job_1782624459175",
+    "title": "https://youtu.be/NlBUZvFUA-E?s...",
+    "status": "Processing",
+    "time": "Just now",
+    "clips": 0,
+    "duration": "0:00:00",
+    "thumbnail": "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=800&auto=format&fit=crop&q=80",
+    "createdAt": 1782624459190
+  },
+  {
+    "id": "job_1782624273196",
+    "title": "https://youtu.be/NlBUZvFUA-E?s...",
+    "status": "Processing",
+    "time": "Just now",
+    "clips": 0,
+    "duration": "0:00:00",
+    "thumbnail": "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=800&auto=format&fit=crop&q=80",
+    "createdAt": 1782624273196
+  },
+  {
+    "id": "job_1782624257167",
+    "title": "https://youtu.be/NlBUZvFUA-E?s...",
+    "status": "Processing",
+    "time": "Just now",
+    "clips": 0,
+    "duration": "0:00:00",
+    "thumbnail": "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=800&auto=format&fit=crop&q=80",
+    "createdAt": 1782624257167
+  },
+  {
+    "id": "job_1782623924373",
+    "title": "https://youtu.be/NlBUZvFUA-E?s...",
+    "status": "Processing",
+    "time": "Just now",
+    "clips": 0,
+    "duration": "0:00:00",
+    "thumbnail": "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=800&auto=format&fit=crop&q=80",
+    "createdAt": 1782623924373
+  },
+  {
+    "id": "job_1782623910788",
+    "title": "https://youtu.be/NlBUZvFUA-E?s...",
+    "status": "Processing",
+    "time": "Just now",
+    "clips": 0,
+    "duration": "0:00:00",
+    "thumbnail": "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=800&auto=format&fit=crop&q=80",
+    "createdAt": 1782623910788
+  },
+  {
+    "id": "job_1782623905094",
+    "title": "https://youtu.be/NlBUZvFUA-E?s...",
+    "status": "Processing",
+    "time": "Just now",
+    "clips": 0,
+    "duration": "0:00:00",
+    "thumbnail": "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=800&auto=format&fit=crop&q=80",
+    "createdAt": 1782623905094
+  },
+  {
+    "id": "job_1782623899345",
+    "title": "https://youtu.be/NlBUZvFUA-E?s...",
+    "status": "Processing",
+    "time": "Just now",
+    "clips": 0,
+    "duration": "0:00:00",
+    "thumbnail": "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=800&auto=format&fit=crop&q=80",
+    "createdAt": 1782623899345
+  },
+  {
+    "id": "job_1782623870172",
+    "title": "https://youtu.be/NlBUZvFUA-E?s...",
+    "status": "Processing",
+    "time": "Just now",
+    "clips": 0,
+    "duration": "0:00:00",
+    "thumbnail": "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=800&auto=format&fit=crop&q=80",
+    "createdAt": 1782623870172
+  },
+  {
+    "id": "job_1782623834612",
+    "title": "https://youtu.be/NlBUZvFUA-E?s...",
+    "status": "Processing",
+    "time": "Just now",
+    "clips": 0,
+    "duration": "0:00:00",
+    "thumbnail": "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=800&auto=format&fit=crop&q=80",
+    "createdAt": 1782623834612
+  },
+  {
+    "id": "job_1782623662928",
+    "title": "https://youtu.be/NlBUZvFUA-E?s...",
+    "status": "Processing",
+    "time": "Just now",
+    "clips": 0,
+    "duration": "0:00:00",
+    "thumbnail": "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=800&auto=format&fit=crop&q=80",
+    "createdAt": 1782623662928
+  },
+  {
+    "id": "job_1782623627071",
+    "title": "https://youtu.be/NlBUZvFUA-E?s...",
+    "status": "Processing",
+    "time": "Just now",
+    "clips": 0,
+    "duration": "0:00:00",
+    "thumbnail": "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=800&auto=format&fit=crop&q=80",
+    "createdAt": 1782623627071
+  }
+]
