@@ -21,8 +21,9 @@ const getBaseUrl = () => {
     }
     return 'http://localhost:5000';
   }
-  // Production URL
-  return 'https://api.yourdomain.com';
+  // Production URL (Standalone APK)
+  // For local testing on your phone, this must point to your PC's IP address on your WiFi network.
+  return 'http://192.168.100.21:5000';
 };
 
 export const API_URL = getBaseUrl();

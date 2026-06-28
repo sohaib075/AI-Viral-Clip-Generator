@@ -16,9 +16,9 @@ const Sidebar = () => {
   return (
     <aside className="w-64 h-screen fixed left-0 top-0 border-r border-white/5 bg-black/90 backdrop-blur-3xl hidden md:flex flex-col z-50">
       <div className="p-8 flex items-center gap-3">
-        <div className="bg-gradient-to-tr from-white/20 to-white/5 p-[1px] rounded-xl">
-          <div className="bg-black p-2 rounded-[11px]">
-            <Zap className="w-5 h-5 text-white" fill="currentColor" />
+        <div className="bg-gradient-to-tr from-[#66fcf1]/20 to-white/5 p-[1px] rounded-xl shadow-[0_0_15px_rgba(102,252,241,0.2)]">
+          <div className="bg-black p-1 rounded-[11px]">
+            <img src="/logo.png" alt="Logo" className="w-7 h-7 rounded-lg" />
           </div>
         </div>
         <span className="text-xl font-bold tracking-tight text-white">ClipGenius</span>
