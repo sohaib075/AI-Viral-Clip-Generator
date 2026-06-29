@@ -46,16 +46,6 @@ const Sidebar = () => {
         })}
       </div>
 
-      <div className="p-6">
-        <div className="glass-panel p-4 rounded-xl flex flex-col gap-2 relative overflow-hidden group hover:border-white/20 transition-colors">
-          <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest">Plan</span>
-          <span className="text-white font-semibold text-sm">Pro Edition</span>
-          <div className="w-full h-1 bg-white/10 rounded-full mt-2 overflow-hidden">
-            <div className="w-[85%] h-full bg-white rounded-full"></div>
-          </div>
-          <span className="text-[11px] text-gray-400 mt-1">85% of GPU limits used</span>
-        </div>
-      </div>
     </aside>
   );
 };
