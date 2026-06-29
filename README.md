@@ -18,6 +18,11 @@ An automated, end-to-end AI pipeline that converts long-form landscape videos (o
   - **Customizable Themes**: Choose from Modern, Viral, Podcast, or Gaming styles with fully customizable text colors, highlight colors, font size, and vertical margins directly from the UI.
   - **Progressive Word-Level Highlighting**: The active spoken word pops out dynamically while spoken, keeping other words white.
   - **Timing Proportional Allocation**: Timestamps are dynamically calculated based on word character length (excluding punctuation) to match spoken tempos naturally.
+- **AI Story-to-Video Generator**: Transform text, scripts, or novel chapters into complete, fully narrated videos.
+  - **LLM Scene Detection**: Intelligently analyzes your text using Groq (`llama-3.3-70b-versatile`) to break it down into dynamic scenes and generate creative image prompts and narration.
+  - **Free AI Visuals**: Leverages Pollinations.ai for generating high-quality scene images across various art styles (Cinematic, Anime, Cyberpunk, 3D, Cartoon, etc).
+  - **Realistic Text-to-Speech**: Integrates `edge-tts` to generate high-quality, human-like voiceovers.
+  - **Automated Composition**: Stitches images and audio together automatically with FFmpeg and MoviePy.
 - **Automated Social Media Publisher Pipeline**:
   - **Smart Queueing System**: Schedule posts to automatically go live immediately or in the future across YouTube Shorts, Instagram Reels, and TikTok. 
   - **Global Duplicate Prevention**: Features a strict SHA-256 video fingerprinting system. The backend validates a unique `video_hash` against the database to guarantee that a video is never accidentally uploaded twice globally across any platform.
@@ -49,6 +54,7 @@ temp/
 ├── Processed/   (Compressed MP3 audio tracks and Transcript_[JobId].json)
 ├── Clips/       (Vertical portrait or horizontal MP4s and Thumbnail_[Seq]_[JobId].jpgs)
 ├── Subtitles/   (Generated Sub_[Seq]_[JobId].srt and animated Sub_[Seq]_[JobId].ass subtitle tracks)
+├── StoryVideos/ (Fully generated AI Story-to-Video output files)
 └── Logs/        (Live timestamped job-specific execution logs [JobId].log)
 ```
 
@@ -79,7 +85,7 @@ cd python-pipeline
 
 Install the required Python packages:
 ```bash
-pip install flask groq google-genai yt-dlp ffmpeg-python imageio-ffmpeg python-dotenv
+pip install flask groq google-genai yt-dlp ffmpeg-python imageio-ffmpeg python-dotenv edge-tts moviepy requests
 ```
 
 Create a `.env` file in the `python-pipeline` directory with your API keys:
