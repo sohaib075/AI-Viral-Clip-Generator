@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Sparkles } from 'lucide-react';
 import { useParams, useNavigate } from 'react-router-dom';
-
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 const Processing = () => {
@@ -90,10 +88,11 @@ const Processing = () => {
   return (
     <div className="w-full max-w-2xl mx-auto flex flex-col items-center text-center animate-fade-in-up mt-20">
       <div className="relative mb-16">
-        <div className="w-40 h-40 rounded-full border-8 border-white/20 flex items-center justify-center relative">
-          <div className="absolute inset-[-8px] rounded-full border-8 border-t-white border-r-transparent border-b-white border-l-transparent animate-spin"></div>
-          <div className="bg-white p-6 rounded-3xl animate-pulse shadow-[0_0_50px_rgba(255,255,255,0.8)] text-black">
-            <Sparkles className="w-12 h-12" />
+        <div className="w-40 h-40 rounded-full border-8 border-white/5 flex items-center justify-center relative">
+          <div className="absolute inset-[-8px] rounded-full border-8 border-t-[#66fcf1] border-r-transparent border-b-[#66fcf1]/30 border-l-transparent animate-spin drop-shadow-[0_0_15px_rgba(102,252,241,0.5)]"></div>
+          <div className="bg-black p-5 rounded-3xl border border-[#66fcf1]/30 animate-pulse shadow-[0_0_40px_rgba(102,252,241,0.3)] flex items-center justify-center relative z-10 overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-tr from-[#66fcf1]/10 to-transparent"></div>
+            <img src="/logo.png" alt="ClipGenius Logo" className="w-14 h-14 rounded-xl object-contain relative z-10 drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]" />
           </div>
         </div>
       </div>
