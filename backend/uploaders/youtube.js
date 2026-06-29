@@ -22,23 +22,42 @@ const uploadToYouTube = async (post, account, tempVideoPath) => {
             });
 
             console.log(`[YouTube] Starting upload to YouTube Shorts for account ${account.account_name}...`);
-            const res = await youtube.videos.insert({
-                part: 'snippet,status',
-                requestBody: {
-                    snippet: {
-                        title: post.title,
-                        description: `${post.description}\n\n${post.hashtags}\n#shorts`,
-                        tags: post.hashtags ? post.hashtags.replace(/#/g, '').split(' ') : [],
-                    },
-                    status: {
-                        privacyStatus: 'public', // Change to 'private' or 'unlisted' for testing
-                        selfDeclaredMadeForKids: false
+            let res;
+            let retries = 3;
+            
+            while (retries > 0) {
+                try {
+                    res = await youtube.videos.insert({
+                        part: 'snippet,status',
+                        requestBody: {
+                            snippet: {
+                                title: post.title,
+                                description: `${post.description}\n\n${post.hashtags}\n#shorts`,
+                                tags: post.hashtags ? post.hashtags.replace(/#/g, '').split(' ') : [],
+                            },
+                            status: {
+                                privacyStatus: 'public', // Change to 'private' or 'unlisted' for testing
+                                selfDeclaredMadeForKids: false
+                            }
+                        },
+                        media: {
+                            mimeType: 'video/mp4',
+                            body: fs.createReadStream(tempVideoPath)
+                        }
+                    }, {
+                        timeout: 300000 // 5 minutes timeout
+                    });
+                    break; // Success
+                } catch (err) {
+                    retries--;
+                    console.error(`[YouTube] API Upload Attempt Failed. Retries left: ${retries}. Error:`, err.message);
+                    if (retries === 0) {
+                        throw err; // Re-throw to be handled by the outer try-catch
                     }
-                },
-                media: {
-                    body: fs.createReadStream(tempVideoPath)
+                    // Wait 5 seconds before retrying
+                    await new Promise(r => setTimeout(r, 5000));
                 }
-            });
+            }
 
             console.log(`[YouTube] Upload successful! Video ID: ${res.data.id}`);
             resolve(res.data);

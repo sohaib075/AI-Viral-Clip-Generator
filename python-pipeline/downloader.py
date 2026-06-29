@@ -29,6 +29,9 @@ def download_video(url, output_dir, progress_callback=None):
         'progress_hooks': [my_hook] if progress_callback else [],
         'concurrent_fragment_downloads': 5,
         'hls_prefer_native': True,
+        'socket_timeout': 60,
+        'retries': 15,
+        'fragment_retries': 15,
         'extractor_args': {'youtube': ['player_client=android,web']}
     }
     
