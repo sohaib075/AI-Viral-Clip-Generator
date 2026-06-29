@@ -16,8 +16,10 @@ interface Post {
 const Queue = () => {
     const [posts, setPosts] = useState<Post[]>([]);
     const [loading, setLoading] = useState(true);
+    const [refreshing, setRefreshing] = useState(false);
 
     const fetchPosts = async () => {
+        setRefreshing(true);
         try {
             const res = await fetch(`${API_URL}/api/posts`);
             const data = await res.json();
@@ -26,6 +28,7 @@ const Queue = () => {
             console.error("Failed to fetch posts", e);
         } finally {
             setLoading(false);
+            setRefreshing(false);
         }
     };
 
@@ -51,8 +54,14 @@ const Queue = () => {
                     <h1 className="text-4xl font-black text-white mb-2">Publishing Queue</h1>
                     <p className="text-gray-400 text-lg font-medium">Monitor and manage your automated scheduled uploads.</p>
                 </div>
-                <button onClick={fetchPosts} className="p-3 bg-white/5 rounded-xl hover:bg-white/10 transition-all">
-                    <RefreshCw className="w-5 h-5 text-gray-400" />
+                <button
+                    type="button"
+                    onClick={fetchPosts}
+                    disabled={refreshing}
+                    aria-label="Refresh publishing queue"
+                    className="p-3 bg-white/5 rounded-xl hover:bg-white/10 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                    <RefreshCw className={`w-5 h-5 text-gray-400 ${refreshing ? 'animate-spin' : ''}`} />
                 </button>
             </div>
 

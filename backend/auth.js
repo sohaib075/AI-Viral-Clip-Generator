@@ -9,32 +9,46 @@ require('dotenv').config();
 
 const BASE_URL = process.env.BASE_URL || 'http://localhost:5000';
 const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
+const YOUTUBE_REDIRECT_URI = process.env.YOUTUBE_REDIRECT_URI || `${BASE_URL}/auth/youtube/callback`;
+
+function getYouTubeOAuthClient(redirectUri) {
+    if (!process.env.YOUTUBE_CLIENT_ID || !process.env.YOUTUBE_CLIENT_SECRET) {
+        throw new Error('Missing YOUTUBE_CLIENT_ID or YOUTUBE_CLIENT_SECRET');
+    }
+
+    return new google.auth.OAuth2(
+        process.env.YOUTUBE_CLIENT_ID,
+        process.env.YOUTUBE_CLIENT_SECRET,
+        redirectUri
+    );
+}
 
 // ==========================================
 // YOUTUBE (Google) OAUTH
 // ==========================================
-const oauth2Client = new google.auth.OAuth2(
-    process.env.YOUTUBE_CLIENT_ID,
-    process.env.YOUTUBE_CLIENT_SECRET,
-    `${BASE_URL}/auth/youtube/callback`
-);
-
 router.get('/youtube', (req, res) => {
-    const scopes = [
-        'https://www.googleapis.com/auth/youtube.upload',
-        'https://www.googleapis.com/auth/userinfo.profile'
-    ];
-    const url = oauth2Client.generateAuthUrl({
-        access_type: 'offline', // Gets refresh_token
-        scope: scopes,
-        prompt: 'consent' // Forces consent screen to always get a refresh token
-    });
-    res.redirect(url);
+    try {
+        const oauth2Client = getYouTubeOAuthClient(YOUTUBE_REDIRECT_URI);
+        const scopes = [
+            'https://www.googleapis.com/auth/youtube.upload',
+            'https://www.googleapis.com/auth/userinfo.profile'
+        ];
+        const url = oauth2Client.generateAuthUrl({
+            access_type: 'offline', // Gets refresh_token
+            scope: scopes,
+            prompt: 'consent' // Forces consent screen to always get a refresh token
+        });
+        res.redirect(url);
+    } catch (e) {
+        console.error('YouTube OAuth setup error:', e.message);
+        res.redirect(`${FRONTEND_URL}/accounts?error=setup_required`);
+    }
 });
 
 router.get('/youtube/callback', async (req, res) => {
     const { code } = req.query;
     try {
+        const oauth2Client = getYouTubeOAuthClient(YOUTUBE_REDIRECT_URI);
         const { tokens } = await oauth2Client.getToken(code);
         oauth2Client.setCredentials(tokens);
 

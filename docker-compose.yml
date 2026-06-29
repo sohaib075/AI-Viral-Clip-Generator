@@ -16,6 +16,8 @@ services:
       context: ./backend
     ports:
       - "5000:5000"
+    env_file:
+      - ./backend/.env
     environment:
       - PYTHON_API_URL=http://python-pipeline:5001
       - PORT=5000
