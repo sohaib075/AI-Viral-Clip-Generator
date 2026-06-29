@@ -9,6 +9,8 @@ from audio_extractor import extract_audio
 from transcriber import transcribe_audio
 from nlp_highlight import extract_highlights
 from video_editor import process_clip
+from story_video_maker import compile_story_video
+import asyncio
 
 app = Flask(__name__)
 
@@ -18,8 +20,9 @@ PROCESSED_DIR = os.path.join(TEMP_DIR, 'Processed')
 CLIPS_DIR = os.path.join(TEMP_DIR, 'Clips')
 SUBTITLES_DIR = os.path.join(TEMP_DIR, 'Subtitles')
 LOGS_DIR = os.path.join(TEMP_DIR, 'Logs')
+STORY_DIR = os.path.join(TEMP_DIR, 'StoryVideos')
 
-for d in [TEMP_DIR, INPUT_DIR, PROCESSED_DIR, CLIPS_DIR, SUBTITLES_DIR, LOGS_DIR]:
+for d in [TEMP_DIR, INPUT_DIR, PROCESSED_DIR, CLIPS_DIR, SUBTITLES_DIR, LOGS_DIR, STORY_DIR]:
     if not os.path.exists(d):
         os.makedirs(d, exist_ok=True)
 
@@ -213,6 +216,46 @@ def process_video_job(job_id, video_url, layout='vertical'):
         log_job_message(job_id, f"ERROR: Job failed!\n{error_msg}")
         update_job_status(job_id, status="failed", progress=0, message=f"Error: {str(e)}")
 
+def process_story_job(job_id, story, style, voice, aspect_ratio):
+    try:
+        log_job_message(job_id, f"=== Starting Story to Video Job ===")
+        update_job_status(job_id, status="processing", progress=10, message="Breaking story into scenes with LLM...")
+        
+        # We need a callback to update progress in compile_story_video, but for now we can just run it
+        # Actually, let's wrap it in an asyncio loop
+        output_filename = f"story_{job_id}.mp4"
+        
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        
+        # We can pass update_job_status to compile_story_video if we modify it, but for simplicity let's just run it
+        # I will modify compile_story_video to accept a progress_callback
+        def progress_cb(p, msg):
+            update_job_status(job_id, progress=p, message=msg)
+            
+        final_video_path = loop.run_until_complete(
+            compile_story_video(story, style, voice, aspect_ratio, output_filename, STORY_DIR, progress_cb)
+        )
+        
+        final_clips = [{
+            "title": "Generated Story Video",
+            "video_url": f"/temp/StoryVideos/{os.path.basename(final_video_path)}"
+        }]
+        
+        update_job_status(
+            job_id,
+            status="completed",
+            progress=100,
+            message="Story Video Generation Complete!",
+            clips=final_clips
+        )
+        log_job_message(job_id, f"Job Completed Successfully! Video saved to {final_video_path}")
+        
+    except Exception as e:
+        error_msg = f"Error: {str(e)}\n{traceback.format_exc()}"
+        log_job_message(job_id, f"ERROR: Story Job failed!\n{error_msg}")
+        update_job_status(job_id, status="failed", progress=0, message=f"Error: {str(e)}")
+
 @app.route('/health', methods=['GET'])
 def health_check():
     return jsonify({"status": "healthy", "service": "ai-pipeline"})
@@ -234,6 +277,28 @@ def process_video():
     
     return jsonify({
         "message": f"Processing started for {job_id}",
+        "status": "processing"
+    })
+
+@app.route('/api/story-to-video', methods=['POST'])
+def process_story_video():
+    data = request.json
+    if not data or 'jobId' not in data or 'story' not in data:
+        return jsonify({"error": "Missing jobId or story"}), 400
+    
+    job_id = data['jobId']
+    story = data['story']
+    style = data.get('style', 'Cinematic')
+    voice = data.get('voice', 'en-US-ChristopherNeural')
+    aspect_ratio = data.get('aspectRatio', '9:16')
+    
+    # Start background processing
+    thread = threading.Thread(target=process_story_job, args=(job_id, story, style, voice, aspect_ratio))
+    thread.daemon = True
+    thread.start()
+    
+    return jsonify({
+        "message": f"Story processing started for {job_id}",
         "status": "processing"
     })
 

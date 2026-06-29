@@ -1,5 +1,22 @@
 [
   {
+    "id": "story_1782758537918",
+    "title": "AI Story Video",
+    "status": "Completed",
+    "time": "Just now",
+    "clips": 1,
+    "duration": "0:00:00",
+    "thumbnail": "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=800&auto=format&fit=crop&q=80",
+    "createdAt": 1782758537918,
+    "type": "story_to_video",
+    "clipsData": [
+      {
+        "title": "Generated Story Video",
+        "video_url": "/temp/StoryVideos/story_story_1782758537918.mp4"
+      }
+    ]
+  },
+  {
     "id": "job_1782755471685",
     "title": "https://youtu.be/JC_VCMHXlL4?s...",
     "status": "Completed",

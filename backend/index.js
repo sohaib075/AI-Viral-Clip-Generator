@@ -122,6 +122,59 @@ app.get('/api/jobs', (req, res) => {
     res.json(jobsHistory);
 });
 
+app.post('/api/story-to-video', async (req, res) => {
+    try {
+        const { story, style, voice, aspectRatio } = req.body;
+
+        if (!story) {
+            return res.status(400).json({ error: 'Please provide a story' });
+        }
+
+        const jobId = `story_${Date.now()}`;
+
+        // Track job in history
+        const newJob = {
+            id: jobId,
+            title: 'AI Story Video',
+            status: 'Processing',
+            time: 'Just now',
+            clips: 0,
+            duration: '0:00:00',
+            thumbnail: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=800&auto=format&fit=crop&q=80',
+            createdAt: Date.now(),
+            type: 'story_to_video'
+        };
+        jobsHistory.unshift(newJob);
+        saveJobs();
+
+        // Trigger the Python pipeline
+        const response = await fetch(`${PYTHON_API_URL}/api/story-to-video`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                jobId: jobId,
+                story: story,
+                style: style,
+                voice: voice,
+                aspectRatio: aspectRatio
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`Python API error: ${response.statusText}`);
+        }
+
+        res.json({
+            message: 'Story job received successfully',
+            jobId: jobId,
+            status: 'queued'
+        });
+    } catch (error) {
+        console.error("Error creating story job:", error);
+        res.status(500).json({ error: 'Failed to start story job' });
+    }
+});
+
 // Analytics mock endpoint
 app.get('/api/analytics', (req, res) => {
     const totalClips = jobsHistory.reduce((acc, job) => acc + (job.clips || 0), 0);

@@ -11,6 +11,7 @@ import Analytics from './pages/Analytics';
 import Settings from './pages/Settings';
 import Accounts from './pages/Accounts';
 import Queue from './pages/Queue';
+import StoryToVideo from './pages/StoryToVideo';
 import './index.css';
 
 function App() {
@@ -36,6 +37,7 @@ function App() {
               <Route path="/settings" element={<Settings />} />
               <Route path="/accounts" element={<Accounts />} />
               <Route path="/queue" element={<Queue />} />
+              <Route path="/story-to-video" element={<StoryToVideo />} />
             </Routes>
           </main>
         </div>

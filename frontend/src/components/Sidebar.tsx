@@ -1,4 +1,4 @@
-import { Home, Folder, BarChart, Settings, Zap, Key, LayoutDashboard } from 'lucide-react';
+import { Home, Folder, BarChart, Settings, Zap, Key, LayoutDashboard, BookOpen } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 
 const Sidebar = () => {
@@ -6,6 +6,7 @@ const Sidebar = () => {
 
   const navItems = [
     { name: 'Dashboard', path: '/', icon: <LayoutDashboard className="w-[18px] h-[18px]" /> },
+    { name: 'Story to Video', path: '/story-to-video', icon: <BookOpen className="w-[18px] h-[18px]" /> },
     { name: 'My Projects', path: '/projects', icon: <Folder className="w-[18px] h-[18px]" /> },
     { name: 'Social Accounts', path: '/accounts', icon: <Key className="w-[18px] h-[18px]" /> },
     { name: 'Publishing Queue', path: '/queue', icon: <BarChart className="w-[18px] h-[18px]" /> },
