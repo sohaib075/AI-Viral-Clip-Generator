@@ -72,7 +72,7 @@ def transcribe_audio(audio_path):
     if not api_key:
         raise ValueError("GROQ_API_KEY environment variable is not set. Please get one from console.groq.com")
 
-    client = Groq(api_key=api_key)
+    client = Groq(api_key=api_key, timeout=300.0)
     ffmpeg_exe = imageio_ffmpeg.get_ffmpeg_exe()
     
     # 1. Chunk the audio
@@ -114,7 +114,7 @@ def transcribe_audio(audio_path):
         offset = idx * chunk_duration
         return transcribe_chunk(client, chunk_file, offset)
 
-    with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
         items = list(enumerate(chunks))
         results = list(executor.map(process_with_index, items))
         

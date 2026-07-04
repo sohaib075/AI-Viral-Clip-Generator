@@ -17,16 +17,16 @@ export default function AppTabs() {
         <NativeTabs.Trigger.Label asChild={false}>Home</NativeTabs.Trigger.Label>
       </NativeTabs.Trigger>
 
+      <NativeTabs.Trigger name="auto-edit">
+        <NativeTabs.Trigger.Label asChild={false}>Auto Edit</NativeTabs.Trigger.Label>
+      </NativeTabs.Trigger>
+
       <NativeTabs.Trigger name="projects">
         <NativeTabs.Trigger.Label asChild={false}>Projects</NativeTabs.Trigger.Label>
       </NativeTabs.Trigger>
 
       <NativeTabs.Trigger name="queue">
         <NativeTabs.Trigger.Label asChild={false}>Queue</NativeTabs.Trigger.Label>
-      </NativeTabs.Trigger>
-
-      <NativeTabs.Trigger name="analytics">
-        <NativeTabs.Trigger.Label asChild={false}>Analytics</NativeTabs.Trigger.Label>
       </NativeTabs.Trigger>
 
       <NativeTabs.Trigger name="settings">

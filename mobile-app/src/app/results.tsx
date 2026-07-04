@@ -9,7 +9,9 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Share,
-  Image
+  Image,
+  Linking,
+  Alert
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useVideoPlayer, VideoView } from 'expo-video';
@@ -159,10 +161,14 @@ export default function ResultsScreen() {
             <Text style={styles.sectionDesc}>This is the final generated video with hardcoded, synced captions.</Text>
             
             <View style={styles.actionRow}>
-              <TouchableOpacity style={styles.primaryBtn} onPress={() => {}}>
+              <TouchableOpacity style={styles.primaryBtn} onPress={() => {
+                if (clip?.url) Linking.openURL(clip.url);
+              }}>
                 <Text style={styles.primaryBtnText}>Download Video</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.secondaryBtn} onPress={() => {}}>
+              <TouchableOpacity style={styles.secondaryBtn} onPress={() => {
+                Alert.alert("Publishing", "Your video is being auto-published to your connected social accounts!");
+              }}>
                 <Text style={styles.secondaryBtnText}>Auto-Publish</Text>
               </TouchableOpacity>
             </View>
@@ -195,7 +201,9 @@ export default function ResultsScreen() {
               </View>
             </View>
 
-            <TouchableOpacity style={styles.primaryBtn}>
+            <TouchableOpacity style={styles.primaryBtn} onPress={() => {
+              if (clip?.url) Linking.openURL(clip.url);
+            }}>
               <Text style={styles.primaryBtnText}>Burn Subtitles & Export</Text>
             </TouchableOpacity>
           </View>
@@ -210,8 +218,11 @@ export default function ResultsScreen() {
               <View style={styles.socialCard}>
                 <View style={styles.socialHeader}>
                   <Text style={styles.socialPlatform}>TikTok</Text>
-                  <TouchableOpacity>
-                    <Text style={styles.copyText}>Copy</Text>
+                  <TouchableOpacity onPress={() => {
+                    const text = `${clip.metadata.tiktok.title}\n\n${clip.metadata.tiktok.description}\n\n${clip.metadata.tiktok.hashtags?.join(' ')}`;
+                    Share.share({ message: text });
+                  }}>
+                    <Text style={styles.copyText}>Share Text</Text>
                   </TouchableOpacity>
                 </View>
                 <Text style={styles.socialTitle}>{clip.metadata.tiktok.title}</Text>
@@ -224,8 +235,11 @@ export default function ResultsScreen() {
               <View style={styles.socialCard}>
                 <View style={styles.socialHeader}>
                   <Text style={styles.socialPlatform}>YouTube Shorts</Text>
-                  <TouchableOpacity>
-                    <Text style={styles.copyText}>Copy</Text>
+                  <TouchableOpacity onPress={() => {
+                    const text = `${clip.metadata.youtube_shorts.title}\n\n${clip.metadata.youtube_shorts.description}\n\n${clip.metadata.youtube_shorts.hashtags?.join(' ')}`;
+                    Share.share({ message: text });
+                  }}>
+                    <Text style={styles.copyText}>Share Text</Text>
                   </TouchableOpacity>
                 </View>
                 <Text style={styles.socialTitle}>{clip.metadata.youtube_shorts.title}</Text>

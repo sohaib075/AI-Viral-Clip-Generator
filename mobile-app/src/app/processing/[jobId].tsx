@@ -4,8 +4,10 @@ import {
   Text, 
   View, 
   TouchableOpacity,
-  ActivityIndicator
+  ActivityIndicator,
+  Image
 } from 'react-native';
+import Animated, { Easing, withRepeat, withTiming, useSharedValue, useAnimatedStyle, withSequence } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, router } from 'expo-router';
 import api from '@/lib/api';
@@ -17,6 +19,23 @@ export default function ProcessingScreen() {
   const [startTime] = useState(Date.now());
   const [estimatedTimeLeft, setEstimatedTimeLeft] = useState('Calculating...');
   const [hasError, setHasError] = useState(false);
+
+  const pulseScale = useSharedValue(1);
+  
+  useEffect(() => {
+    pulseScale.value = withRepeat(
+      withSequence(
+        withTiming(1.1, { duration: 800, easing: Easing.inOut(Easing.ease) }),
+        withTiming(1, { duration: 800, easing: Easing.inOut(Easing.ease) })
+      ),
+      -1, // infinite
+      true
+    );
+  }, []);
+
+  const animatedLogoStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: pulseScale.value }]
+  }));
 
   useEffect(() => {
     if (!jobId) return;
@@ -92,9 +111,9 @@ export default function ProcessingScreen() {
 
   return (
     <SafeAreaView style={[styles.safeArea, styles.center]}>
-      <View style={styles.iconWrapper}>
-        <ActivityIndicator size="large" color="#000" />
-      </View>
+      <Animated.View style={[styles.iconWrapper, animatedLogoStyle]}>
+        <Image source={require('@/assets/images/icon.png')} style={{ width: 80, height: 80, borderRadius: 20 }} />
+      </Animated.View>
       
       <Text style={styles.title}>AI Magic at Work</Text>
       <Text style={styles.subtitle}>{statusMessage}</Text>
@@ -126,12 +145,12 @@ const styles = StyleSheet.create({
   iconWrapper: {
     width: 100,
     height: 100,
-    backgroundColor: '#fff',
-    borderRadius: 50,
+    backgroundColor: 'rgba(255,255,255,0.05)',
+    borderRadius: 24,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 32,
-    borderWidth: 4,
+    borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.2)',
   },
   title: {

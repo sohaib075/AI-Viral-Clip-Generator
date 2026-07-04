@@ -175,6 +175,61 @@ app.post('/api/story-to-video', async (req, res) => {
     }
 });
 
+app.post('/api/auto-edit', upload.single('video'), async (req, res) => {
+    try {
+        const { videoUrl, layout, style, prompt } = req.body;
+        const file = req.file;
+
+        if (!videoUrl && !file) {
+            return res.status(400).json({ error: 'Please provide a video file or URL' });
+        }
+
+        const jobId = `auto_${Date.now()}`;
+        const targetUrl = videoUrl || (file ? `file://${file.path}` : null);
+
+        // Track job in history
+        const newJob = {
+            id: jobId,
+            title: 'AI Auto Edit',
+            status: 'Processing',
+            time: 'Just now',
+            clips: 0,
+            duration: '0:00:00',
+            thumbnail: 'https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=800&auto=format&fit=crop&q=80',
+            createdAt: Date.now(),
+            type: 'auto_edit'
+        };
+        jobsHistory.unshift(newJob);
+        saveJobs();
+
+        // Trigger the Python pipeline
+        const response = await fetch(`${PYTHON_API_URL}/api/auto-edit`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                jobId: jobId,
+                videoUrl: targetUrl,
+                layout: layout || '9:16',
+                style: style || 'Cinematic',
+                prompt: prompt || ''
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`Python API error: ${response.statusText}`);
+        }
+
+        res.json({
+            message: 'Auto edit job received successfully',
+            jobId: jobId,
+            status: 'queued'
+        });
+    } catch (error) {
+        console.error("Error creating auto edit job:", error);
+        res.status(500).json({ error: 'Failed to start auto edit job' });
+    }
+});
+
 // Analytics mock endpoint
 app.get('/api/analytics', (req, res) => {
     const totalClips = jobsHistory.reduce((acc, job) => acc + (job.clips || 0), 0);

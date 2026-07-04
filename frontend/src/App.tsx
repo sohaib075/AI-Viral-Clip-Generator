@@ -12,6 +12,7 @@ import Settings from './pages/Settings';
 import Accounts from './pages/Accounts';
 import Queue from './pages/Queue';
 import StoryToVideo from './pages/StoryToVideo';
+import AutoEdit from './pages/AutoEdit';
 import './index.css';
 
 function App() {
@@ -38,6 +39,7 @@ function App() {
               <Route path="/accounts" element={<Accounts />} />
               <Route path="/queue" element={<Queue />} />
               <Route path="/story-to-video" element={<StoryToVideo />} />
+              <Route path="/auto-edit" element={<AutoEdit />} />
             </Routes>
           </main>
         </div>

@@ -8,7 +8,10 @@ const Navbar = () => {
 
   const navItems = [
     { name: 'Dashboard', path: '/', icon: <LayoutDashboard className="w-5 h-5" /> },
+    { name: 'Story to Video', path: '/story-to-video', icon: <Play className="w-5 h-5" /> },
     { name: 'My Projects', path: '/projects', icon: <Folder className="w-5 h-5" /> },
+    { name: 'Social Accounts', path: '/accounts', icon: <Key className="w-5 h-5" /> },
+    { name: 'Publishing Queue', path: '/queue', icon: <BarChart className="w-5 h-5" /> },
     { name: 'Analytics', path: '/analytics', icon: <BarChart className="w-5 h-5" /> },
     { name: 'Settings', path: '/settings', icon: <Settings className="w-5 h-5" /> },
   ];

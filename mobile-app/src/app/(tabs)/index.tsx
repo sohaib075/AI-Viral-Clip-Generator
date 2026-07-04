@@ -9,7 +9,8 @@ import {
   TouchableOpacity, 
   ScrollView,
   Platform,
-  ActivityIndicator
+  ActivityIndicator,
+  Image
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -67,7 +68,10 @@ export default function HomeScreen() {
         
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.title}>Project Overview</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 12 }}>
+            <Image source={require('@/assets/images/icon.png')} style={{ width: 40, height: 40, marginRight: 12, borderRadius: 8 }} />
+            <Text style={styles.title}>Project Overview</Text>
+          </View>
           <Text style={styles.subtitle}>Welcome back. Manage your video pipeline.</Text>
         </View>
 

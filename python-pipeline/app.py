@@ -256,6 +256,40 @@ def process_story_job(job_id, story, style, voice, aspect_ratio):
         log_job_message(job_id, f"ERROR: Story Job failed!\n{error_msg}")
         update_job_status(job_id, status="failed", progress=0, message=f"Error: {str(e)}")
 
+def process_auto_edit_job(job_id, video_url, layout, style, prompt):
+    try:
+        from advanced_editor import process_auto_edit
+        log_job_message(job_id, f"=== Starting Professional Auto Edit Job ===")
+        log_job_message(job_id, f"Style: {style}, Layout: {layout}, Prompt: {prompt}")
+        
+        def progress_cb(p, msg):
+            update_job_status(job_id, progress=p, message=msg)
+            
+        final_video_path, metadata = process_auto_edit(
+            job_id, video_url, layout, style, prompt, progress_cb, INPUT_DIR, PROCESSED_DIR, CLIPS_DIR
+        )
+        
+        final_clips = [{
+            "title": metadata.get("title", f"Auto Edited Video ({style})"),
+            "video_url": f"/temp/Clips/{os.path.basename(final_video_path)}",
+            "metadata": metadata
+        }]
+        
+        update_job_status(
+            job_id,
+            status="completed",
+            progress=100,
+            message="Auto Edit Generation Complete!",
+            clips=final_clips
+        )
+        log_job_message(job_id, f"Job Completed Successfully! Video saved to {final_video_path}")
+        
+    except Exception as e:
+        error_msg = f"Error: {str(e)}\n{traceback.format_exc()}"
+        log_job_message(job_id, f"ERROR: Auto Edit Job failed!\n{error_msg}")
+        update_job_status(job_id, status="failed", progress=0, message=f"Error: {str(e)}")
+
+
 @app.route('/health', methods=['GET'])
 def health_check():
     return jsonify({"status": "healthy", "service": "ai-pipeline"})
@@ -299,6 +333,28 @@ def process_story_video():
     
     return jsonify({
         "message": f"Story processing started for {job_id}",
+        "status": "processing"
+    })
+
+@app.route('/api/auto-edit', methods=['POST'])
+def auto_edit_video():
+    data = request.json
+    if not data or 'jobId' not in data or 'videoUrl' not in data:
+        return jsonify({"error": "Missing jobId or videoUrl"}), 400
+    
+    job_id = data['jobId']
+    video_url = data['videoUrl']
+    layout = data.get('layout', '9:16')
+    style = data.get('style', 'Cinematic')
+    prompt = data.get('prompt', '')
+    
+    # Start background processing
+    thread = threading.Thread(target=process_auto_edit_job, args=(job_id, video_url, layout, style, prompt))
+    thread.daemon = True
+    thread.start()
+    
+    return jsonify({
+        "message": f"Auto edit processing started for {job_id}",
         "status": "processing"
     })
 
