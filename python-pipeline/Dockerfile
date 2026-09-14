@@ -1,4 +1,4 @@
-FROM python:3.9-slim
+FROM python:3.11-slim
 
 # Install system dependencies, specifically ffmpeg for video processing
 RUN apt-get update && \

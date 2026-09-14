@@ -51,7 +51,7 @@ const StoryToVideo = () => {
   };
 
   useEffect(() => {
-    let interval: NodeJS.Timeout;
+    let interval: ReturnType<typeof setInterval> | undefined;
     
     if (jobId && status === 'processing') {
       interval = setInterval(async () => {
