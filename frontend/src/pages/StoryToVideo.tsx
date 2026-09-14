@@ -51,8 +51,9 @@ const StoryToVideo = () => {
   };
 
   useEffect(() => {
-    let interval: NodeJS.Timeout;
-    
+    let interval: ReturnType<typeof setInterval> | undefined;
+    let consecutiveErrors = 0;
+
     if (jobId && status === 'processing') {
       interval = setInterval(async () => {
         try {
@@ -68,7 +69,8 @@ const StoryToVideo = () => {
           }
 
           const data = await res.json();
-          
+          consecutiveErrors = 0;
+
           if (data.status === 'processing') {
             setProgress(data.progress || 10);
             setMessage(data.message || 'Processing...');
@@ -88,6 +90,12 @@ const StoryToVideo = () => {
           }
         } catch (e) {
           console.error(e);
+          // Tolerate brief hiccups, but don't spin forever if the server stays unreachable
+          consecutiveErrors += 1;
+          if (consecutiveErrors >= 5) {
+            setStatus('error');
+            setErrorMsg(e instanceof Error ? e.message : 'Lost connection to the server.');
+          }
         }
       }, 2000);
     }

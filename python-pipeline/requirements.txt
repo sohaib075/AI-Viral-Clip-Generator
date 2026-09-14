@@ -2,7 +2,9 @@ flask
 flask-cors
 yt-dlp
 ffmpeg-python
-moviepy
+imageio-ffmpeg
+moviepy>=2.0
+edge-tts
 werkzeug
 groq
 google-genai

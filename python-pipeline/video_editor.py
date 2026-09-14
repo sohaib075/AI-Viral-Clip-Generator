@@ -129,9 +129,11 @@ def extract_thumbnail(video_path, time_offset, output_path):
         print(f"Error extracting thumbnail: {e}")
         return None
 
-def create_ass(clip_data, output_path, is_vertical=True, style_config=None):
+def create_ass(clip_data, output_path, is_vertical=True, style_config=None, play_res=None):
     """
     Creates an ASS file with exact word timings if available, customized by style_config.
+    play_res optionally sets the (width, height) the subtitles are laid out for;
+    by default it is 1080x1920 for vertical and 1920x1080 otherwise.
     """
     clip_start = clip_data.get('start', clip_data.get('start_time', 0.0))
     clip_end = clip_data.get('end', clip_data.get('end_time', 0.0))
@@ -163,15 +165,19 @@ def create_ass(clip_data, output_path, is_vertical=True, style_config=None):
     
     def format_ass_time(sec):
         if sec < 0: sec = 0
-        h = int(sec // 3600)
-        m = int((sec % 3600) // 60)
-        s = int(sec % 60)
-        cs = int(round((sec - int(sec)) * 100))
-        if cs == 100: cs = 99
+        # Round once to whole centiseconds so e.g. 59.999s becomes 0:01:00.00
+        total_cs = int(round(sec * 100))
+        h = total_cs // 360000
+        m = (total_cs // 6000) % 60
+        s = (total_cs // 100) % 60
+        cs = total_cs % 100
         return f"{h}:{m:02d}:{s:02d}.{cs:02d}"
 
-    play_res_x = 1080 if is_vertical else 1920
-    play_res_y = 1920 if is_vertical else 1080
+    if play_res:
+        play_res_x, play_res_y = play_res
+    else:
+        play_res_x = 1080 if is_vertical else 1920
+        play_res_y = 1920 if is_vertical else 1080
 
     with open(output_path, 'w', encoding='utf-8') as f:
         f.write("[Script Info]\n")
@@ -216,8 +222,10 @@ def create_ass(clip_data, output_path, is_vertical=True, style_config=None):
         for w in words_data:
             w_start = w['start'] - clip_start
             w_end = w['end'] - clip_start
-            w_text = w['word'].strip()
-            
+            w_text = str(w.get('word', '')).strip()
+            if not w_text:
+                continue  # Whisper occasionally emits empty word tokens
+
             if w_start < 0:
                 if w_end > 0: w_start = 0.0
                 else: continue

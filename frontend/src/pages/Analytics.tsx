@@ -5,13 +5,28 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 const Analytics = () => {
   const [data, setData] = useState<any>(null);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     fetch(`${API_URL}/api/analytics`)
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) throw new Error(`Server responded with ${res.status}`);
+        return res.json();
+      })
       .then(resData => setData(resData))
-      .catch(err => console.error('Failed to fetch analytics:', err));
+      .catch(err => {
+        console.error('Failed to fetch analytics:', err);
+        setError('Could not load analytics. Make sure the backend is running.');
+      });
   }, []);
+
+  if (error) {
+    return (
+      <div className="flex justify-center items-center h-screen w-full">
+        <p className="text-red-400 font-medium">{error}</p>
+      </div>
+    );
+  }
 
   if (!data) {
     return (

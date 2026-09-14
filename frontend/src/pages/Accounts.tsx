@@ -26,6 +26,7 @@ const Accounts = () => {
         try {
             const res = await fetch(`${API_URL}/api/accounts`);
             const data = await res.json();
+            if (!res.ok || !Array.isArray(data)) throw new Error(data?.error || `Server responded with ${res.status}`);
             setAccounts(data);
         } catch (e) {
             console.error("Failed to fetch accounts", e);

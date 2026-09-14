@@ -4,7 +4,7 @@ import threading
 import warnings
 warnings.filterwarnings("ignore", category=UserWarning, module="pydantic")
 import traceback
-from downloader import download_video
+from downloader import download_video, resolve_local_upload
 from audio_extractor import extract_audio
 from transcriber import transcribe_audio
 from nlp_highlight import extract_highlights
@@ -77,18 +77,8 @@ def process_video_job(job_id, video_url, layout='vertical'):
 
         # 1. Download Video (or use local file if uploaded)
         if video_url.startswith('file://'):
-            import urllib.request
-            raw_path = urllib.request.url2pathname(video_url[7:])
-            base_name = os.path.basename(raw_path)
-            dest_path = os.path.join(INPUT_DIR, base_name)
-            if os.path.exists(raw_path) and os.path.abspath(raw_path) != os.path.abspath(dest_path):
-                import shutil
-                shutil.move(raw_path, dest_path)
-                video_path = dest_path
-                log_job_message(job_id, f"Moved uploaded video file to Input folder: {video_path}")
-            else:
-                video_path = raw_path
-                log_job_message(job_id, f"Using pre-placed upload file: {video_path}")
+            video_path = resolve_local_upload(video_url, INPUT_DIR)
+            log_job_message(job_id, f"Using uploaded video file: {video_path}")
         else:
             log_job_message(job_id, "Downloading video using yt-dlp...")
             video_path = download_video(video_url, INPUT_DIR, progress_callback=yt_progress)
@@ -102,10 +92,13 @@ def process_video_job(job_id, video_url, layout='vertical'):
         # 3. Transcribe
         update_job_status(job_id, progress=50, message="Transcribing audio with Whisper (Groq)...")
         transcript_data = transcribe_audio(audio_path)
-        if not transcript_data:
-            raise Exception("Transcription failed.")
-            
+        if not transcript_data or not transcript_data.get('segments'):
+            raise Exception("Transcription failed: no speech was transcribed.")
+
         log_job_message(job_id, f"Transcription complete! Transcribed {len(transcript_data.get('segments', []))} segments.")
+        failed_chunks = transcript_data.get('failed_chunks') or []
+        if failed_chunks:
+            log_job_message(job_id, f"WARNING: {len(failed_chunks)} audio chunk(s) could not be transcribed, so parts of the video are missing from the transcript.")
         
         # Save transcript JSON for record-keeping
         transcript_json_path = os.path.join(PROCESSED_DIR, f"Transcript_{job_id}.json")
@@ -117,6 +110,8 @@ def process_video_job(job_id, video_url, layout='vertical'):
         # 4. NLP Highlights
         update_job_status(job_id, progress=70, message="Scanning transcript for viral highlights using Gemini...")
         highlights = extract_highlights(transcript_data, num_clips=10)
+        if not highlights:
+            raise Exception("No highlights could be found in the transcript.")
         log_job_message(job_id, f"Highlight detection complete! Found {len(highlights)} potential clips.")
         
         # 5. Video Editing
@@ -128,12 +123,14 @@ def process_video_job(job_id, video_url, layout='vertical'):
         def process_highlight(idx_and_clip):
             idx, clip_data = idx_and_clip
             
-            clip_start = clip_data.get('start_time', 0.0)
-            clip_end = clip_data.get('end_time', 0.0)
-            clip_duration = clip_end - clip_start
-            if clip_duration <= 0:
-                clip_duration = 15.0
+            clip_start = max(0.0, float(clip_data.get('start_time') or 0.0))
+            clip_end = float(clip_data.get('end_time') or 0.0)
+            if clip_end <= clip_start:
                 clip_end = clip_start + 15.0
+            clip_duration = clip_end - clip_start
+            # process_clip reads the times from clip_data, so store the corrected values there
+            clip_data['start_time'] = clip_start
+            clip_data['end_time'] = clip_end
             
             relevant_segments = []
             for seg in transcript_data.get("segments", []):
@@ -192,15 +189,25 @@ def process_video_job(job_id, video_url, layout='vertical'):
                 "segments": relevant_segments,
                 "words": relevant_words,
                 "metadata": clip_data.get("metadata", {}),
-                "emphasized_words": clip_data.get("emphasized_words", [])
+                "emphasized_words": clip_data.get("emphasized_words", []),
+                "layout": layout
             }
-            
+
         with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
-            items = list(enumerate(highlights))
-            for result in executor.map(process_highlight, items):
+            futures = [executor.submit(process_highlight, item) for item in enumerate(highlights)]
+            for idx, future in enumerate(futures):
+                # One bad highlight shouldn't throw away every other clip
+                try:
+                    result = future.result()
+                except Exception as e:
+                    log_job_message(job_id, f"ERROR: Skipping clip {idx+1}: {e}")
+                    continue
                 final_clips.append(result)
                 log_job_message(job_id, f"Clip rendered: {result['title']} ({len(final_clips)}/{len(highlights)})")
-            
+
+        if not final_clips:
+            raise Exception("None of the clips could be rendered.")
+
         update_job_status(
             job_id,
             status="completed",
@@ -221,19 +228,13 @@ def process_story_job(job_id, story, style, voice, aspect_ratio):
         log_job_message(job_id, f"=== Starting Story to Video Job ===")
         update_job_status(job_id, status="processing", progress=10, message="Breaking story into scenes with LLM...")
         
-        # We need a callback to update progress in compile_story_video, but for now we can just run it
-        # Actually, let's wrap it in an asyncio loop
         output_filename = f"story_{job_id}.mp4"
-        
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-        
-        # We can pass update_job_status to compile_story_video if we modify it, but for simplicity let's just run it
-        # I will modify compile_story_video to accept a progress_callback
+
         def progress_cb(p, msg):
             update_job_status(job_id, progress=p, message=msg)
-            
-        final_video_path = loop.run_until_complete(
+
+        # asyncio.run creates and closes a fresh event loop for this worker thread
+        final_video_path = asyncio.run(
             compile_story_video(story, style, voice, aspect_ratio, output_filename, STORY_DIR, progress_cb)
         )
         
@@ -303,7 +304,10 @@ def process_video():
     job_id = data['jobId']
     video_url = data['videoUrl']
     layout = data.get('layout', 'vertical')
-    
+
+    # Register the job before the thread starts so status checks never see a 404 for it
+    update_job_status(job_id, status="processing", progress=0)
+
     # Start background processing
     thread = threading.Thread(target=process_video_job, args=(job_id, video_url, layout))
     thread.daemon = True
@@ -325,7 +329,9 @@ def process_story_video():
     style = data.get('style', 'Cinematic')
     voice = data.get('voice', 'en-US-ChristopherNeural')
     aspect_ratio = data.get('aspectRatio', '9:16')
-    
+
+    update_job_status(job_id, status="processing", progress=0)
+
     # Start background processing
     thread = threading.Thread(target=process_story_job, args=(job_id, story, style, voice, aspect_ratio))
     thread.daemon = True
@@ -347,7 +353,9 @@ def auto_edit_video():
     layout = data.get('layout', '9:16')
     style = data.get('style', 'Cinematic')
     prompt = data.get('prompt', '')
-    
+
+    update_job_status(job_id, status="processing", progress=0)
+
     # Start background processing
     thread = threading.Thread(target=process_auto_edit_job, args=(job_id, video_url, layout, style, prompt))
     thread.daemon = True
@@ -397,4 +405,8 @@ def export_clip():
         return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5001, debug=True, use_reloader=False)
+    # Listen on localhost only unless told otherwise (Docker sets FLASK_HOST=0.0.0.0).
+    # The Werkzeug debugger must never be reachable from the network, so debug is opt-in.
+    host = os.environ.get('FLASK_HOST', '127.0.0.1')
+    debug = os.environ.get('FLASK_DEBUG', '').lower() in ('1', 'true', 'yes')
+    app.run(host=host, port=5001, debug=debug, use_reloader=False)

@@ -1,12 +1,16 @@
 import axios from 'axios';
 import { Platform } from 'react-native';
-
-// For Android Emulator, localhost doesn't work out of the box, use 10.0.2.2
-// For physical devices on the same WiFi, you would change this to your computer's IP address
-// e.g. 'http://192.168.1.100:5000'
 import Constants from 'expo-constants';
 
+// Backend URL. Builds that don't run against the dev server need EXPO_PUBLIC_API_URL
+// (set per build profile in eas.json, or in a .env file), e.g. http://192.168.1.100:5000
+// for a phone on the same Wi-Fi as your PC, or an https:// URL for a deployed backend.
 const getBaseUrl = () => {
+  const configured = process.env.EXPO_PUBLIC_API_URL;
+  if (configured) {
+    return configured.replace(/\/+$/, '');
+  }
+
   if (__DEV__) {
     // If running in Expo Go on a physical device, this will resolve the development PC's IP address.
     const debuggerHost = Constants.expoConfig?.hostUri;
@@ -14,16 +18,17 @@ const getBaseUrl = () => {
       const localhost = debuggerHost.split(':')[0];
       return `http://${localhost}:5000`;
     }
-    
+
     // Fallbacks
+    // For Android Emulator, localhost doesn't work out of the box, use 10.0.2.2
     if (Platform.OS === 'android') {
       return 'http://10.0.2.2:5000';
     }
     return 'http://localhost:5000';
   }
-  // Production URL (Standalone APK)
-  // For local testing on your phone, this must point to your PC's IP address on your WiFi network.
-  return 'http://192.168.100.21:5000';
+
+  console.error('EXPO_PUBLIC_API_URL is not set, so this build cannot reach the backend. Set it in the eas.json build profile.');
+  return 'http://localhost:5000';
 };
 
 export const API_URL = getBaseUrl();

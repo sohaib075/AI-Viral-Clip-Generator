@@ -16,6 +16,17 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
    npx expo start
    ```
 
+## Backend URL
+
+During development the app talks to the backend on the machine running `npx expo start` (port 5000).
+
+Standalone builds (APK/AAB/IPA) need `EXPO_PUBLIC_API_URL` set to a URL the phone can reach:
+
+- **Phone on the same Wi-Fi as your PC:** your PC's local IP, e.g. `http://192.168.1.100:5000`. The `preview` profile in `eas.json` sets this; update the IP to match your PC.
+- **Deployed backend:** an `https://` URL. Add `"env": { "EXPO_PUBLIC_API_URL": "https://..." }` to the `production` profile in `eas.json`.
+
+Plain `http://` URLs are allowed in release builds only when `EXPO_PUBLIC_API_URL` starts with `http://` (see `plugins/with-cleartext-http.js`).
+
 In the output, you'll find options to open the app in a
 
 - [development build](https://docs.expo.dev/develop/development-builds/introduction/)

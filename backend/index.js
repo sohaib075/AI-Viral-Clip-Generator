@@ -13,8 +13,49 @@ const port = process.env.PORT || 5000;
 const PYTHON_API_URL = process.env.PYTHON_API_URL || 'http://127.0.0.1:5001';
 
 // Middleware
-app.use(cors());
+// Browsers may only call this API from the web UI. Localhost origins are always allowed;
+// add others (e.g. a deployed frontend) with ALLOWED_ORIGINS or FRONTEND_URL. Requests without
+// an Origin header (the mobile app, OAuth redirects, curl) are not affected.
+const toOrigin = (value) => {
+    try {
+        return new URL(value.trim()).origin;
+    } catch {
+        return null;
+    }
+};
+const allowedOrigins = new Set(
+    [...(process.env.ALLOWED_ORIGINS || '').split(','), process.env.FRONTEND_URL || '']
+        .map(toOrigin)
+        .filter(Boolean)
+);
+const isAllowedOrigin = (origin) => {
+    if (allowedOrigins.has(origin)) return true;
+    try {
+        const { hostname } = new URL(origin);
+        return hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '[::1]';
+    } catch {
+        return false;
+    }
+};
+
+app.use((req, res, next) => {
+    const origin = req.headers.origin;
+    if (origin && !isAllowedOrigin(origin)) {
+        return res.status(403).json({ error: 'Origin not allowed' });
+    }
+    next();
+});
+app.use(cors({ origin: (origin, callback) => callback(null, !origin || isAllowedOrigin(origin)) }));
 app.use(express.json());
+
+const isHttpUrl = (value) => {
+    try {
+        const { protocol } = new URL(value);
+        return protocol === 'http:' || protocol === 'https:';
+    } catch {
+        return false;
+    }
+};
 
 // Set up temporary storage for uploaded files and serve them statically
 const tempDir = path.join(__dirname, '../temp');
@@ -40,7 +81,16 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-const JOBS_FILE = path.join(__dirname, 'jobs.json');
+// Job history lives in data/ with the scheduler database (git-ignored, mounted as a Docker volume)
+const DATA_DIR = path.join(__dirname, 'data');
+const JOBS_FILE = path.join(DATA_DIR, 'jobs.json');
+const LEGACY_JOBS_FILE = path.join(__dirname, 'jobs.json');
+
+fs.mkdirSync(DATA_DIR, { recursive: true });
+if (!fs.existsSync(JOBS_FILE) && fs.existsSync(LEGACY_JOBS_FILE) && fs.statSync(LEGACY_JOBS_FILE).isFile()) {
+    fs.renameSync(LEGACY_JOBS_FILE, JOBS_FILE);
+    console.log('Moved jobs.json into data/');
+}
 
 // In-memory data store for demonstration, now backed by a file
 let jobsHistory = [];
@@ -56,6 +106,32 @@ const saveJobs = () => {
     fs.writeFileSync(JOBS_FILE, JSON.stringify(jobsHistory, null, 2));
 };
 
+// A 'Processing' job the AI service doesn't know about after this long was lost in a restart
+const JOB_LOST_AFTER_MS = 60 * 1000;
+
+// Records the job and hands it to the Python pipeline. If the pipeline can't take it,
+// the job is marked failed instead of staying 'Processing' forever.
+const startPipelineJob = async (job, endpoint, payload) => {
+    jobsHistory.unshift(job);
+    saveJobs();
+
+    try {
+        const response = await fetch(`${PYTHON_API_URL}${endpoint}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ jobId: job.id, ...payload })
+        });
+        if (!response.ok) {
+            throw new Error(`Python API error: ${response.statusText}`);
+        }
+    } catch (error) {
+        job.status = 'Failed';
+        job.error = 'The AI service could not start this job. Make sure it is running and try again.';
+        saveJobs();
+        throw error;
+    }
+};
+
 // API Routes
 app.post('/api/jobs', upload.single('video'), async (req, res) => {
     try {
@@ -64,6 +140,10 @@ app.post('/api/jobs', upload.single('video'), async (req, res) => {
 
         if (!videoUrl && !file) {
             return res.status(400).json({ error: 'Please provide a video file or URL' });
+        }
+        // Local file paths are only ever built by the server from an actual upload
+        if (videoUrl && !isHttpUrl(videoUrl)) {
+            return res.status(400).json({ error: 'Video URL must start with http:// or https://' });
         }
 
         // Generate a job ID
@@ -84,27 +164,13 @@ app.post('/api/jobs', upload.single('video'), async (req, res) => {
             thumbnail: 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=800&auto=format&fit=crop&q=80',
             createdAt: Date.now()
         };
-        jobsHistory.unshift(newJob);
-        saveJobs();
-
         const layout = req.body.layout || 'vertical';
 
         // Trigger the Python pipeline
-        const response = await fetch(`${PYTHON_API_URL}/api/process`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                jobId: jobId,
-                videoUrl: targetUrl,
-                layout: layout
-            })
+        await startPipelineJob(newJob, '/api/process', {
+            videoUrl: targetUrl,
+            layout: layout
         });
-
-        if (!response.ok) {
-            throw new Error(`Python API error: ${response.statusText}`);
-        }
 
         res.json({
             message: 'Job received successfully',
@@ -144,25 +210,13 @@ app.post('/api/story-to-video', async (req, res) => {
             createdAt: Date.now(),
             type: 'story_to_video'
         };
-        jobsHistory.unshift(newJob);
-        saveJobs();
-
         // Trigger the Python pipeline
-        const response = await fetch(`${PYTHON_API_URL}/api/story-to-video`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                jobId: jobId,
-                story: story,
-                style: style,
-                voice: voice,
-                aspectRatio: aspectRatio
-            })
+        await startPipelineJob(newJob, '/api/story-to-video', {
+            story: story,
+            style: style,
+            voice: voice,
+            aspectRatio: aspectRatio
         });
-
-        if (!response.ok) {
-            throw new Error(`Python API error: ${response.statusText}`);
-        }
 
         res.json({
             message: 'Story job received successfully',
@@ -183,6 +237,9 @@ app.post('/api/auto-edit', upload.single('video'), async (req, res) => {
         if (!videoUrl && !file) {
             return res.status(400).json({ error: 'Please provide a video file or URL' });
         }
+        if (videoUrl && !isHttpUrl(videoUrl)) {
+            return res.status(400).json({ error: 'Video URL must start with http:// or https://' });
+        }
 
         const jobId = `auto_${Date.now()}`;
         const targetUrl = videoUrl || (file ? `file://${file.path}` : null);
@@ -199,25 +256,13 @@ app.post('/api/auto-edit', upload.single('video'), async (req, res) => {
             createdAt: Date.now(),
             type: 'auto_edit'
         };
-        jobsHistory.unshift(newJob);
-        saveJobs();
-
         // Trigger the Python pipeline
-        const response = await fetch(`${PYTHON_API_URL}/api/auto-edit`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                jobId: jobId,
-                videoUrl: targetUrl,
-                layout: layout || '9:16',
-                style: style || 'Cinematic',
-                prompt: prompt || ''
-            })
+        await startPipelineJob(newJob, '/api/auto-edit', {
+            videoUrl: targetUrl,
+            layout: layout || '9:16',
+            style: style || 'Cinematic',
+            prompt: prompt || ''
         });
-
-        if (!response.ok) {
-            throw new Error(`Python API error: ${response.statusText}`);
-        }
 
         res.json({
             message: 'Auto edit job received successfully',
@@ -267,13 +312,19 @@ app.get('/api/jobs/:id', async (req, res) => {
         
         if (!response.ok) {
             if (response.status === 404) {
-                // Return local job history if python forgot it but we saved it
-                if (jobIndex !== -1 && jobsHistory[jobIndex].status === 'Completed') {
-                    const localJob = { ...jobsHistory[jobIndex] };
-                    if (localJob.clipsData) {
-                        localJob.clips = localJob.clipsData; // Map it back to the expected 'clips' array format
-                    }
-                    return res.json(localJob);
+                // The Python service keeps jobs in memory, so after a restart only our saved copy is left.
+                // Answer in the Python service's format so clients treat it like a live status.
+                const localJob = jobIndex !== -1 ? jobsHistory[jobIndex] : null;
+                if (localJob && localJob.status === 'Processing' && Date.now() - localJob.createdAt > JOB_LOST_AFTER_MS) {
+                    localJob.status = 'Failed';
+                    localJob.error = 'Processing was interrupted because the AI service restarted. Please submit the video again.';
+                    saveJobs();
+                }
+                if (localJob && localJob.status === 'Completed') {
+                    return res.json({ ...localJob, status: 'completed', progress: 100, clips: localJob.clipsData || [] });
+                }
+                if (localJob && localJob.status === 'Failed') {
+                    return res.json({ ...localJob, status: 'failed', progress: 0, message: localJob.error || 'Job failed', clips: [] });
                 }
                 return res.status(404).json({ error: 'Job not found' });
             }
@@ -298,6 +349,7 @@ app.get('/api/jobs/:id', async (req, res) => {
                 changed = true;
             } else if (data.status === 'failed' && jobsHistory[jobIndex].status !== 'Failed') {
                 jobsHistory[jobIndex].status = 'Failed';
+                jobsHistory[jobIndex].error = data.message;
                 changed = true;
             }
             if (changed) {
@@ -341,7 +393,8 @@ app.post('/api/export', async (req, res) => {
 });
 
 app.get('/api/accounts', (req, res) => {
-    db.all(`SELECT * FROM accounts`, [], (err, rows) => {
+    // Never send tokens to the client
+    db.all(`SELECT id, platform, account_name, status, created_at FROM accounts`, [], (err, rows) => {
         if (err) return res.status(500).json({ error: 'Database error' });
         res.json(rows);
     });
@@ -371,18 +424,19 @@ app.post('/api/posts', (req, res) => {
     const id = `post_${Date.now()}`;
     
     // Validate inputs
-    if (!clip_url || !platforms || platforms.length === 0) {
+    if (!clip_url || !Array.isArray(platforms) || platforms.length === 0) {
         return res.status(400).json({ error: 'Missing clip URL or platforms' });
     }
 
-    // scheduled_time should be a valid SQLite datetime string, e.g., 'YYYY-MM-DD HH:MM:SS'
-    // If empty or "now", we schedule it 5 seconds from now for demo
-    let sqlTime = scheduled_time;
-    if (!sqlTime || sqlTime === 'now') {
-        sqlTime = new Date(Date.now() + 5000).toISOString().replace('T', ' ').substring(0, 19);
-    } else {
-        sqlTime = new Date(sqlTime).toISOString().replace('T', ' ').substring(0, 19);
+    // Stored as a UTC SQLite datetime string ('YYYY-MM-DD HH:MM:SS'); the queue compares in UTC.
+    // If empty or "now", we schedule it 5 seconds from now
+    const scheduledDate = (!scheduled_time || scheduled_time === 'now')
+        ? new Date(Date.now() + 5000)
+        : new Date(scheduled_time);
+    if (Number.isNaN(scheduledDate.getTime())) {
+        return res.status(400).json({ error: 'Invalid scheduled time' });
     }
+    const sqlTime = scheduledDate.toISOString().replace('T', ' ').substring(0, 19);
 
     db.run(`INSERT INTO posts (id, clip_url, platforms, title, description, hashtags, scheduled_time) VALUES (?, ?, ?, ?, ?, ?, ?)`,
         [id, clip_url, JSON.stringify(platforms), title, description, hashtags, sqlTime], (err) => {
@@ -398,7 +452,7 @@ app.post('/api/posts', (req, res) => {
 app.use('/auth', require('./auth'));
 
 // Start background worker
-startQueueWorker();
+startQueueWorker().catch((err) => console.error('[Queue] Worker failed to start:', err));
 
 app.listen(port, () => {
     console.log(`Backend server running on http://localhost:${port}`);

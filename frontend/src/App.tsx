@@ -1,4 +1,6 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import type { ReactNode } from 'react';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import ErrorBoundary from './components/ErrorBoundary';
 import Navbar from './components/Navbar';
 import BackgroundEffects from './components/BackgroundEffects';
 import Sidebar from './components/Sidebar';
@@ -15,6 +17,12 @@ import StoryToVideo from './pages/StoryToVideo';
 import AutoEdit from './pages/AutoEdit';
 import './index.css';
 
+// Resets the error boundary when navigating to another page
+function PageErrorBoundary({ children }: { children: ReactNode }) {
+  const location = useLocation();
+  return <ErrorBoundary key={location.pathname}>{children}</ErrorBoundary>;
+}
+
 function App() {
   return (
     <Router>
@@ -28,6 +36,7 @@ function App() {
         <div className="flex-1 flex flex-col md:ml-64 w-full md:w-[calc(100%-16rem)] relative z-10 min-h-screen">
           <Navbar />
           <main className="flex-1 relative pb-10">
+            <PageErrorBoundary>
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/how-it-works" element={<HowItWorks />} />
@@ -41,6 +50,7 @@ function App() {
               <Route path="/story-to-video" element={<StoryToVideo />} />
               <Route path="/auto-edit" element={<AutoEdit />} />
             </Routes>
+            </PageErrorBoundary>
           </main>
         </div>
       </div>

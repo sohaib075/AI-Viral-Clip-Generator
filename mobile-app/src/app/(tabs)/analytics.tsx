@@ -104,7 +104,7 @@ export default function AnalyticsScreen() {
               </View>
             </View>
             <Text style={styles.kpiLabel}>TIME SAVED</Text>
-            <Text style={styles.kpiValue}>{data.timeSaved || data.hoursProcessed ? `${data.hoursProcessed}h` : '0h'}</Text>
+            <Text style={styles.kpiValue}>{data.timeSaved || `${data.hoursProcessed ?? 0}h`}</Text>
           </View>
 
         </View>

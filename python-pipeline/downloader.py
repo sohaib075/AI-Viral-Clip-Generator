@@ -1,6 +1,29 @@
 import yt_dlp
 import os
+import urllib.request
 import imageio_ffmpeg
+
+def resolve_local_upload(video_url, input_dir):
+    """
+    Resolves a file:// URL created by the backend for an uploaded video.
+    Only files inside input_dir are accepted, so a caller can't point the
+    pipeline at arbitrary files on disk.
+    """
+    raw_path = urllib.request.url2pathname(video_url[len('file://'):])
+    real_path = os.path.normcase(os.path.realpath(raw_path))
+    real_input_dir = os.path.normcase(os.path.realpath(input_dir))
+
+    try:
+        inside = os.path.commonpath([real_path, real_input_dir]) == real_input_dir
+    except ValueError:
+        # Different drives on Windows
+        inside = False
+
+    if not inside:
+        raise ValueError("Uploaded file must be located in the upload folder.")
+    if not os.path.isfile(real_path):
+        raise FileNotFoundError(f"Uploaded file not found: {os.path.basename(raw_path)}")
+    return real_path
 
 def download_video(url, output_dir, progress_callback=None):
     """
@@ -21,7 +44,7 @@ def download_video(url, output_dir, progress_callback=None):
                     pass
 
     base_ydl_opts = {
-        'format': 'bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best',
+        'format': 'bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]/best[height<=1080][ext=mp4]/best[height<=1080]/best',
         'outtmpl': os.path.join(output_dir, '%(id)s.%(ext)s'),
         'merge_output_format': 'mp4',
         'noplaylist': True,
@@ -49,10 +72,15 @@ def download_video(url, output_dir, progress_callback=None):
         try:
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 info_dict = ydl.extract_info(url, download=True)
+                # Prefer the path yt-dlp actually wrote: a single-file fallback format may not be .mp4
+                downloads = info_dict.get('requested_downloads') or []
+                candidates = [d.get('filepath') for d in downloads if d.get('filepath')]
                 filename = ydl.prepare_filename(info_dict)
-                if not filename.endswith('.mp4'):
-                    filename = os.path.splitext(filename)[0] + '.mp4'
-                return filename
+                candidates += [os.path.splitext(filename)[0] + '.mp4', filename]
+                for candidate in candidates:
+                    if os.path.exists(candidate):
+                        return candidate
+                raise Exception(f"Download finished but the video file was not found: {filename}")
         except Exception as e:
             err_str = str(e).lower()
             errors.append(str(e))
@@ -63,24 +91,13 @@ def download_video(url, output_dir, progress_callback=None):
                 # If it's a completely different error (e.g. video unavailable), fail immediately
                 raise e
                 
-    # If all options failed, check if a SQLite lock was the real issue
-    for err in errors:
-        if 'locked' in err.lower():
-            print("WARNING: YouTube Bot Protection blocked the download because your browser is locked.")
-            break
-            
-    # As a fallback for the CV project demonstration so the pipeline doesn't crash:
-    print("[yt-dlp] All methods failed. Falling back to a sample video for demonstration purposes...")
-    
-    import urllib.request
-    fallback_url = "https://www.w3schools.com/html/mov_bbb.mp4"
-    filename = os.path.join(output_dir, "fallback_sample.mp4")
-    
-    try:
-        urllib.request.urlretrieve(fallback_url, filename)
-        return filename
-    except Exception as fallback_e:
-        raise Exception(f"Failed to download video and fallback also failed. Errors: {errors}")
+    # All options failed. Fail loudly instead of substituting a different video,
+    # otherwise the job would "succeed" with clips from the wrong source.
+    hint = "YouTube blocked the download (bot detection or sign-in required)."
+    if any('locked' in err.lower() for err in errors):
+        hint = "Browser cookies could not be read because the browser database is locked. Close the browser and try again."
+    last_error = errors[-1] if errors else "unknown error"
+    raise Exception(f"Failed to download video. {hint} Last error: {last_error}")
 
 if __name__ == '__main__':
     pass

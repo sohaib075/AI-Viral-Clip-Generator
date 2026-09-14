@@ -5,7 +5,8 @@ services:
     build:
       context: ./python-pipeline
     ports:
-      - "5001:5001"
+      # Only the backend needs this service; don't expose it beyond this machine
+      - "127.0.0.1:5001:5001"
     env_file:
       - ./python-pipeline/.env
     volumes:
@@ -23,8 +24,8 @@ services:
       - PORT=5000
     volumes:
       - ./temp:/temp
-      # To persist jobs.json locally across container restarts
-      - ./backend/jobs.json:/app/jobs.json
+      # Persist job history and the scheduler database (connected accounts, publishing queue)
+      - ./backend/data:/app/data
     depends_on:
       - python-pipeline
 
