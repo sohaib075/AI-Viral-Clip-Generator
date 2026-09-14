@@ -6,6 +6,7 @@ const axios = require('axios');
 const { randomBytes } = require('crypto');
 const db = require('./db');
 const { encrypt } = require('./crypto');
+const { GRAPH_VERSION } = require('./uploaders/instagram');
 require('dotenv').config();
 
 // Pending OAuth flows, keyed by the random `state` sent to the provider. Checking it on the
@@ -112,7 +113,7 @@ router.get('/x', (req, res) => {
 
         const { url, codeVerifier, state } = client.generateOAuth2AuthLink(
             `${BASE_URL}/auth/x/callback`,
-            { scope: ['tweet.read', 'tweet.write', 'users.read', 'offline.access'] }
+            { scope: ['tweet.read', 'tweet.write', 'users.read', 'media.write', 'offline.access'] }
         );
         
         createState('x', { codeVerifier }, state);
@@ -210,7 +211,7 @@ router.get('/tiktok/callback', async (req, res) => {
 // INSTAGRAM (Meta Graph API) OAUTH
 // ==========================================
 router.get('/instagram', (req, res) => {
-    const url = `https://www.facebook.com/v17.0/dialog/oauth?client_id=${process.env.INSTAGRAM_CLIENT_ID}&redirect_uri=${encodeURIComponent(`${BASE_URL}/auth/instagram/callback`)}&scope=instagram_basic,instagram_content_publish,pages_show_list,pages_read_engagement&state=${createState('instagram')}`;
+    const url = `https://www.facebook.com/${GRAPH_VERSION}/dialog/oauth?client_id=${process.env.INSTAGRAM_CLIENT_ID}&redirect_uri=${encodeURIComponent(`${BASE_URL}/auth/instagram/callback`)}&scope=instagram_basic,instagram_content_publish,pages_show_list,pages_read_engagement&state=${createState('instagram')}`;
     res.redirect(url);
 });
 
@@ -222,11 +223,11 @@ router.get('/instagram/callback', async (req, res) => {
 
     try {
         // 1. Exchange code for short-lived access token
-        const tokenRes = await axios.get(`https://graph.facebook.com/v17.0/oauth/access_token?client_id=${process.env.INSTAGRAM_CLIENT_ID}&redirect_uri=${encodeURIComponent(`${BASE_URL}/auth/instagram/callback`)}&client_secret=${process.env.INSTAGRAM_CLIENT_SECRET}&code=${code}`);
+        const tokenRes = await axios.get(`https://graph.facebook.com/${GRAPH_VERSION}/oauth/access_token?client_id=${process.env.INSTAGRAM_CLIENT_ID}&redirect_uri=${encodeURIComponent(`${BASE_URL}/auth/instagram/callback`)}&client_secret=${process.env.INSTAGRAM_CLIENT_SECRET}&code=${code}`);
         const shortAccessToken = tokenRes.data.access_token;
 
         // 2. Exchange for long-lived access token
-        const longTokenRes = await axios.get(`https://graph.facebook.com/v17.0/oauth/access_token?grant_type=fb_exchange_token&client_id=${process.env.INSTAGRAM_CLIENT_ID}&client_secret=${process.env.INSTAGRAM_CLIENT_SECRET}&fb_exchange_token=${shortAccessToken}`);
+        const longTokenRes = await axios.get(`https://graph.facebook.com/${GRAPH_VERSION}/oauth/access_token?grant_type=fb_exchange_token&client_id=${process.env.INSTAGRAM_CLIENT_ID}&client_secret=${process.env.INSTAGRAM_CLIENT_SECRET}&fb_exchange_token=${shortAccessToken}`);
         const longAccessToken = longTokenRes.data.access_token;
 
         const id = `acc_ig_${Date.now()}`;

@@ -28,13 +28,17 @@ const validateVideo = (videoPath, platform) => {
                 
                 console.log(`[Validator] Checking video - Duration: ${duration}s, Res: ${width}x${height}`);
 
+                if (!Number.isFinite(duration)) {
+                    return reject(new Error("Validation failed: Could not determine video duration."));
+                }
+
                 // Common Aspect Ratio Check (Allow slight deviations)
                 // For 9:16, width / height should be ~0.5625
                 const isVertical = width < height;
 
                 if (platform === 'youtube') {
-                    // YouTube Shorts: max 60s, must be vertical
-                    if (duration > 60.5) return reject(new Error("YouTube Shorts must be under 60 seconds."));
+                    // YouTube Shorts: max 3 minutes, must be vertical
+                    if (duration > 180.5) return reject(new Error("YouTube Shorts must be 3 minutes or shorter."));
                     if (!isVertical) return reject(new Error("YouTube Shorts must be vertical (e.g., 9:16)."));
                 } else if (platform === 'instagram') {
                     // Instagram Reels: max 90s, must be vertical

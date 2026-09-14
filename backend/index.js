@@ -420,18 +420,19 @@ app.post('/api/posts', (req, res) => {
     const id = `post_${Date.now()}`;
     
     // Validate inputs
-    if (!clip_url || !platforms || platforms.length === 0) {
+    if (!clip_url || !Array.isArray(platforms) || platforms.length === 0) {
         return res.status(400).json({ error: 'Missing clip URL or platforms' });
     }
 
-    // scheduled_time should be a valid SQLite datetime string, e.g., 'YYYY-MM-DD HH:MM:SS'
-    // If empty or "now", we schedule it 5 seconds from now for demo
-    let sqlTime = scheduled_time;
-    if (!sqlTime || sqlTime === 'now') {
-        sqlTime = new Date(Date.now() + 5000).toISOString().replace('T', ' ').substring(0, 19);
-    } else {
-        sqlTime = new Date(sqlTime).toISOString().replace('T', ' ').substring(0, 19);
+    // Stored as a UTC SQLite datetime string ('YYYY-MM-DD HH:MM:SS'); the queue compares in UTC.
+    // If empty or "now", we schedule it 5 seconds from now
+    const scheduledDate = (!scheduled_time || scheduled_time === 'now')
+        ? new Date(Date.now() + 5000)
+        : new Date(scheduled_time);
+    if (Number.isNaN(scheduledDate.getTime())) {
+        return res.status(400).json({ error: 'Invalid scheduled time' });
     }
+    const sqlTime = scheduledDate.toISOString().replace('T', ' ').substring(0, 19);
 
     db.run(`INSERT INTO posts (id, clip_url, platforms, title, description, hashtags, scheduled_time) VALUES (?, ?, ?, ?, ?, ?, ?)`,
         [id, clip_url, JSON.stringify(platforms), title, description, hashtags, sqlTime], (err) => {
@@ -447,7 +448,7 @@ app.post('/api/posts', (req, res) => {
 app.use('/auth', require('./auth'));
 
 // Start background worker
-startQueueWorker();
+startQueueWorker().catch((err) => console.error('[Queue] Worker failed to start:', err));
 
 app.listen(port, () => {
     console.log(`Backend server running on http://localhost:${port}`);
