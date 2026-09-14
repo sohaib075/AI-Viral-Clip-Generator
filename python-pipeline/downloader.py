@@ -63,24 +63,13 @@ def download_video(url, output_dir, progress_callback=None):
                 # If it's a completely different error (e.g. video unavailable), fail immediately
                 raise e
                 
-    # If all options failed, check if a SQLite lock was the real issue
-    for err in errors:
-        if 'locked' in err.lower():
-            print("WARNING: YouTube Bot Protection blocked the download because your browser is locked.")
-            break
-            
-    # As a fallback for the CV project demonstration so the pipeline doesn't crash:
-    print("[yt-dlp] All methods failed. Falling back to a sample video for demonstration purposes...")
-    
-    import urllib.request
-    fallback_url = "https://www.w3schools.com/html/mov_bbb.mp4"
-    filename = os.path.join(output_dir, "fallback_sample.mp4")
-    
-    try:
-        urllib.request.urlretrieve(fallback_url, filename)
-        return filename
-    except Exception as fallback_e:
-        raise Exception(f"Failed to download video and fallback also failed. Errors: {errors}")
+    # All options failed. Fail loudly instead of substituting a different video,
+    # otherwise the job would "succeed" with clips from the wrong source.
+    hint = "YouTube blocked the download (bot detection or sign-in required)."
+    if any('locked' in err.lower() for err in errors):
+        hint = "Browser cookies could not be read because the browser database is locked. Close the browser and try again."
+    last_error = errors[-1] if errors else "unknown error"
+    raise Exception(f"Failed to download video. {hint} Last error: {last_error}")
 
 if __name__ == '__main__':
     pass
