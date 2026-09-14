@@ -39,7 +39,7 @@ An automated, end-to-end AI pipeline that converts long-form landscape videos (o
 
 The project is split into three decoupled services:
 1. **Frontend**: React + TypeScript + Vite + Tailwind CSS (Lucide Icons)
-2. **Node.js Backend**: Express API that manages file uploads, stores persistent job data (`jobs.json`), and proxies requests to the AI engine.
+2. **Node.js Backend**: Express API that manages file uploads, stores persistent job data (`data/jobs.json`) and the publishing queue (`data/scheduler.db`), and proxies requests to the AI engine.
 3. **Python AI Pipeline**: A Flask microservice that orchestrates `yt-dlp`, FFmpeg, the Groq API, and the Gemini API.
 
 ---
@@ -85,10 +85,10 @@ cd python-pipeline
 
 Install the required Python packages:
 ```bash
-pip install flask groq google-genai yt-dlp ffmpeg-python imageio-ffmpeg python-dotenv edge-tts moviepy requests
+pip install -r requirements.txt
 ```
 
-Create a `.env` file in the `python-pipeline` directory with your API keys:
+Copy `.env.example` to `.env` in the `python-pipeline` directory and add your API keys:
 ```env
 GROQ_API_KEY=your_groq_api_key_here
 GEMINI_API_KEY=your_gemini_api_key_here
@@ -109,8 +109,15 @@ cd backend
 
 Install dependencies:
 ```bash
-npm install express cors multer dotenv
+npm install
 ```
+
+Copy `.env.example` to `.env` in the `backend` directory. Clip generation works with the defaults. To connect social accounts and auto-publish, also set:
+- `ENCRYPTION_KEY`: 64 hex characters used to encrypt stored OAuth tokens. Generate one with `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"` and keep it stable.
+- The OAuth client ID/secret for each platform you want to publish to (YouTube, X, TikTok, Instagram). Redirect URLs are listed in `.env.example`.
+- `ALLOWED_ORIGINS` if the web UI is served from anywhere other than localhost.
+
+Publishing also needs `ffprobe` (included with FFmpeg) on your PATH to validate videos.
 
 Start the backend proxy server:
 ```bash

@@ -81,7 +81,16 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-const JOBS_FILE = path.join(__dirname, 'jobs.json');
+// Job history lives in data/ with the scheduler database (git-ignored, mounted as a Docker volume)
+const DATA_DIR = path.join(__dirname, 'data');
+const JOBS_FILE = path.join(DATA_DIR, 'jobs.json');
+const LEGACY_JOBS_FILE = path.join(__dirname, 'jobs.json');
+
+fs.mkdirSync(DATA_DIR, { recursive: true });
+if (!fs.existsSync(JOBS_FILE) && fs.existsSync(LEGACY_JOBS_FILE) && fs.statSync(LEGACY_JOBS_FILE).isFile()) {
+    fs.renameSync(LEGACY_JOBS_FILE, JOBS_FILE);
+    console.log('Moved jobs.json into data/');
+}
 
 // In-memory data store for demonstration, now backed by a file
 let jobsHistory = [];
