@@ -7,8 +7,11 @@ def extract_highlights(transcript_data, num_clips=10):
     Uses Google Gemini API to identify the most engaging highlights 
     from the transcript and returns their start and end times.
     """
-    print(f"Analyzing {len(transcript_data['segments'])} segments with Gemini API...")
-    
+    segments = transcript_data.get("segments", [])
+    print(f"Analyzing {len(segments)} segments with Gemini API...")
+    if not segments:
+        return []
+
     api_key = os.environ.get("GEMINI_API_KEY")
     if not api_key:
         raise ValueError("GEMINI_API_KEY environment variable is not set. Get one from aistudio.google.com")
@@ -19,7 +22,7 @@ def extract_highlights(transcript_data, num_clips=10):
     
     # Prepare the payload for the LLM
     text_content = ""
-    for idx, seg in enumerate(transcript_data["segments"]):
+    for idx, seg in enumerate(segments):
         text_content += f"[{idx}] {seg['start']:.2f} - {seg['end']:.2f}: {seg['text']}\n"
         
     prompt = f"""
@@ -68,17 +71,23 @@ Transcript:
             result_text = result_text[:-3]
             
         highlights = json.loads(result_text)
+        # The model occasionally wraps the array in an object, e.g. {"clips": [...]}
+        if isinstance(highlights, dict):
+            highlights = next((v for v in highlights.values() if isinstance(v, list)), [])
+        if not isinstance(highlights, list):
+            raise ValueError("Expected a JSON array of highlights")
+        highlights = [h for h in highlights if isinstance(h, dict)]
         print(f"Gemini identified {len(highlights)} viral clips!")
         return highlights
-        
+
     except Exception as e:
         print(f"Error during Gemini highlight extraction: {e}")
         # Fallback to a mock segment if API fails
-        first_seg = transcript_data["segments"][0]
+        first_seg = segments[0]
         return [{
             "title": "Interesting Moment",
             "start_time": first_seg["start"],
-            "end_time": min(first_seg["start"] + 30, transcript_data["segments"][-1]["end"]),
+            "end_time": min(first_seg["start"] + 30, segments[-1]["end"]),
             "score": 85,
             "reasoning": "Fallback highlight.",
             "emphasized_words": [],

@@ -44,7 +44,7 @@ def download_video(url, output_dir, progress_callback=None):
                     pass
 
     base_ydl_opts = {
-        'format': 'bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best',
+        'format': 'bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]/best[height<=1080][ext=mp4]/best[height<=1080]/best',
         'outtmpl': os.path.join(output_dir, '%(id)s.%(ext)s'),
         'merge_output_format': 'mp4',
         'noplaylist': True,
@@ -72,10 +72,15 @@ def download_video(url, output_dir, progress_callback=None):
         try:
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 info_dict = ydl.extract_info(url, download=True)
+                # Prefer the path yt-dlp actually wrote: a single-file fallback format may not be .mp4
+                downloads = info_dict.get('requested_downloads') or []
+                candidates = [d.get('filepath') for d in downloads if d.get('filepath')]
                 filename = ydl.prepare_filename(info_dict)
-                if not filename.endswith('.mp4'):
-                    filename = os.path.splitext(filename)[0] + '.mp4'
-                return filename
+                candidates += [os.path.splitext(filename)[0] + '.mp4', filename]
+                for candidate in candidates:
+                    if os.path.exists(candidate):
+                        return candidate
+                raise Exception(f"Download finished but the video file was not found: {filename}")
         except Exception as e:
             err_str = str(e).lower()
             errors.append(str(e))

@@ -58,7 +58,7 @@ def transcribe_chunk(client, chunk_path, offset_seconds):
         except Exception as e:
             print(f"Error transcribing {os.path.basename(chunk_path)} (Attempt {attempt + 1}/{max_retries}): {e}")
             if attempt == max_retries - 1:
-                return {"text": "", "segments": [], "words": []}
+                return {"text": "", "segments": [], "words": [], "failed": True}
             time.sleep(3 * (attempt + 1))
 
 def transcribe_audio(audio_path):
@@ -127,16 +127,22 @@ def transcribe_audio(audio_path):
         if res.get("words"):
             all_words.extend(res["words"])
         
+    # A chunk that failed every retry leaves a gap in the transcript; report it instead of hiding it
+    failed_chunks = [os.path.basename(chunks[i]) for i, res in enumerate(results) if res.get("failed")]
+    if failed_chunks:
+        print(f"WARNING: {len(failed_chunks)} of {len(chunks)} chunks failed to transcribe: {failed_chunks}")
+
     # 4. Cleanup chunks
     for f in chunks:
         try: os.remove(f)
         except: pass
-        
+
     print("Concurrent transcription complete!")
     return {
         "text": " ".join(all_text),
         "segments": all_segments,
-        "words": all_words
+        "words": all_words,
+        "failed_chunks": failed_chunks
     }
 
 if __name__ == "__main__":

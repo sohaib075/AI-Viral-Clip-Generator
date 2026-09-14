@@ -97,6 +97,32 @@ const saveJobs = () => {
     fs.writeFileSync(JOBS_FILE, JSON.stringify(jobsHistory, null, 2));
 };
 
+// A 'Processing' job the AI service doesn't know about after this long was lost in a restart
+const JOB_LOST_AFTER_MS = 60 * 1000;
+
+// Records the job and hands it to the Python pipeline. If the pipeline can't take it,
+// the job is marked failed instead of staying 'Processing' forever.
+const startPipelineJob = async (job, endpoint, payload) => {
+    jobsHistory.unshift(job);
+    saveJobs();
+
+    try {
+        const response = await fetch(`${PYTHON_API_URL}${endpoint}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ jobId: job.id, ...payload })
+        });
+        if (!response.ok) {
+            throw new Error(`Python API error: ${response.statusText}`);
+        }
+    } catch (error) {
+        job.status = 'Failed';
+        job.error = 'The AI service could not start this job. Make sure it is running and try again.';
+        saveJobs();
+        throw error;
+    }
+};
+
 // API Routes
 app.post('/api/jobs', upload.single('video'), async (req, res) => {
     try {
@@ -129,27 +155,13 @@ app.post('/api/jobs', upload.single('video'), async (req, res) => {
             thumbnail: 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=800&auto=format&fit=crop&q=80',
             createdAt: Date.now()
         };
-        jobsHistory.unshift(newJob);
-        saveJobs();
-
         const layout = req.body.layout || 'vertical';
 
         // Trigger the Python pipeline
-        const response = await fetch(`${PYTHON_API_URL}/api/process`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                jobId: jobId,
-                videoUrl: targetUrl,
-                layout: layout
-            })
+        await startPipelineJob(newJob, '/api/process', {
+            videoUrl: targetUrl,
+            layout: layout
         });
-
-        if (!response.ok) {
-            throw new Error(`Python API error: ${response.statusText}`);
-        }
 
         res.json({
             message: 'Job received successfully',
@@ -189,25 +201,13 @@ app.post('/api/story-to-video', async (req, res) => {
             createdAt: Date.now(),
             type: 'story_to_video'
         };
-        jobsHistory.unshift(newJob);
-        saveJobs();
-
         // Trigger the Python pipeline
-        const response = await fetch(`${PYTHON_API_URL}/api/story-to-video`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                jobId: jobId,
-                story: story,
-                style: style,
-                voice: voice,
-                aspectRatio: aspectRatio
-            })
+        await startPipelineJob(newJob, '/api/story-to-video', {
+            story: story,
+            style: style,
+            voice: voice,
+            aspectRatio: aspectRatio
         });
-
-        if (!response.ok) {
-            throw new Error(`Python API error: ${response.statusText}`);
-        }
 
         res.json({
             message: 'Story job received successfully',
@@ -247,25 +247,13 @@ app.post('/api/auto-edit', upload.single('video'), async (req, res) => {
             createdAt: Date.now(),
             type: 'auto_edit'
         };
-        jobsHistory.unshift(newJob);
-        saveJobs();
-
         // Trigger the Python pipeline
-        const response = await fetch(`${PYTHON_API_URL}/api/auto-edit`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                jobId: jobId,
-                videoUrl: targetUrl,
-                layout: layout || '9:16',
-                style: style || 'Cinematic',
-                prompt: prompt || ''
-            })
+        await startPipelineJob(newJob, '/api/auto-edit', {
+            videoUrl: targetUrl,
+            layout: layout || '9:16',
+            style: style || 'Cinematic',
+            prompt: prompt || ''
         });
-
-        if (!response.ok) {
-            throw new Error(`Python API error: ${response.statusText}`);
-        }
 
         res.json({
             message: 'Auto edit job received successfully',
@@ -315,13 +303,19 @@ app.get('/api/jobs/:id', async (req, res) => {
         
         if (!response.ok) {
             if (response.status === 404) {
-                // Return local job history if python forgot it but we saved it
-                if (jobIndex !== -1 && jobsHistory[jobIndex].status === 'Completed') {
-                    const localJob = { ...jobsHistory[jobIndex] };
-                    if (localJob.clipsData) {
-                        localJob.clips = localJob.clipsData; // Map it back to the expected 'clips' array format
-                    }
-                    return res.json(localJob);
+                // The Python service keeps jobs in memory, so after a restart only our saved copy is left.
+                // Answer in the Python service's format so clients treat it like a live status.
+                const localJob = jobIndex !== -1 ? jobsHistory[jobIndex] : null;
+                if (localJob && localJob.status === 'Processing' && Date.now() - localJob.createdAt > JOB_LOST_AFTER_MS) {
+                    localJob.status = 'Failed';
+                    localJob.error = 'Processing was interrupted because the AI service restarted. Please submit the video again.';
+                    saveJobs();
+                }
+                if (localJob && localJob.status === 'Completed') {
+                    return res.json({ ...localJob, status: 'completed', progress: 100, clips: localJob.clipsData || [] });
+                }
+                if (localJob && localJob.status === 'Failed') {
+                    return res.json({ ...localJob, status: 'failed', progress: 0, message: localJob.error || 'Job failed', clips: [] });
                 }
                 return res.status(404).json({ error: 'Job not found' });
             }
@@ -346,6 +340,7 @@ app.get('/api/jobs/:id', async (req, res) => {
                 changed = true;
             } else if (data.status === 'failed' && jobsHistory[jobIndex].status !== 'Failed') {
                 jobsHistory[jobIndex].status = 'Failed';
+                jobsHistory[jobIndex].error = data.message;
                 changed = true;
             }
             if (changed) {

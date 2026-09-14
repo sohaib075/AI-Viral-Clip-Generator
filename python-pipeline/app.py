@@ -92,10 +92,13 @@ def process_video_job(job_id, video_url, layout='vertical'):
         # 3. Transcribe
         update_job_status(job_id, progress=50, message="Transcribing audio with Whisper (Groq)...")
         transcript_data = transcribe_audio(audio_path)
-        if not transcript_data:
-            raise Exception("Transcription failed.")
-            
+        if not transcript_data or not transcript_data.get('segments'):
+            raise Exception("Transcription failed: no speech was transcribed.")
+
         log_job_message(job_id, f"Transcription complete! Transcribed {len(transcript_data.get('segments', []))} segments.")
+        failed_chunks = transcript_data.get('failed_chunks') or []
+        if failed_chunks:
+            log_job_message(job_id, f"WARNING: {len(failed_chunks)} audio chunk(s) could not be transcribed, so parts of the video are missing from the transcript.")
         
         # Save transcript JSON for record-keeping
         transcript_json_path = os.path.join(PROCESSED_DIR, f"Transcript_{job_id}.json")
@@ -107,6 +110,8 @@ def process_video_job(job_id, video_url, layout='vertical'):
         # 4. NLP Highlights
         update_job_status(job_id, progress=70, message="Scanning transcript for viral highlights using Gemini...")
         highlights = extract_highlights(transcript_data, num_clips=10)
+        if not highlights:
+            raise Exception("No highlights could be found in the transcript.")
         log_job_message(job_id, f"Highlight detection complete! Found {len(highlights)} potential clips.")
         
         # 5. Video Editing
@@ -118,12 +123,14 @@ def process_video_job(job_id, video_url, layout='vertical'):
         def process_highlight(idx_and_clip):
             idx, clip_data = idx_and_clip
             
-            clip_start = clip_data.get('start_time', 0.0)
-            clip_end = clip_data.get('end_time', 0.0)
-            clip_duration = clip_end - clip_start
-            if clip_duration <= 0:
-                clip_duration = 15.0
+            clip_start = max(0.0, float(clip_data.get('start_time') or 0.0))
+            clip_end = float(clip_data.get('end_time') or 0.0)
+            if clip_end <= clip_start:
                 clip_end = clip_start + 15.0
+            clip_duration = clip_end - clip_start
+            # process_clip reads the times from clip_data, so store the corrected values there
+            clip_data['start_time'] = clip_start
+            clip_data['end_time'] = clip_end
             
             relevant_segments = []
             for seg in transcript_data.get("segments", []):
@@ -182,15 +189,25 @@ def process_video_job(job_id, video_url, layout='vertical'):
                 "segments": relevant_segments,
                 "words": relevant_words,
                 "metadata": clip_data.get("metadata", {}),
-                "emphasized_words": clip_data.get("emphasized_words", [])
+                "emphasized_words": clip_data.get("emphasized_words", []),
+                "layout": layout
             }
-            
+
         with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
-            items = list(enumerate(highlights))
-            for result in executor.map(process_highlight, items):
+            futures = [executor.submit(process_highlight, item) for item in enumerate(highlights)]
+            for idx, future in enumerate(futures):
+                # One bad highlight shouldn't throw away every other clip
+                try:
+                    result = future.result()
+                except Exception as e:
+                    log_job_message(job_id, f"ERROR: Skipping clip {idx+1}: {e}")
+                    continue
                 final_clips.append(result)
                 log_job_message(job_id, f"Clip rendered: {result['title']} ({len(final_clips)}/{len(highlights)})")
-            
+
+        if not final_clips:
+            raise Exception("None of the clips could be rendered.")
+
         update_job_status(
             job_id,
             status="completed",
@@ -211,19 +228,13 @@ def process_story_job(job_id, story, style, voice, aspect_ratio):
         log_job_message(job_id, f"=== Starting Story to Video Job ===")
         update_job_status(job_id, status="processing", progress=10, message="Breaking story into scenes with LLM...")
         
-        # We need a callback to update progress in compile_story_video, but for now we can just run it
-        # Actually, let's wrap it in an asyncio loop
         output_filename = f"story_{job_id}.mp4"
-        
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-        
-        # We can pass update_job_status to compile_story_video if we modify it, but for simplicity let's just run it
-        # I will modify compile_story_video to accept a progress_callback
+
         def progress_cb(p, msg):
             update_job_status(job_id, progress=p, message=msg)
-            
-        final_video_path = loop.run_until_complete(
+
+        # asyncio.run creates and closes a fresh event loop for this worker thread
+        final_video_path = asyncio.run(
             compile_story_video(story, style, voice, aspect_ratio, output_filename, STORY_DIR, progress_cb)
         )
         
@@ -293,7 +304,10 @@ def process_video():
     job_id = data['jobId']
     video_url = data['videoUrl']
     layout = data.get('layout', 'vertical')
-    
+
+    # Register the job before the thread starts so status checks never see a 404 for it
+    update_job_status(job_id, status="processing", progress=0)
+
     # Start background processing
     thread = threading.Thread(target=process_video_job, args=(job_id, video_url, layout))
     thread.daemon = True
@@ -315,7 +329,9 @@ def process_story_video():
     style = data.get('style', 'Cinematic')
     voice = data.get('voice', 'en-US-ChristopherNeural')
     aspect_ratio = data.get('aspectRatio', '9:16')
-    
+
+    update_job_status(job_id, status="processing", progress=0)
+
     # Start background processing
     thread = threading.Thread(target=process_story_job, args=(job_id, story, style, voice, aspect_ratio))
     thread.daemon = True
@@ -337,7 +353,9 @@ def auto_edit_video():
     layout = data.get('layout', '9:16')
     style = data.get('style', 'Cinematic')
     prompt = data.get('prompt', '')
-    
+
+    update_job_status(job_id, status="processing", progress=0)
+
     # Start background processing
     thread = threading.Thread(target=process_auto_edit_job, args=(job_id, video_url, layout, style, prompt))
     thread.daemon = True
