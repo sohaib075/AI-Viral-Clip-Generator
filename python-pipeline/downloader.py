@@ -1,6 +1,29 @@
 import yt_dlp
 import os
+import urllib.request
 import imageio_ffmpeg
+
+def resolve_local_upload(video_url, input_dir):
+    """
+    Resolves a file:// URL created by the backend for an uploaded video.
+    Only files inside input_dir are accepted, so a caller can't point the
+    pipeline at arbitrary files on disk.
+    """
+    raw_path = urllib.request.url2pathname(video_url[len('file://'):])
+    real_path = os.path.normcase(os.path.realpath(raw_path))
+    real_input_dir = os.path.normcase(os.path.realpath(input_dir))
+
+    try:
+        inside = os.path.commonpath([real_path, real_input_dir]) == real_input_dir
+    except ValueError:
+        # Different drives on Windows
+        inside = False
+
+    if not inside:
+        raise ValueError("Uploaded file must be located in the upload folder.")
+    if not os.path.isfile(real_path):
+        raise FileNotFoundError(f"Uploaded file not found: {os.path.basename(raw_path)}")
+    return real_path
 
 def download_video(url, output_dir, progress_callback=None):
     """

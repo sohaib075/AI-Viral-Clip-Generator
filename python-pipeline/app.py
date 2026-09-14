@@ -4,7 +4,7 @@ import threading
 import warnings
 warnings.filterwarnings("ignore", category=UserWarning, module="pydantic")
 import traceback
-from downloader import download_video
+from downloader import download_video, resolve_local_upload
 from audio_extractor import extract_audio
 from transcriber import transcribe_audio
 from nlp_highlight import extract_highlights
@@ -77,18 +77,8 @@ def process_video_job(job_id, video_url, layout='vertical'):
 
         # 1. Download Video (or use local file if uploaded)
         if video_url.startswith('file://'):
-            import urllib.request
-            raw_path = urllib.request.url2pathname(video_url[7:])
-            base_name = os.path.basename(raw_path)
-            dest_path = os.path.join(INPUT_DIR, base_name)
-            if os.path.exists(raw_path) and os.path.abspath(raw_path) != os.path.abspath(dest_path):
-                import shutil
-                shutil.move(raw_path, dest_path)
-                video_path = dest_path
-                log_job_message(job_id, f"Moved uploaded video file to Input folder: {video_path}")
-            else:
-                video_path = raw_path
-                log_job_message(job_id, f"Using pre-placed upload file: {video_path}")
+            video_path = resolve_local_upload(video_url, INPUT_DIR)
+            log_job_message(job_id, f"Using uploaded video file: {video_path}")
         else:
             log_job_message(job_id, "Downloading video using yt-dlp...")
             video_path = download_video(video_url, INPUT_DIR, progress_callback=yt_progress)
@@ -397,4 +387,8 @@ def export_clip():
         return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5001, debug=True, use_reloader=False)
+    # Listen on localhost only unless told otherwise (Docker sets FLASK_HOST=0.0.0.0).
+    # The Werkzeug debugger must never be reachable from the network, so debug is opt-in.
+    host = os.environ.get('FLASK_HOST', '127.0.0.1')
+    debug = os.environ.get('FLASK_DEBUG', '').lower() in ('1', 'true', 'yes')
+    app.run(host=host, port=5001, debug=debug, use_reloader=False)

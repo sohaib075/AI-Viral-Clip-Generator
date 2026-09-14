@@ -13,8 +13,49 @@ const port = process.env.PORT || 5000;
 const PYTHON_API_URL = process.env.PYTHON_API_URL || 'http://127.0.0.1:5001';
 
 // Middleware
-app.use(cors());
+// Browsers may only call this API from the web UI. Localhost origins are always allowed;
+// add others (e.g. a deployed frontend) with ALLOWED_ORIGINS or FRONTEND_URL. Requests without
+// an Origin header (the mobile app, OAuth redirects, curl) are not affected.
+const toOrigin = (value) => {
+    try {
+        return new URL(value.trim()).origin;
+    } catch {
+        return null;
+    }
+};
+const allowedOrigins = new Set(
+    [...(process.env.ALLOWED_ORIGINS || '').split(','), process.env.FRONTEND_URL || '']
+        .map(toOrigin)
+        .filter(Boolean)
+);
+const isAllowedOrigin = (origin) => {
+    if (allowedOrigins.has(origin)) return true;
+    try {
+        const { hostname } = new URL(origin);
+        return hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '[::1]';
+    } catch {
+        return false;
+    }
+};
+
+app.use((req, res, next) => {
+    const origin = req.headers.origin;
+    if (origin && !isAllowedOrigin(origin)) {
+        return res.status(403).json({ error: 'Origin not allowed' });
+    }
+    next();
+});
+app.use(cors({ origin: (origin, callback) => callback(null, !origin || isAllowedOrigin(origin)) }));
 app.use(express.json());
+
+const isHttpUrl = (value) => {
+    try {
+        const { protocol } = new URL(value);
+        return protocol === 'http:' || protocol === 'https:';
+    } catch {
+        return false;
+    }
+};
 
 // Set up temporary storage for uploaded files and serve them statically
 const tempDir = path.join(__dirname, '../temp');
@@ -64,6 +105,10 @@ app.post('/api/jobs', upload.single('video'), async (req, res) => {
 
         if (!videoUrl && !file) {
             return res.status(400).json({ error: 'Please provide a video file or URL' });
+        }
+        // Local file paths are only ever built by the server from an actual upload
+        if (videoUrl && !isHttpUrl(videoUrl)) {
+            return res.status(400).json({ error: 'Video URL must start with http:// or https://' });
         }
 
         // Generate a job ID
@@ -182,6 +227,9 @@ app.post('/api/auto-edit', upload.single('video'), async (req, res) => {
 
         if (!videoUrl && !file) {
             return res.status(400).json({ error: 'Please provide a video file or URL' });
+        }
+        if (videoUrl && !isHttpUrl(videoUrl)) {
+            return res.status(400).json({ error: 'Video URL must start with http:// or https://' });
         }
 
         const jobId = `auto_${Date.now()}`;
@@ -341,7 +389,8 @@ app.post('/api/export', async (req, res) => {
 });
 
 app.get('/api/accounts', (req, res) => {
-    db.all(`SELECT * FROM accounts`, [], (err, rows) => {
+    // Never send tokens to the client
+    db.all(`SELECT id, platform, account_name, status, created_at FROM accounts`, [], (err, rows) => {
         if (err) return res.status(500).json({ error: 'Database error' });
         res.json(rows);
     });

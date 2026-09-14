@@ -4,7 +4,7 @@ import json
 import ffmpeg
 import imageio_ffmpeg
 from google import genai
-from downloader import download_video
+from downloader import download_video, resolve_local_upload
 from audio_extractor import extract_audio
 from transcriber import transcribe_audio
 from video_editor import create_ass
@@ -86,15 +86,7 @@ def process_auto_edit(job_id, video_url, layout, style, prompt, progress_callbac
     # 1. Download Video
     progress_callback(10, "Downloading high-quality video...")
     if video_url.startswith('file://'):
-        import urllib.request
-        raw_path = urllib.request.url2pathname(video_url[7:])
-        base_name = os.path.basename(raw_path)
-        video_path = os.path.join(input_dir, base_name)
-        if os.path.exists(raw_path) and os.path.abspath(raw_path) != os.path.abspath(video_path):
-            import shutil
-            shutil.move(raw_path, video_path)
-        else:
-            video_path = raw_path
+        video_path = resolve_local_upload(video_url, input_dir)
     else:
         video_path = download_video(video_url, input_dir)
 
