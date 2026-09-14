@@ -12,7 +12,7 @@ const Projects = () => {
     fetch(`${API_URL}/api/jobs`)
       .then(res => res.json())
       .then(data => {
-        setProjects(data);
+        setProjects(Array.isArray(data) ? data : []);
         setLoading(false);
       })
       .catch(err => {
@@ -74,11 +74,13 @@ const Projects = () => {
             >
               {/* Thumbnail Area */}
               <div className="h-40 relative overflow-hidden bg-black/50 border-b border-white/10">
-                <img 
-                  src={project.thumbnail.startsWith('http') ? project.thumbnail : `${API_URL}${project.thumbnail}`} 
-                  alt={project.title} 
-                  className="w-full h-full object-cover opacity-70 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"
-                />
+                {project.thumbnail && (
+                  <img
+                    src={project.thumbnail.startsWith('http') ? project.thumbnail : `${API_URL}${project.thumbnail}`}
+                    alt={project.title}
+                    className="w-full h-full object-cover opacity-70 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"
+                  />
+                )}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
                 
                 <div className="absolute top-3 right-3 flex gap-2">

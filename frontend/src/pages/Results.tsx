@@ -102,6 +102,7 @@ const Results = () => {
               words: c.words || [],
               emphasized_words: c.emphasized_words || [],
               metadata: c.metadata || {},
+              layout: c.layout, // Sent back with exports so captions match the clip's shape
               thumbnail: c.thumbnail_url ? `${API_URL}${c.thumbnail_url}` : null
             };
           });

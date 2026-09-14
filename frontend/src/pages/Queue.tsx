@@ -23,6 +23,8 @@ const Queue = () => {
         try {
             const res = await fetch(`${API_URL}/api/posts`);
             const data = await res.json();
+            // Error responses are objects; keep the last good list instead of crashing on .map
+            if (!res.ok || !Array.isArray(data)) throw new Error(data?.error || `Server responded with ${res.status}`);
             setPosts(data);
         } catch (e) {
             console.error("Failed to fetch posts", e);

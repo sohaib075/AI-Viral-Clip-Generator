@@ -27,7 +27,9 @@ export default function SettingsScreen() {
     const fetchSettings = async () => {
       try {
         const response = await api.get('/api/user/settings');
-        setUserProfile(response.data.profile || {
+        // The backend returns the profile fields at the top level
+        const profile = response.data?.profile ?? response.data;
+        setUserProfile(profile?.firstName ? profile : {
           firstName: 'Alex',
           lastName: 'Developer',
           email: 'alex@example.com',

@@ -5,13 +5,28 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 const Settings = () => {
   const [userProfile, setUserProfile] = useState<any>(null);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     fetch(`${API_URL}/api/user/settings`)
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) throw new Error(`Server responded with ${res.status}`);
+        return res.json();
+      })
       .then(data => setUserProfile(data))
-      .catch(err => console.error('Failed to fetch user settings:', err));
+      .catch(err => {
+        console.error('Failed to fetch user settings:', err);
+        setError('Could not load settings. Make sure the backend is running.');
+      });
   }, []);
+
+  if (error) {
+    return (
+      <div className="flex justify-center items-center h-screen w-full">
+        <p className="text-red-400 font-medium">{error}</p>
+      </div>
+    );
+  }
 
   if (!userProfile) {
     return (

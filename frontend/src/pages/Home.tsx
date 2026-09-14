@@ -26,10 +26,14 @@ const Home = () => {
           fetch(`${API_URL}/api/analytics`),
           fetch(`${API_URL}/api/jobs`)
         ]);
-        if (analyticsRes.ok) setAnalytics(await analyticsRes.json());
+        if (analyticsRes.ok) {
+          // Merge so a missing field keeps its default instead of breaking the stat cards
+          const analyticsData = await analyticsRes.json();
+          setAnalytics(prev => ({ ...prev, ...analyticsData }));
+        }
         if (jobsRes.ok) {
           const jobsData = await jobsRes.json();
-          setRecentJobs(jobsData.slice(0, 4)); // Only show top 4 recent jobs
+          if (Array.isArray(jobsData)) setRecentJobs(jobsData.slice(0, 4)); // Only show top 4 recent jobs
         }
       } catch (e) {
         console.error('Failed to fetch dashboard data:', e);
