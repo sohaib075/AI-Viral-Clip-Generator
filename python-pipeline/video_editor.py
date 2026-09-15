@@ -21,6 +21,13 @@ def verify_video_file(video_path):
         return False
     return True
 
+def layout_is_vertical(layout):
+    """True for 9:16 / vertical / 1:1; False for 16:9 / horizontal."""
+    value = (layout or 'vertical').strip().lower()
+    if value in ('horizontal', '16:9'):
+        return False
+    return True
+
 def split_segment(segment, max_words=3):
     """
     Splits a segment into smaller segments with a maximum word count.
@@ -316,7 +323,7 @@ def process_clip(video_path, clip_data, clips_dir, subtitles_dir, job_id, clip_i
     duration = end_time - start_time
     
     layout = clip_data.get('layout', 'vertical')
-    is_vertical = (layout != 'horizontal')
+    is_vertical = layout_is_vertical(layout)
 
     if is_vertical:
         vf_filter = f"crop=min(iw\\,ih*9/16):min(ih\\,iw*16/9),scale=1080:1920"
@@ -396,7 +403,7 @@ def burn_subtitles(base_clip_path, clip_data, style_config, output_path):
     Takes a base clip and burns custom subtitles into it.
     """
     layout = clip_data.get('layout', 'vertical')
-    is_vertical = (layout != 'horizontal')
+    is_vertical = layout_is_vertical(layout)
 
     # Create ASS file with a unique, filter-safe name next to the output
     output_stem = re.sub(r'[^\w.-]', '_', os.path.splitext(os.path.basename(output_path))[0])

@@ -66,11 +66,14 @@ export interface Post {
   clip_url: string;
   platforms: string;
   title: string | null;
+  description: string | null;
+  hashtags: string | null;
   scheduled_time: string;
   status: 'pending' | 'processing' | 'uploaded' | 'failed';
   retry_count: number;
   error_message: string | null;
   platform_results: string | null;
+  created_at: string;
 }
 
 export interface Analytics {

@@ -21,6 +21,9 @@ import time
 import traceback
 from urllib.parse import urlparse
 
+from dotenv import load_dotenv
+load_dotenv()
+
 from flask import Flask, request, jsonify
 from downloader import download_video, resolve_local_upload
 from audio_extractor import extract_audio
@@ -337,9 +340,14 @@ def process_auto_edit_job(job_id, video_url, layout, style, prompt):
     final_clips = [{
         "title": analysis.get("title") or f"Auto Edited Video ({style})",
         "video_url": clip_url("Clips", final_video_path),
+        "base_url": clip_url("Clips", info.get("base_path")),
         "thumbnail_url": clip_url("Clips", info.get("thumbnail_path")),
         "metadata": social_metadata(analysis),
-        "layout": layout
+        "layout": layout,
+        "segments": (info.get("clip_data") or {}).get("segments") or [],
+        "words": (info.get("clip_data") or {}).get("words") or [],
+        "start_time": 0.0,
+        "end_time": (info.get("clip_data") or {}).get("end") or 0.0,
     }]
 
     update_job_status(
@@ -436,5 +444,6 @@ if __name__ == '__main__':
     # Listen on localhost only unless told otherwise (Docker sets FLASK_HOST=0.0.0.0).
     # The Werkzeug debugger must never be reachable from the network, so debug is opt-in.
     host = os.environ.get('FLASK_HOST', '127.0.0.1')
+    port = int(os.environ.get('PORT') or 5001)
     debug = os.environ.get('FLASK_DEBUG', '').lower() in ('1', 'true', 'yes')
-    app.run(host=host, port=5001, debug=debug, use_reloader=False)
+    app.run(host=host, port=port, debug=debug, use_reloader=False)

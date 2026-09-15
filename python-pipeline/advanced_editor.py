@@ -63,16 +63,42 @@ def analyze_storyline_and_metadata(transcript_data, style, prompt):
         raise RuntimeError("AI analysis returned an unexpected format.")
     return analysis
 
+def coerce_index(value):
+    """Gemini often returns 0.0 or '0'; accept those as ints."""
+    if isinstance(value, bool):
+        return None
+    if isinstance(value, int):
+        return value
+    if isinstance(value, float) and value.is_integer():
+        return int(value)
+    if isinstance(value, str):
+        try:
+            number = float(value.strip())
+        except ValueError:
+            return None
+        if number.is_integer():
+            return int(number)
+    return None
+
+def coerce_indices(values):
+    if not isinstance(values, list):
+        return []
+    out = []
+    for value in values:
+        index = coerce_index(value)
+        if index is not None:
+            out.append(index)
+    return out
+
 def build_edit_plan(segments, kept_indices):
     """
     Returns [(segment_index, segment)] for the segments to keep, in the order chosen.
     Invalid indices and micro segments are dropped.
     """
     def usable(i):
-        return (isinstance(i, int) and not isinstance(i, bool) and 0 <= i < len(segments)
-                and segments[i]['end'] - segments[i]['start'] > MIN_SEGMENT_SECONDS)
+        return 0 <= i < len(segments) and segments[i]['end'] - segments[i]['start'] > MIN_SEGMENT_SECONDS
 
-    return [(i, segments[i]) for i in kept_indices if usable(i)]
+    return [(i, segments[i]) for i in coerce_indices(kept_indices) if usable(i)]
 
 def build_subtitle_clip_data(plan, all_words, layout):
     """
@@ -129,8 +155,8 @@ def process_auto_edit(job_id, video_url, layout, style, prompt, progress_callbac
 
     audio_path = None
     ass_path = os.path.join(processed_dir, f"subtitles_{job_id}.ass")
-    output_path = os.path.join(clips_dir, f"advanced_{job_id}.mp4")
-    base_output_path = output_path.replace(".mp4", "_base.mp4")
+    output_path = os.path.join(clips_dir, f"advanced_{job_id}_final.mp4")
+    base_output_path = os.path.join(clips_dir, f"advanced_{job_id}_base.mp4")
     try:
         info["source_duration"] = get_media_duration(video_path)
 
@@ -153,7 +179,7 @@ def process_auto_edit(job_id, video_url, layout, style, prompt, progress_callbac
         plan = build_edit_plan(segments, analysis.get("kept_segment_indices") or [])
         if not plan:
             raise Exception("The AI did not select any usable parts of the video to keep.")
-        zoom_indices = set(analysis.get("zoom_indices") or [])
+        zoom_indices = set(coerce_indices(analysis.get("zoom_indices") or []))
 
         target_w, target_h = LAYOUT_SIZES.get(layout, LAYOUT_SIZES['16:9'])
 
@@ -203,7 +229,7 @@ def process_auto_edit(job_id, video_url, layout, style, prompt, progress_callbac
         joined_v = ffmpeg.concat(*concat_v, v=1, a=0)
         joined_a = ffmpeg.concat(*concat_a, v=0, a=1)
 
-        # Render Base Concat
+        # Render Base Concat (kept for caption restyle / re-export)
         run_ffmpeg(
             ffmpeg.output(joined_v, joined_a, base_output_path, vcodec="libx264", acodec="aac", preset="fast", crf=23, pix_fmt="yuv420p")
         )
@@ -213,9 +239,11 @@ def process_auto_edit(job_id, video_url, layout, style, prompt, progress_callbac
 
         thumbnail_path = os.path.join(clips_dir, f"advanced_{job_id}.jpg")
         info["thumbnail_path"] = extract_thumbnail(output_path, 1.0, thumbnail_path)
+        info["base_path"] = base_output_path
+        info["clip_data"] = clip_data
     finally:
-        # The source video, audio and intermediate files aren't needed once the job ends
-        remove_files(base_output_path, ass_path, audio_path, video_path)
+        # Keep the base clip for caption restyle; drop source + intermediates
+        remove_files(ass_path, audio_path, video_path)
 
     progress_callback(100, "Finalizing professional edit...")
     return output_path, analysis, info

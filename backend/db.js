@@ -101,9 +101,8 @@ const init = async () => {
     }
 };
 
-// Resolves once tables and migrations are in place
-db.ready = init().catch((err) => {
-    console.error('[DB] Initialization failed:', err);
-});
+// Resolves once tables and migrations are in place. Rejects on failure so callers
+// (queue worker / server boot) can refuse to start against a broken database.
+db.ready = init();
 
 module.exports = db;

@@ -76,7 +76,7 @@ const SOCIAL_CARDS: { key: string; label: string; icon: ReactNode }[] = [
   { key: 'instagram', label: 'Instagram', icon: <Camera className="w-6 h-6" /> },
   { key: 'youtube_shorts', label: 'YouTube Shorts', icon: <Film className="w-6 h-6" /> },
   { key: 'x', label: 'X', icon: <MessageCircle className="w-6 h-6" /> },
-  { key: 'linkedin', label: 'LinkedIn', icon: <Briefcase className="w-6 h-6" /> },
+  { key: 'linkedin', label: 'LinkedIn (copy only)', icon: <Briefcase className="w-6 h-6" /> },
 ];
 
 const copyFromMetadata = (copy: PlatformCopy) =>
@@ -198,7 +198,9 @@ const Results = () => {
   };
 
   const shape = shapeOf(activeClip?.layout || 'vertical');
-  const finalUrl = activeClip ? `${activeClip.url}${exportedAt[activeClip.id] ? `?v=${exportedAt[activeClip.id]}` : ''}` : '';
+  const finalUrl = activeClip
+    ? `${activeClip.url}${exportedAt[activeClip.id] ? `${activeClip.url.includes('?') ? '&' : '?'}v=${exportedAt[activeClip.id]}` : ''}`
+    : '';
 
   const handleExport = async () => {
     if (!activeClip?.baseUrl) return;
@@ -208,6 +210,7 @@ const Results = () => {
     try {
       await apiFetch<{ success: boolean; export_url: string }>('/api/export', {
         method: 'POST',
+        timeoutMs: 10 * 60 * 1000,
         body: JSON.stringify({ jobId, clipUrl: clip.baseUrl, styleConfig, clipData: clip.source })
       });
       setExportedAt(prev => ({ ...prev, [clip.id]: Date.now() }));

@@ -103,9 +103,15 @@ export async function postForm<T>(path: string, form: FormData): Promise<T> {
 }
 
 // Rendered media is served by the backend under /temp/...
+// When an API token is configured, append it so <Video>/<Image> can load protected files.
 export const mediaUrl = (path?: string | null) => {
   if (!path) return null;
-  return /^https?:\/\//.test(path) ? path : `${API_URL}${path}`;
+  let url = /^https?:\/\//.test(path) ? path : `${API_URL}${path}`;
+  if (apiToken) {
+    const sep = url.includes('?') ? '&' : '?';
+    url = `${url}${sep}access_token=${encodeURIComponent(apiToken)}`;
+  }
+  return url;
 };
 
 export const errorStatus = (error: unknown) => (isAxiosError(error) ? error.response?.status : undefined);

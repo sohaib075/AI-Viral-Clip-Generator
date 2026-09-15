@@ -1,3 +1,5 @@
+import { getToken } from './api';
+
 export const timeAgo = (timestamp: number) => {
   const seconds = Math.max(0, Math.round((Date.now() - timestamp) / 1000));
   if (seconds < 60) return 'Just now';
@@ -45,7 +47,9 @@ export async function copyText(text: string): Promise<boolean> {
 // Browsers ignore <a download> for files on another origin (the API runs on its own port), so fetch the file first
 export async function downloadFile(url: string, filename: string) {
   try {
-    const response = await fetch(url);
+    const token = getToken();
+    const headers: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
+    const response = await fetch(url, { headers });
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const blobUrl = URL.createObjectURL(await response.blob());
     const link = document.createElement('a');
