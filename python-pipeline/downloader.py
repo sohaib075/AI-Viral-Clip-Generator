@@ -1,6 +1,10 @@
-import yt_dlp
+import ipaddress
 import os
-import urllib.request
+import re
+import socket
+from urllib.parse import urlparse
+
+import yt_dlp
 import imageio_ffmpeg
 
 def resolve_local_upload(video_url, input_dir):
@@ -9,7 +13,8 @@ def resolve_local_upload(video_url, input_dir):
     Only files inside input_dir are accepted, so a caller can't point the
     pipeline at arbitrary files on disk.
     """
-    raw_path = urllib.request.url2pathname(video_url[len('file://'):])
+    # The backend builds this from the saved file's path without percent-encoding, so use it as-is
+    raw_path = video_url[len('file://'):]
     real_path = os.path.normcase(os.path.realpath(raw_path))
     real_input_dir = os.path.normcase(os.path.realpath(input_dir))
 
@@ -25,17 +30,37 @@ def resolve_local_upload(video_url, input_dir):
         raise FileNotFoundError(f"Uploaded file not found: {os.path.basename(raw_path)}")
     return real_path
 
-def download_video(url, output_dir, progress_callback=None):
+def ensure_public_url(url):
+    """
+    Refuses URLs that point at this machine or a private network (internal services, cloud metadata
+    endpoints). Set ALLOW_PRIVATE_URLS=1 to download from hosts on your own network.
+    """
+    parsed = urlparse(url)
+    if parsed.scheme not in ('http', 'https') or not parsed.hostname:
+        raise ValueError("Video URL must start with http:// or https://")
+    if os.environ.get('ALLOW_PRIVATE_URLS', '').lower() in ('1', 'true', 'yes'):
+        return
+
+    try:
+        addresses = {info[4][0] for info in socket.getaddrinfo(parsed.hostname, None)}
+    except socket.gaierror:
+        raise ValueError(f"Could not find the website {parsed.hostname}.")
+    for address in addresses:
+        if not ipaddress.ip_address(address.split('%')[0]).is_global:
+            raise ValueError("Video URLs must point to a public website.")
+
+def download_video(url, output_dir, progress_callback=None, file_prefix=None):
     """
     Downloads a video from the given URL using yt-dlp.
-    Returns the path to the downloaded video file.
+    Returns (path to the downloaded video file, {"title", "duration"} from the site).
+    file_prefix keeps files from different jobs apart when the same video is submitted twice.
     """
+    ensure_public_url(url)
     ffmpeg_path = imageio_ffmpeg.get_ffmpeg_exe()
-    
+
     def my_hook(d):
         if d['status'] == 'downloading':
             p_str = d.get('_percent_str', '').strip().replace('%', '')
-            import re
             p_str = re.sub(r'\x1b\[[0-9;]*m', '', p_str)
             if p_str and progress_callback:
                 try:
@@ -43,9 +68,10 @@ def download_video(url, output_dir, progress_callback=None):
                 except ValueError:
                     pass
 
+    name_template = f"{file_prefix}_%(id)s.%(ext)s" if file_prefix else '%(id)s.%(ext)s'
     base_ydl_opts = {
         'format': 'bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]/best[height<=1080][ext=mp4]/best[height<=1080]/best',
-        'outtmpl': os.path.join(output_dir, '%(id)s.%(ext)s'),
+        'outtmpl': os.path.join(output_dir, name_template),
         'merge_output_format': 'mp4',
         'noplaylist': True,
         'ffmpeg_location': ffmpeg_path,
@@ -55,23 +81,23 @@ def download_video(url, output_dir, progress_callback=None):
         'socket_timeout': 60,
         'retries': 15,
         'fragment_retries': 15,
-        'extractor_args': {'youtube': ['player_client=android,web']}
     }
-    
+
     browsers_to_try = [None, 'chrome', 'edge', 'firefox', 'brave', 'opera', 'vivaldi']
     errors = []
-    
+
     for browser in browsers_to_try:
         ydl_opts = base_ydl_opts.copy()
         if browser:
             print(f"[yt-dlp] Attempting download using {browser} cookies to bypass bot detection...")
             ydl_opts['cookiesfrombrowser'] = (browser, )
         else:
-            print(f"[yt-dlp] Attempting download without cookies using Android client...")
-            
+            print(f"[yt-dlp] Attempting download without cookies...")
+
         try:
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 info_dict = ydl.extract_info(url, download=True)
+                info = {"title": info_dict.get("title"), "duration": info_dict.get("duration")}
                 # Prefer the path yt-dlp actually wrote: a single-file fallback format may not be .mp4
                 downloads = info_dict.get('requested_downloads') or []
                 candidates = [d.get('filepath') for d in downloads if d.get('filepath')]
@@ -79,7 +105,7 @@ def download_video(url, output_dir, progress_callback=None):
                 candidates += [os.path.splitext(filename)[0] + '.mp4', filename]
                 for candidate in candidates:
                     if os.path.exists(candidate):
-                        return candidate
+                        return candidate, info
                 raise Exception(f"Download finished but the video file was not found: {filename}")
         except Exception as e:
             err_str = str(e).lower()
@@ -90,14 +116,15 @@ def download_video(url, output_dir, progress_callback=None):
             else:
                 # If it's a completely different error (e.g. video unavailable), fail immediately
                 raise e
-                
+
     # All options failed. Fail loudly instead of substituting a different video,
     # otherwise the job would "succeed" with clips from the wrong source.
     hint = "YouTube blocked the download (bot detection or sign-in required)."
-    if any('locked' in err.lower() for err in errors):
-        hint = "Browser cookies could not be read because the browser database is locked. Close the browser and try again."
-    last_error = errors[-1] if errors else "unknown error"
-    raise Exception(f"Failed to download video. {hint} Last error: {last_error}")
+    if any('locked' in err.lower() for err in errors[1:]):
+        hint += " Browser cookies couldn't be read because a browser is open; close it and try again."
+    # The first attempt (no cookies) carries the site's own error; later ones are about reading cookies
+    site_error = errors[0] if errors else "unknown error"
+    raise Exception(f"Failed to download video. {hint} Details: {site_error}")
 
 if __name__ == '__main__':
     pass

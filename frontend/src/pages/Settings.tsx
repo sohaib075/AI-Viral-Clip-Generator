@@ -1,125 +1,151 @@
-import React, { useState, useEffect } from 'react';
-import { Settings as SettingsIcon, User, CreditCard, Bell, Shield } from 'lucide-react';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+import { useState, useEffect, useCallback } from 'react';
+import { Settings as SettingsIcon, KeyRound, Server, Share2, CheckCircle, AlertTriangle, Loader2 } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { apiFetch, errorMessage, getToken, setToken } from '../api';
+import { API_URL } from '../config';
+import type { Session } from '../types';
 
 const Settings = () => {
-  const [userProfile, setUserProfile] = useState<any>(null);
-  const [error, setError] = useState('');
+  const [session, setSession] = useState<Session | null>(null);
+  const [connectionError, setConnectionError] = useState('');
+  const [tokenInput, setTokenInput] = useState('');
+  const [tokenMessage, setTokenMessage] = useState<{ ok: boolean; text: string } | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [hasStoredToken, setHasStoredToken] = useState(Boolean(getToken()));
 
-  useEffect(() => {
-    fetch(`${API_URL}/api/user/settings`)
-      .then(res => {
-        if (!res.ok) throw new Error(`Server responded with ${res.status}`);
-        return res.json();
-      })
-      .then(data => setUserProfile(data))
-      .catch(err => {
-        console.error('Failed to fetch user settings:', err);
-        setError('Could not load settings. Make sure the backend is running.');
-      });
+  const checkSession = useCallback(async () => {
+    try {
+      setSession(await apiFetch<Session>('/api/session'));
+      setConnectionError('');
+    } catch (err) {
+      setSession(null);
+      setConnectionError(errorMessage(err, 'Could not reach the server.'));
+    }
   }, []);
 
-  if (error) {
-    return (
-      <div className="flex justify-center items-center h-screen w-full">
-        <p className="text-red-400 font-medium">{error}</p>
-      </div>
-    );
-  }
+  useEffect(() => {
+    checkSession();
+  }, [checkSession]);
 
-  if (!userProfile) {
-    return (
-      <div className="flex justify-center items-center h-screen w-full">
-        <div className="w-12 h-12 border-4 border-white/20 border-t-[#66fcf1] rounded-full animate-spin"></div>
-      </div>
-    );
-  }
+  const saveToken = async () => {
+    setSaving(true);
+    setTokenMessage(null);
+    const previous = getToken();
+    setToken(tokenInput.trim());
+    try {
+      const result = await apiFetch<Session>('/api/session');
+      if (result.tokenRequired && !result.authenticated) {
+        setToken(previous);
+        setTokenMessage({ ok: false, text: 'That access token is not valid.' });
+      } else {
+        setTokenInput('');
+        setHasStoredToken(Boolean(getToken()));
+        setSession(result);
+        setTokenMessage({ ok: true, text: 'Access token saved in this browser.' });
+      }
+    } catch (err) {
+      setToken(previous);
+      setTokenMessage({ ok: false, text: errorMessage(err, 'Could not check the token.') });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const clearToken = () => {
+    setToken('');
+    setHasStoredToken(false);
+    setTokenMessage({ ok: true, text: 'Access token removed from this browser.' });
+    checkSession();
+  };
 
   return (
-    <div className="w-full max-w-6xl mx-auto flex flex-col p-8 animate-fade-in-up">
-      <div className="mb-10">
+    <div className="w-full max-w-4xl mx-auto flex flex-col p-8 animate-fade-in-up gap-8">
+      <div>
         <h1 className="text-3xl font-bold text-white mb-2 flex items-center gap-3">
-          <SettingsIcon className="w-8 h-8 text-gray-400" />
+          <SettingsIcon className="w-8 h-8 text-gray-400" aria-hidden="true" />
           Settings
         </h1>
-        <p className="text-gray-400 font-medium">Manage your account preferences and billing.</p>
+        <p className="text-gray-400 font-medium">Connection and access settings for this browser.</p>
       </div>
 
-      <div className="flex flex-col md:flex-row gap-8">
-        {/* Settings Sidebar */}
-        <div className="w-full md:w-64 flex flex-col gap-2">
-          {[
-            { name: 'Profile', icon: <User className="w-5 h-5" />, active: true },
-            { name: 'Billing & Plans', icon: <CreditCard className="w-5 h-5" />, active: false },
-            { name: 'Notifications', icon: <Bell className="w-5 h-5" />, active: false },
-            { name: 'Security', icon: <Shield className="w-5 h-5" />, active: false },
-          ].map(item => (
-            <button 
-              key={item.name}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all ${
-                item.active 
-                  ? 'bg-white/10 text-white' 
-                  : 'text-gray-400 hover:bg-white/5 hover:text-white'
-              }`}
-            >
-              {item.icon}
-              {item.name}
-            </button>
-          ))}
-        </div>
-
-        {/* Settings Content */}
-        <div className="flex-1 glass-panel p-8 rounded-3xl">
-          <h2 className="text-xl font-bold text-white mb-6 border-b border-white/10 pb-4">Profile Information</h2>
-          
-          <div className="flex items-center gap-6 mb-8">
-            <div className="w-24 h-24 rounded-full bg-gradient-to-tr from-white/10 to-[#66fcf1] p-1">
-              <img 
-                src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=800&auto=format&fit=crop&q=80" 
-                alt="Avatar" 
-                className="w-full h-full rounded-full border-4 border-black object-cover"
-              />
-            </div>
-            <div>
-              <button className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white font-bold rounded-lg transition-colors mb-2 text-sm">
-                Change Avatar
-              </button>
-              <p className="text-xs text-gray-500">JPG, GIF or PNG. 1MB max.</p>
-            </div>
+      {/* Server */}
+      <section className="glass-panel p-8 rounded-3xl" aria-labelledby="server-heading">
+        <h2 id="server-heading" className="text-xl font-bold text-white mb-6 border-b border-white/10 pb-4 flex items-center gap-2">
+          <Server className="w-5 h-5" aria-hidden="true" /> Server
+        </h2>
+        <dl className="space-y-4 text-sm">
+          <div className="flex justify-between gap-4">
+            <dt className="text-gray-400 font-bold">API address</dt>
+            <dd className="text-white font-mono break-all text-right">{API_URL}</dd>
           </div>
+          <div className="flex justify-between gap-4">
+            <dt className="text-gray-400 font-bold">Status</dt>
+            <dd className="text-right">
+              {session ? (
+                <span className="text-green-400 font-semibold flex items-center gap-1 justify-end"><CheckCircle className="w-4 h-4" aria-hidden="true" /> Connected</span>
+              ) : connectionError ? (
+                <span className="text-red-400 font-semibold flex items-center gap-1 justify-end"><AlertTriangle className="w-4 h-4" aria-hidden="true" /> {connectionError}</span>
+              ) : (
+                <span className="text-gray-400">Checking...</span>
+              )}
+            </dd>
+          </div>
+        </dl>
+      </section>
 
-          <form className="space-y-6 max-w-xl">
-            <div className="flex gap-6">
-              <div className="flex-1 space-y-2">
-                <label className="text-sm font-bold text-gray-400">First Name</label>
-                <input type="text" defaultValue={userProfile.firstName} className="w-full px-4 py-3 bg-black/40 border border-white/10 rounded-xl focus:outline-none focus:border-white text-white" />
-              </div>
-              <div className="flex-1 space-y-2">
-                <label className="text-sm font-bold text-gray-400">Last Name</label>
-                <input type="text" defaultValue={userProfile.lastName} className="w-full px-4 py-3 bg-black/40 border border-white/10 rounded-xl focus:outline-none focus:border-white text-white" />
-              </div>
-            </div>
+      {/* Access token */}
+      <section className="glass-panel p-8 rounded-3xl" aria-labelledby="token-heading">
+        <h2 id="token-heading" className="text-xl font-bold text-white mb-2 flex items-center gap-2">
+          <KeyRound className="w-5 h-5" aria-hidden="true" /> Access Token
+        </h2>
+        <p className="text-sm text-gray-400 mb-6 border-b border-white/10 pb-4">
+          {session?.tokenRequired
+            ? 'This server requires the API_TOKEN from backend/.env. It is stored only in this browser.'
+            : 'This server does not require an access token. Set API_TOKEN in backend/.env to protect it.'}
+        </p>
 
-            <div className="space-y-2">
-              <label className="text-sm font-bold text-gray-400">Email Address</label>
-              <input type="email" defaultValue={userProfile.email} className="w-full px-4 py-3 bg-black/40 border border-white/10 rounded-xl focus:outline-none focus:border-white text-white" />
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-sm font-bold text-gray-400">Company</label>
-              <input type="text" defaultValue={userProfile.company} className="w-full px-4 py-3 bg-black/40 border border-white/10 rounded-xl focus:outline-none focus:border-white text-white" />
-            </div>
-
-            <div className="pt-6 border-t border-white/10 flex justify-end gap-4">
-              <button type="button" className="px-6 py-3 font-bold text-gray-400 hover:text-white transition-colors">Cancel</button>
-              <button type="button" className="px-6 py-3 bg-white hover:bg-[#52c9c1] text-black font-bold rounded-xl transition-all shadow-[0_0_20px_rgba(102,252,241,0.3)]">
-                Save Changes
-              </button>
-            </div>
-          </form>
+        <div className="space-y-3 max-w-xl">
+          <label htmlFor="settings-token" className="text-sm font-bold text-gray-400">{hasStoredToken ? 'Replace access token' : 'Access token'}</label>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <input
+              id="settings-token"
+              type="password"
+              autoComplete="off"
+              value={tokenInput}
+              onChange={e => setTokenInput(e.target.value)}
+              className="flex-1 px-4 py-3 bg-black/40 border border-white/10 rounded-xl focus:outline-none focus:border-white text-white"
+            />
+            <button
+              type="button"
+              onClick={saveToken}
+              disabled={!tokenInput.trim() || saving}
+              className="px-6 py-3 bg-white hover:bg-gray-200 text-black font-bold rounded-xl transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+            >
+              {saving && <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" />} Save
+            </button>
+          </div>
+          {hasStoredToken && (
+            <button type="button" onClick={clearToken} className="text-sm font-semibold text-red-400 hover:text-red-300">
+              Remove stored token
+            </button>
+          )}
+          {tokenMessage && (
+            <p className={`text-sm font-medium ${tokenMessage.ok ? 'text-green-400' : 'text-red-400'}`} role="status">{tokenMessage.text}</p>
+          )}
         </div>
-      </div>
+      </section>
+
+      {/* Publishing */}
+      <section className="glass-panel p-8 rounded-3xl" aria-labelledby="publishing-heading">
+        <h2 id="publishing-heading" className="text-xl font-bold text-white mb-6 border-b border-white/10 pb-4 flex items-center gap-2">
+          <Share2 className="w-5 h-5" aria-hidden="true" /> Publishing
+        </h2>
+        <div className="flex flex-wrap gap-3">
+          <Link to="/accounts" className="px-5 py-3 bg-white/10 hover:bg-white/20 text-white font-bold rounded-xl transition-colors">Manage social accounts</Link>
+          <Link to="/queue" className="px-5 py-3 bg-white/10 hover:bg-white/20 text-white font-bold rounded-xl transition-colors">Open publishing queue</Link>
+          <Link to="/how-it-works" className="px-5 py-3 bg-white/10 hover:bg-white/20 text-white font-bold rounded-xl transition-colors">How it works</Link>
+        </div>
+      </section>
     </div>
   );
 };

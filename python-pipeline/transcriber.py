@@ -6,11 +6,24 @@ from groq import Groq
 import imageio_ffmpeg
 import subprocess
 
+RETRY_DELAYS = [5, 15, 45]
+
+def retry_delay(error, attempt):
+    """Waits longer each attempt, or as long as the API asks (Retry-After) when rate limited."""
+    response = getattr(error, 'response', None)
+    retry_after = response.headers.get('retry-after') if response is not None and hasattr(response, 'headers') else None
+    try:
+        if retry_after:
+            return min(float(retry_after), 120)
+    except ValueError:
+        pass
+    return RETRY_DELAYS[min(attempt, len(RETRY_DELAYS) - 1)]
+
 def transcribe_chunk(client, chunk_path, offset_seconds):
     """
     Transcribes a single audio chunk and offsets the timestamps.
     """
-    max_retries = 3
+    max_retries = len(RETRY_DELAYS) + 1
     for attempt in range(max_retries):
         try:
             with open(chunk_path, "rb") as file:
@@ -59,7 +72,7 @@ def transcribe_chunk(client, chunk_path, offset_seconds):
             print(f"Error transcribing {os.path.basename(chunk_path)} (Attempt {attempt + 1}/{max_retries}): {e}")
             if attempt == max_retries - 1:
                 return {"text": "", "segments": [], "words": [], "failed": True}
-            time.sleep(3 * (attempt + 1))
+            time.sleep(retry_delay(e, attempt))
 
 def transcribe_audio(audio_path):
     """

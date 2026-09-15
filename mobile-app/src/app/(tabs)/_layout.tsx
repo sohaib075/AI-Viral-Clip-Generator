@@ -1,26 +1,21 @@
 import React from 'react';
 import { Tabs } from 'expo-router';
-import { useColorScheme } from 'react-native';
-import { Colors } from '@/constants/theme';
 import { Home, Wand2, FolderOpen, ListVideo, Settings } from 'lucide-react-native';
 
 export default function TabLayout() {
-  const scheme = useColorScheme();
-  const colors = Colors[scheme ?? 'light'];
-
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: colors.text,
+        tabBarActiveTintColor: '#ffffff',
         tabBarInactiveTintColor: '#666',
         tabBarStyle: {
-          backgroundColor: colors.background,
+          backgroundColor: '#0a0a0a',
           borderTopColor: 'rgba(255,255,255,0.1)',
           paddingTop: 5,
         },
       }}>
-      
+
       <Tabs.Screen
         name="index"
         options={{
@@ -56,9 +51,8 @@ export default function TabLayout() {
           tabBarIcon: ({ color, size }) => <Settings color={color} size={size} />,
         }}
       />
-      
-      {/* Hide screens that shouldn't be tabs but are in the folder */}
-      <Tabs.Screen name="explore" options={{ href: null }} />
+
+      {/* Reachable from Home, but not a tab */}
       <Tabs.Screen name="analytics" options={{ href: null }} />
     </Tabs>
   );

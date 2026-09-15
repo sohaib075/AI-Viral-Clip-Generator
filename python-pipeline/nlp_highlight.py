@@ -1,30 +1,21 @@
-import os
-import json
-from google import genai
+from gemini_client import generate_json
 
 def extract_highlights(transcript_data, num_clips=10):
     """
-    Uses Google Gemini API to identify the most engaging highlights 
+    Uses Google Gemini API to identify the most engaging highlights
     from the transcript and returns their start and end times.
+    Raises if the analysis fails, rather than inventing a highlight.
     """
     segments = transcript_data.get("segments", [])
     print(f"Analyzing {len(segments)} segments with Gemini API...")
     if not segments:
         return []
 
-    api_key = os.environ.get("GEMINI_API_KEY")
-    if not api_key:
-        raise ValueError("GEMINI_API_KEY environment variable is not set. Get one from aistudio.google.com")
-
-    client = genai.Client(api_key=api_key)
-    
-    # We use gemini-2.5-flash as it is lightning fast and free
-    
     # Prepare the payload for the LLM
     text_content = ""
     for idx, seg in enumerate(segments):
         text_content += f"[{idx}] {seg['start']:.2f} - {seg['end']:.2f}: {seg['text']}\n"
-        
+
     prompt = f"""
 You are an expert viral content editor. Analyze the ENTIRE following transcript from a video.
 Identify the most engaging, viral, and stand-alone highlights from beginning to end.
@@ -56,54 +47,21 @@ Transcript:
 {text_content}
 """
 
-    try:
-        response = client.models.generate_content(
-            model='gemini-2.5-flash',
-            contents=prompt,
-            config={'response_mime_type': 'application/json'}
-        )
-        result_text = response.text.strip()
-        
-        # Clean up markdown if the LLM accidentally added it
-        if result_text.startswith("```json"):
-            result_text = result_text[7:]
-        if result_text.endswith("```"):
-            result_text = result_text[:-3]
-            
-        highlights = json.loads(result_text)
-        # The model occasionally wraps the array in an object, e.g. {"clips": [...]}
-        if isinstance(highlights, dict):
-            highlights = next((v for v in highlights.values() if isinstance(v, list)), [])
-        if not isinstance(highlights, list):
-            raise ValueError("Expected a JSON array of highlights")
-        highlights = [h for h in highlights if isinstance(h, dict)]
-        print(f"Gemini identified {len(highlights)} viral clips!")
-        return highlights
+    highlights = generate_json(prompt)
 
-    except Exception as e:
-        print(f"Error during Gemini highlight extraction: {e}")
-        # Fallback to a mock segment if API fails
-        first_seg = segments[0]
-        return [{
-            "title": "Interesting Moment",
-            "start_time": first_seg["start"],
-            "end_time": min(first_seg["start"] + 30, segments[-1]["end"]),
-            "score": 85,
-            "reasoning": "Fallback highlight.",
-            "emphasized_words": [],
-            "metadata": {
-                "tiktok": {"title": "Interesting Moment", "description": "Check this out!", "hashtags": ["#viral"]},
-                "instagram": {"title": "Interesting Moment", "description": "Check this out!", "hashtags": ["#viral"]},
-                "youtube_shorts": {"title": "Interesting Moment", "description": "Check this out!", "hashtags": ["#viral"]},
-                "linkedin": {"post": "Interesting moment captured.", "hashtags": ["#viral"]},
-                "x": {"tweet": "Check this out!", "hashtags": ["#viral"]}
-            }
-        }]
+    # The model occasionally wraps the array in an object, e.g. {"clips": [...]}
+    if isinstance(highlights, dict):
+        highlights = next((v for v in highlights.values() if isinstance(v, list)), [])
+    if not isinstance(highlights, list):
+        raise RuntimeError("AI analysis returned an unexpected format.")
+    highlights = [h for h in highlights if isinstance(h, dict)]
+    print(f"Gemini identified {len(highlights)} viral clips!")
+    return highlights
 
 if __name__ == "__main__":
     from dotenv import load_dotenv
     load_dotenv()
-    
+
     mock_data = {
         "text": "This is a test. Wow this is amazing.",
         "segments": [
@@ -111,6 +69,6 @@ if __name__ == "__main__":
             {"start": 2.0, "end": 5.0, "text": "Wow this is amazing."}
         ]
     }
-    
+
     res = extract_highlights(mock_data, 1)
     print(res)

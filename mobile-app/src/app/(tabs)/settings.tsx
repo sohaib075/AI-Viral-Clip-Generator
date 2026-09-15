@@ -1,237 +1,152 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  StyleSheet, 
-  Text, 
-  View, 
-  ScrollView, 
+import React, { useCallback, useState } from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
   TextInput,
   TouchableOpacity,
-  Image,
   ActivityIndicator,
-  Platform
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { router } from 'expo-router';
-import api from '@/lib/api';
+import { router, useFocusEffect } from 'expo-router';
+import api, { API_URL, errorMessage, getApiToken, saveApiToken } from '@/lib/api';
+import type { Session } from '@/lib/types';
 
 export default function SettingsScreen() {
-  const [userProfile, setUserProfile] = useState<any>(null);
-  const [activeTab, setActiveTab] = useState('profile');
-  
-  const [apiKeys, setApiKeys] = useState([
-    { id: '1', name: 'Production App', key: 'sk_live_...a8f2', created: 'Oct 12, 2023', lastUsed: '2 mins ago' },
-    { id: '2', name: 'Development Testing', key: 'sk_test_...b9e4', created: 'Nov 05, 2023', lastUsed: '1 day ago' }
-  ]);
+  const [session, setSession] = useState<Session | null>(null);
+  const [connectionError, setConnectionError] = useState('');
+  const [hasToken, setHasToken] = useState(false);
+  const [tokenInput, setTokenInput] = useState('');
+  const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState<{ ok: boolean; text: string } | null>(null);
 
-  useEffect(() => {
-    const fetchSettings = async () => {
-      try {
-        const response = await api.get('/api/user/settings');
-        // The backend returns the profile fields at the top level
-        const profile = response.data?.profile ?? response.data;
-        setUserProfile(profile?.firstName ? profile : {
-          firstName: 'Alex',
-          lastName: 'Developer',
-          email: 'alex@example.com',
-          company: 'AI Studios'
-        });
-        if (response.data.apiKeys) {
-          setApiKeys(response.data.apiKeys);
-        }
-      } catch (e) {
-        console.error('Failed to fetch settings', e);
-        setUserProfile({
-          firstName: 'Alex',
-          lastName: 'Developer',
-          email: 'alex@example.com',
-          company: 'AI Studios'
-        });
-      }
-    };
-    fetchSettings();
+  const checkSession = useCallback(async () => {
+    try {
+      const { data } = await api.get<Session>('/api/session');
+      setSession(data);
+      setConnectionError('');
+    } catch (e) {
+      setSession(null);
+      setConnectionError(errorMessage(e, 'Could not reach the server.'));
+    }
+    setHasToken(Boolean(await getApiToken()));
   }, []);
 
-  if (!userProfile) {
-    return (
-      <View style={[styles.safeArea, styles.center]}>
-        <ActivityIndicator size="large" color="#66fcf1" />
-      </View>
-    );
-  }
+  useFocusEffect(useCallback(() => { checkSession(); }, [checkSession]));
+
+  const saveToken = async () => {
+    setSaving(true);
+    setMessage(null);
+    const previous = await getApiToken();
+    try {
+      await saveApiToken(tokenInput.trim());
+      const { data } = await api.get<Session>('/api/session');
+      if (data.tokenRequired && !data.authenticated) {
+        await saveApiToken(previous);
+        setMessage({ ok: false, text: 'That access token is not valid.' });
+      } else {
+        setTokenInput('');
+        setSession(data);
+        setMessage({ ok: true, text: 'Access token saved on this device.' });
+      }
+    } catch (e) {
+      await saveApiToken(previous);
+      setMessage({ ok: false, text: errorMessage(e, 'Could not check the token.') });
+    } finally {
+      setHasToken(Boolean(await getApiToken()));
+      setSaving(false);
+    }
+  };
+
+  const clearToken = async () => {
+    await saveApiToken(null);
+    setMessage({ ok: true, text: 'Access token removed from this device.' });
+    checkSession();
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Settings</Text>
-        <Text style={styles.headerSubtitle}>Manage account and API keys.</Text>
+        <Text style={styles.headerSubtitle}>Server connection and access.</Text>
       </View>
 
-      {/* Tabs */}
-      <View style={styles.tabsContainer}>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.tabsScroll}>
-          <TouchableOpacity 
-            style={[styles.tabBtn, activeTab === 'profile' && styles.tabBtnActive]}
-            onPress={() => setActiveTab('profile')}
+      <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Server</Text>
+          <Text style={styles.label}>API ADDRESS</Text>
+          <Text style={styles.value} selectable>{API_URL}</Text>
+          <Text style={styles.label}>STATUS</Text>
+          {session ? (
+            <Text style={[styles.value, { color: '#4ade80' }]}>✓ Connected</Text>
+          ) : connectionError ? (
+            <Text style={[styles.value, { color: '#f87171' }]}>{connectionError}</Text>
+          ) : (
+            <ActivityIndicator color="#fff" style={{ alignSelf: 'flex-start' }} />
+          )}
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Access Token</Text>
+          <Text style={styles.sectionDesc}>
+            {session?.tokenRequired
+              ? 'This server requires the API_TOKEN from backend/.env. It is stored securely on this device.'
+              : 'This server does not require an access token.'}
+          </Text>
+
+          <Text style={styles.label}>{hasToken ? 'REPLACE ACCESS TOKEN' : 'ACCESS TOKEN'}</Text>
+          <TextInput
+            style={styles.input}
+            value={tokenInput}
+            onChangeText={setTokenInput}
+            secureTextEntry
+            autoCapitalize="none"
+            autoCorrect={false}
+            placeholder="Paste the token"
+            placeholderTextColor="#666"
+            accessibilityLabel="Access token"
+          />
+          <TouchableOpacity
+            style={[styles.saveBtn, (!tokenInput.trim() || saving) && styles.btnDisabled]}
+            onPress={saveToken}
+            disabled={!tokenInput.trim() || saving}
+            accessibilityRole="button"
           >
-            <Text style={[styles.tabText, activeTab === 'profile' && styles.tabTextActive]}>Profile</Text>
+            {saving ? <ActivityIndicator color="#000" /> : <Text style={styles.saveBtnText}>Save Token</Text>}
           </TouchableOpacity>
-          <TouchableOpacity 
-            style={[styles.tabBtn, activeTab === 'apikeys' && styles.tabBtnActive]}
-            onPress={() => setActiveTab('apikeys')}
-          >
-            <Text style={[styles.tabText, activeTab === 'apikeys' && styles.tabTextActive]}>API Keys</Text>
-          </TouchableOpacity>
-          <TouchableOpacity 
-            style={styles.tabBtn}
-            onPress={() => router.push('/accounts')}
-          >
-            <Text style={styles.tabText}>Social Accounts</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.tabBtn}>
-            <Text style={styles.tabText}>Billing</Text>
-          </TouchableOpacity>
-        </ScrollView>
-      </View>
-
-      <ScrollView contentContainerStyle={styles.content}>
-        
-        {activeTab === 'profile' && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Profile Information</Text>
-            
-            <View style={styles.avatarRow}>
-              <View style={styles.avatarContainer}>
-                <Image 
-                  source={{ uri: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=800&auto=format&fit=crop&q=80' }} 
-                  style={styles.avatar} 
-                />
-              </View>
-              <View style={styles.avatarActions}>
-                <TouchableOpacity style={styles.changeAvatarBtn}>
-                  <Text style={styles.changeAvatarText}>Change Avatar</Text>
-                </TouchableOpacity>
-                <Text style={styles.avatarHint}>JPG, GIF or PNG. 1MB max.</Text>
-              </View>
-            </View>
-
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>FIRST NAME</Text>
-              <TextInput style={styles.input} defaultValue={userProfile.firstName} placeholderTextColor="#666" />
-            </View>
-
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>LAST NAME</Text>
-              <TextInput style={styles.input} defaultValue={userProfile.lastName} placeholderTextColor="#666" />
-            </View>
-
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>EMAIL ADDRESS</Text>
-              <TextInput style={styles.input} defaultValue={userProfile.email} keyboardType="email-address" autoCapitalize="none" placeholderTextColor="#666" />
-            </View>
-
-            <TouchableOpacity style={styles.saveBtn}>
-              <Text style={styles.saveBtnText}>Save Changes</Text>
+          {hasToken && (
+            <TouchableOpacity onPress={clearToken} style={styles.linkBtn} accessibilityRole="button">
+              <Text style={styles.dangerText}>Remove stored token</Text>
             </TouchableOpacity>
-          </View>
-        )}
+          )}
+          {message && <Text style={message.ok ? styles.successText : styles.errorText}>{message.text}</Text>}
+        </View>
 
-        {activeTab === 'apikeys' && (
-          <View style={styles.section}>
-            <View style={styles.apiHeaderRow}>
-              <Text style={styles.sectionTitle}>API Keys</Text>
-              <TouchableOpacity style={styles.newKeyBtn}>
-                <Text style={styles.newKeyBtnText}>+ New Key</Text>
-              </TouchableOpacity>
-            </View>
-
-            <View style={styles.warningBox}>
-              <Text style={styles.warningTitle}>⚠ Keep your keys secure</Text>
-              <Text style={styles.warningText}>
-                Do not share your API keys in publicly accessible areas. We automatically scan for exposed keys.
-              </Text>
-            </View>
-
-            {apiKeys.map(k => (
-              <View key={k.id} style={styles.keyCard}>
-                <View style={styles.keyHeader}>
-                  <Text style={styles.keyName}>{k.name}</Text>
-                  <View style={styles.keyActions}>
-                    <TouchableOpacity style={styles.iconBtn}>
-                      <Text style={styles.iconText}>⎘</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={[styles.iconBtn, {backgroundColor: 'rgba(239, 68, 68, 0.1)'}]}>
-                      <Text style={[styles.iconText, {color: '#ef4444'}]}>🗑</Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-                
-                <Text style={styles.keyValue}>{k.key}</Text>
-                
-                <View style={styles.keyFooter}>
-                  <Text style={styles.keyMeta}>Created: {k.created}</Text>
-                  <Text style={styles.keyMeta}>Last Used: {k.lastUsed}</Text>
-                </View>
-              </View>
-            ))}
-          </View>
-        )}
-
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>More</Text>
+          {[
+            { label: 'Social Accounts', onPress: () => router.push('/accounts') },
+            { label: 'Analytics', onPress: () => router.push('/analytics') },
+            { label: 'How It Works', onPress: () => router.push('/how-it-works') },
+          ].map(item => (
+            <TouchableOpacity key={item.label} style={styles.row} onPress={item.onPress} accessibilityRole="button">
+              <Text style={styles.rowText}>{item.label}</Text>
+              <Text style={styles.rowChevron}>›</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: '#0a0a0a',
-  },
-  center: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  header: {
-    padding: 20,
-    paddingBottom: 10,
-  },
-  headerTitle: {
-    fontSize: 28,
-    fontWeight: '900',
-    color: '#fff',
-    marginBottom: 4,
-  },
-  headerSubtitle: {
-    fontSize: 14,
-    color: '#a3a3a3',
-  },
-  tabsContainer: {
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(255,255,255,0.1)',
-  },
-  tabsScroll: {
-    paddingHorizontal: 20,
-    gap: 24,
-  },
-  tabBtn: {
-    paddingVertical: 12,
-    borderBottomWidth: 2,
-    borderBottomColor: 'transparent',
-  },
-  tabBtnActive: {
-    borderBottomColor: '#66fcf1',
-  },
-  tabText: {
-    color: '#737373',
-    fontWeight: 'bold',
-    fontSize: 15,
-  },
-  tabTextActive: {
-    color: '#fff',
-  },
-  content: {
-    padding: 20,
-    paddingBottom: 40,
-  },
+  safeArea: { flex: 1, backgroundColor: '#0a0a0a' },
+  header: { padding: 20, paddingBottom: 10 },
+  headerTitle: { fontSize: 28, fontWeight: '900', color: '#fff', marginBottom: 4 },
+  headerSubtitle: { fontSize: 14, color: '#a3a3a3' },
+  content: { padding: 20, paddingBottom: 40, gap: 16 },
   section: {
     backgroundColor: 'rgba(255,255,255,0.03)',
     borderRadius: 24,
@@ -239,62 +154,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.05)',
   },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#fff',
-    marginBottom: 20,
-  },
-  avatarRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 20,
-    marginBottom: 24,
-  },
-  avatarContainer: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    padding: 2,
-    backgroundColor: '#66fcf1',
-  },
-  avatar: {
-    width: '100%',
-    height: '100%',
-    borderRadius: 40,
-    borderWidth: 2,
-    borderColor: '#000',
-  },
-  avatarActions: {
-    flex: 1,
-  },
-  changeAvatarBtn: {
-    backgroundColor: 'rgba(255,255,255,0.1)',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 8,
-    alignSelf: 'flex-start',
-    marginBottom: 8,
-  },
-  changeAvatarText: {
-    color: '#fff',
-    fontWeight: 'bold',
-    fontSize: 12,
-  },
-  avatarHint: {
-    color: '#737373',
-    fontSize: 11,
-  },
-  inputGroup: {
-    marginBottom: 20,
-  },
-  label: {
-    color: '#a3a3a3',
-    fontSize: 11,
-    fontWeight: 'bold',
-    letterSpacing: 1,
-    marginBottom: 8,
-  },
+  sectionTitle: { fontSize: 18, fontWeight: 'bold', color: '#fff', marginBottom: 8 },
+  sectionDesc: { fontSize: 13, color: '#a3a3a3', marginBottom: 8 },
+  label: { color: '#a3a3a3', fontSize: 11, fontWeight: 'bold', letterSpacing: 1, marginBottom: 6, marginTop: 12 },
+  value: { color: '#fff', fontSize: 14 },
   input: {
     backgroundColor: 'rgba(0,0,0,0.4)',
     borderWidth: 1,
@@ -304,102 +167,21 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 14,
   },
-  saveBtn: {
-    backgroundColor: '#fff',
-    paddingVertical: 16,
-    borderRadius: 12,
-    alignItems: 'center',
-    marginTop: 10,
-  },
-  saveBtnText: {
-    color: '#000',
-    fontWeight: 'bold',
-    fontSize: 15,
-  },
-  apiHeaderRow: {
+  saveBtn: { backgroundColor: '#fff', paddingVertical: 16, borderRadius: 12, alignItems: 'center', marginTop: 12 },
+  saveBtnText: { color: '#000', fontWeight: 'bold', fontSize: 15 },
+  btnDisabled: { opacity: 0.5 },
+  linkBtn: { alignItems: 'center', paddingTop: 12 },
+  dangerText: { color: '#f87171', fontWeight: 'bold', fontSize: 13 },
+  successText: { color: '#4ade80', fontSize: 13, marginTop: 12 },
+  errorText: { color: '#f87171', fontSize: 13, marginTop: 12 },
+  row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 20,
-  },
-  newKeyBtn: {
-    backgroundColor: '#fff',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 8,
-  },
-  newKeyBtnText: {
-    color: '#000',
-    fontWeight: 'bold',
-    fontSize: 12,
-  },
-  warningBox: {
-    backgroundColor: 'rgba(234, 179, 8, 0.1)',
-    borderWidth: 1,
-    borderColor: 'rgba(234, 179, 8, 0.2)',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 24,
-  },
-  warningTitle: {
-    color: '#facc15',
-    fontWeight: 'bold',
-    marginBottom: 4,
-  },
-  warningText: {
-    color: 'rgba(250, 204, 21, 0.8)',
-    fontSize: 12,
-    lineHeight: 18,
-  },
-  keyCard: {
-    backgroundColor: 'rgba(0,0,0,0.3)',
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.1)',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 16,
-  },
-  keyHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  keyName: {
-    color: '#fff',
-    fontWeight: 'bold',
-    fontSize: 15,
-  },
-  keyActions: {
-    flexDirection: 'row',
-    gap: 8,
-  },
-  iconBtn: {
-    width: 32,
-    height: 32,
-    borderRadius: 8,
-    backgroundColor: 'rgba(255,255,255,0.1)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  iconText: {
-    color: '#fff',
-  },
-  keyValue: {
-    color: '#66fcf1',
-    fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
-    fontSize: 13,
-    marginBottom: 16,
-  },
-  keyFooter: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    paddingVertical: 14,
     borderTopWidth: 1,
     borderTopColor: 'rgba(255,255,255,0.05)',
-    paddingTop: 12,
   },
-  keyMeta: {
-    color: '#737373',
-    fontSize: 10,
-  }
+  rowText: { color: '#fff', fontSize: 15, fontWeight: '600' },
+  rowChevron: { color: '#737373', fontSize: 22 },
 });

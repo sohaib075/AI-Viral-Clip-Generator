@@ -94,7 +94,10 @@ def create_video_clip(image_path, audio_path, output_path):
 
     video = image_clip.with_audio(audio_clip)
     try:
-        video.write_videofile(output_path, fps=24, codec="libx264", audio_codec="aac", logger=None)
+        # MoviePy writes a temporary audio file into the working directory by default, where
+        # concurrent jobs would collide; keep it next to this scene instead
+        temp_audio = os.path.splitext(output_path)[0] + "_audio.m4a"
+        video.write_videofile(output_path, fps=24, codec="libx264", audio_codec="aac", temp_audiofile=temp_audio, logger=None)
     finally:
         # Release file handles; on Windows the files stay locked otherwise
         video.close()
@@ -142,7 +145,8 @@ async def compile_story_video(story, style="Cinematic", voice="en-US-Christopher
         final_video = None
         try:
             final_video = concatenate_videoclips(video_clips, method="compose")
-            final_video.write_videofile(final_output, fps=24, codec="libx264", audio_codec="aac")
+            final_video.write_videofile(final_output, fps=24, codec="libx264", audio_codec="aac",
+                                        temp_audiofile=os.path.join(work_dir, "final_audio.m4a"), logger=None)
         finally:
             if final_video is not None:
                 final_video.close()

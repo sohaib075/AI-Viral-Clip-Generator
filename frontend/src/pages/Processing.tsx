@@ -1,92 +1,108 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+import { useEffect, useState } from 'react';
+import { useParams, useNavigate, Link } from 'react-router-dom';
+import { apiFetch, ApiError, errorMessage } from '../api';
+import type { JobStatusResponse } from '../types';
+
+const POLL_INTERVAL_MS = 2000;
+// Keep retrying through brief outages (e.g. the AI service restarting) before giving up
+const MAX_CONSECUTIVE_ERRORS = 15;
 
 const Processing = () => {
   const { jobId } = useParams();
   const navigate = useNavigate();
   const [statusMessage, setStatusMessage] = useState('Initializing AI Pipeline...');
   const [progress, setProgress] = useState(0);
-  const [startTime] = useState(Date.now());
   const [estimatedTimeLeft, setEstimatedTimeLeft] = useState('Calculating...');
-  const [hasError, setHasError] = useState(false);
+  const [connectionIssue, setConnectionIssue] = useState('');
+  const [error, setError] = useState('');
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     if (!jobId) return;
-    
-    const interval = setInterval(async () => {
+
+    const startTime = Date.now();
+    let cancelled = false;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    let consecutiveErrors = 0;
+
+    const poll = async () => {
       try {
-        const response = await fetch(`${API_URL}/api/jobs/${jobId}`);
-        if (!response.ok) return;
-        const data = await response.json();
-        
-        setStatusMessage(data.message || 'Processing...');
+        const data = await apiFetch<JobStatusResponse>(`/api/jobs/${encodeURIComponent(jobId)}`);
+        if (cancelled) return;
+        consecutiveErrors = 0;
+        setConnectionIssue('');
+
+        if (data.status === 'failed') {
+          setError(data.message || 'Processing failed');
+          return;
+        }
+
         const currentProgress = data.progress || 0;
         setProgress(currentProgress);
-        
-        if (currentProgress > 0 && currentProgress < 100) {
-          const elapsedMs = Date.now() - startTime;
-          const estimatedTotalMs = (elapsedMs / currentProgress) * 100;
-          const remainingMs = estimatedTotalMs - elapsedMs;
-          
-          if (remainingMs > 0) {
-            const remainingSecs = Math.floor(remainingMs / 1000);
-            if (remainingSecs > 60) {
-              setEstimatedTimeLeft(`~${Math.ceil(remainingSecs / 60)} mins`);
-            } else {
-              setEstimatedTimeLeft(`~${remainingSecs} secs`);
-            }
-          } else {
-            setEstimatedTimeLeft('Almost done...');
-          }
-        } else if (currentProgress >= 100 || data.status === 'completed') {
-          setEstimatedTimeLeft('Complete');
-        }
+        setStatusMessage(data.message || 'Processing...');
 
         if (data.status === 'completed') {
-          clearInterval(interval);
-          setTimeout(() => navigate(`/results/${jobId}`), 1000);
-        } else if (data.status === 'failed') {
-          clearInterval(interval);
-          setStatusMessage(data.message || 'Processing Failed');
-          setEstimatedTimeLeft('Failed');
-          setHasError(true);
+          setEstimatedTimeLeft('Complete');
+          timer = setTimeout(() => navigate(`/results/${jobId}`, { replace: true }), 1000);
+          return;
         }
-      } catch (e) {
-        console.error("Polling error", e);
-        clearInterval(interval);
-        setStatusMessage('Network Error occurred while polling');
-        setEstimatedTimeLeft('Failed');
-        setHasError(true);
-      }
-    }, 2000);
-    
-    return () => clearInterval(interval);
-  }, [jobId, navigate, startTime]);
 
-  if (hasError) {
+        if (currentProgress > 0 && currentProgress < 100) {
+          const elapsedMs = Date.now() - startTime;
+          const remainingSecs = Math.floor(((elapsedMs / currentProgress) * 100 - elapsedMs) / 1000);
+          setEstimatedTimeLeft(remainingSecs <= 0 ? 'Almost done...' : remainingSecs > 60 ? `~${Math.ceil(remainingSecs / 60)} mins` : `~${remainingSecs} secs`);
+        }
+      } catch (err) {
+        if (cancelled) return;
+        consecutiveErrors += 1;
+        const notFound = err instanceof ApiError && err.status === 404;
+        if (consecutiveErrors >= MAX_CONSECUTIVE_ERRORS) {
+          setError(notFound ? 'This job could not be found.' : errorMessage(err, 'Lost connection to the server.'));
+          return;
+        }
+        setConnectionIssue(notFound ? 'Waiting for the job to start...' : 'Connection problem, retrying...');
+      }
+      timer = setTimeout(poll, POLL_INTERVAL_MS);
+    };
+
+    poll();
+    return () => {
+      cancelled = true;
+      if (timer) clearTimeout(timer);
+    };
+  }, [jobId, navigate, attempt]);
+
+  if (error) {
     return (
-      <div className="w-full max-w-2xl mx-auto flex flex-col items-center text-center animate-fade-in-up mt-20">
+      <div className="w-full max-w-2xl mx-auto flex flex-col items-center text-center animate-fade-in-up mt-20 px-4">
         <div className="mb-10 text-red-500">
-          <svg className="w-32 h-32 mx-auto drop-shadow-[0_0_20px_rgba(239,68,68,0.5)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg className="w-32 h-32 mx-auto drop-shadow-[0_0_20px_rgba(239,68,68,0.5)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
         </div>
         <h2 className="text-4xl font-bold text-white mb-4 drop-shadow-xl">Oops! Something went wrong.</h2>
-        <p className="text-xl text-red-400 mb-10 font-bold drop-shadow-md">{statusMessage}</p>
-        
-        <button 
-          onClick={() => navigate('/')} 
-          className="px-8 py-4 bg-white hover:bg-gray-200 text-black font-bold rounded-xl transition-all shadow-[0_0_20px_rgba(255,255,255,0.4)] hover:scale-105"
-        >
-          Return to Main Page
-        </button>
+        <p className="text-xl text-red-400 mb-10 font-bold drop-shadow-md" role="alert">{error}</p>
+
+        <div className="flex flex-wrap gap-4 justify-center">
+          <button
+            onClick={() => { setError(''); setAttempt(a => a + 1); }}
+            className="px-8 py-4 bg-white/10 hover:bg-white/20 text-white font-bold rounded-xl transition-all border border-white/20"
+          >
+            Check Again
+          </button>
+          <Link
+            to="/"
+            className="px-8 py-4 bg-white hover:bg-gray-200 text-black font-bold rounded-xl transition-all shadow-[0_0_20px_rgba(255,255,255,0.4)] hover:scale-105"
+          >
+            Return to Main Page
+          </Link>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="w-full max-w-2xl mx-auto flex flex-col items-center text-center animate-fade-in-up mt-20">
+    <div className="w-full max-w-2xl mx-auto flex flex-col items-center text-center animate-fade-in-up mt-20 px-4">
       <div className="relative mb-16">
         <div className="w-40 h-40 rounded-full border-8 border-white/5 flex items-center justify-center relative">
           <div className="absolute inset-[-8px] rounded-full border-8 border-t-[#66fcf1] border-r-transparent border-b-[#66fcf1]/30 border-l-transparent animate-spin drop-shadow-[0_0_15px_rgba(102,252,241,0.5)]"></div>
@@ -96,23 +112,30 @@ const Processing = () => {
           </div>
         </div>
       </div>
-      
+
       <h2 className="text-5xl font-bold text-white mb-6 drop-shadow-xl">AI Magic at Work</h2>
-      <p className="text-2xl text-white/90 mb-12 font-bold animate-pulse drop-shadow-md">{statusMessage}</p>
-      
-      <div className="w-full glass-panel-dark rounded-full h-6 mb-4 overflow-hidden p-1">
-        <div 
-          className="bg-white h-full rounded-full transition-all duration-500 ease-out relative shadow-[0_0_20px_rgba(255,255,255,0.8)]"
+      <p className="text-2xl text-white/90 mb-4 font-bold animate-pulse drop-shadow-md" role="status">{statusMessage}</p>
+      <p className="text-sm text-yellow-400 mb-8 h-5">{connectionIssue}</p>
+
+      <div
+        className="w-full glass-panel-dark rounded-full h-6 mb-4 overflow-hidden p-1"
+        role="progressbar"
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-valuenow={progress}
+      >
+        <div
+          className="bg-white h-full rounded-full transition-all duration-500 ease-out relative shadow-[0_0_20px_rgba(255,255,255,0.8)] overflow-hidden"
           style={{ width: `${progress}%` }}
         >
-          <div className="absolute inset-0 bg-black/10 animate-[shimmer_2s_infinite]"></div>
+          <div className="absolute inset-0 bg-black/10 animate-shimmer"></div>
         </div>
       </div>
       <div className="flex justify-between items-center w-full text-lg text-white font-bold px-4 mb-4">
         <span className="drop-shadow-md">{progress}% Completed</span>
         {jobId && <span className="drop-shadow-md opacity-80 text-sm">Job ID: {jobId}</span>}
       </div>
-      <div className="text-white font-bold text-lg animate-pulse">
+      <div className="text-white font-bold text-lg">
         Estimated Time Left: {estimatedTimeLeft}
       </div>
     </div>

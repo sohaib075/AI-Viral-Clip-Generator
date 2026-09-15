@@ -1,94 +1,99 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  StyleSheet, 
-  Text, 
-  View, 
-  FlatList, 
-  TouchableOpacity, 
+import React, { useCallback, useState } from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  FlatList,
+  TouchableOpacity,
   ActivityIndicator,
   TextInput,
   Image
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { router } from 'expo-router';
-import api from '@/lib/api';
+import { router, useFocusEffect } from 'expo-router';
+import api, { errorMessage, mediaUrl } from '@/lib/api';
+import { formatDuration, jobRoute, STATUS_COLORS, timeAgo } from '@/lib/format';
+import { JOB_TYPE_LABELS, type JobSummary } from '@/lib/types';
+
+const FILTERS = ['All', 'Completed', 'Processing', 'Failed'] as const;
+type Filter = typeof FILTERS[number];
 
 export default function ProjectsScreen() {
-  const [projects, setProjects] = useState<any[]>([]);
+  const [projects, setProjects] = useState<JobSummary[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [error, setError] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
+  const [filter, setFilter] = useState<Filter>('All');
 
-  useEffect(() => {
-    const fetchProjects = async () => {
-      try {
-        const response = await api.get('/api/jobs');
-        setProjects(response.data);
-      } catch (error) {
-        console.error('Failed to fetch projects', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchProjects();
+  const fetchProjects = useCallback(async () => {
+    try {
+      const response = await api.get<JobSummary[]>('/api/jobs');
+      setProjects(response.data);
+      setError('');
+    } catch (e) {
+      setError(errorMessage(e, 'Could not load your projects.'));
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
   }, []);
 
-  const renderProject = ({ item }: { item: any }) => {
-    const isCompleted = item.status === 'Completed';
-    const isProcessing = item.status === 'Processing';
+  // Tabs stay mounted, so reload whenever this tab comes into view
+  useFocusEffect(useCallback(() => { fetchProjects(); }, [fetchProjects]));
+
+  const query = searchQuery.trim().toLowerCase();
+  const visible = projects.filter(p =>
+    (filter === 'All' || p.status === filter) &&
+    (!query || p.title.toLowerCase().includes(query) || p.id.toLowerCase().includes(query))
+  );
+
+  const renderProject = ({ item }: { item: JobSummary }) => {
+    const colors = STATUS_COLORS[item.status] ?? STATUS_COLORS.Processing;
+    const thumbnail = mediaUrl(item.thumbnail);
+    const duration = formatDuration(item.sourceDuration);
 
     return (
-      <View style={styles.card}>
+      <TouchableOpacity style={styles.card} onPress={() => router.push(jobRoute(item))} accessibilityRole="button" accessibilityLabel={`${item.title}, ${item.status}`}>
         {/* Thumbnail Area */}
         <View style={styles.thumbnailContainer}>
-          <Image 
-            source={{ uri: item.thumbnail }} 
-            style={styles.thumbnail} 
-          />
+          {thumbnail ? (
+            <Image source={{ uri: thumbnail }} style={styles.thumbnail} />
+          ) : (
+            <View style={[styles.thumbnail, styles.thumbnailFallback]}><Text style={styles.thumbnailFallbackText}>▶</Text></View>
+          )}
           <View style={styles.thumbnailOverlay} />
-          
+
           <View style={styles.badgesContainer}>
-            <View style={[
-              styles.statusBadge,
-              isCompleted ? styles.statusCompleted : isProcessing ? styles.statusProcessing : styles.statusFailed
-            ]}>
-              <Text style={[
-                styles.statusText,
-                isCompleted ? styles.statusTextCompleted : isProcessing ? styles.statusTextProcessing : styles.statusTextFailed
-              ]}>
-                {item.status}
-              </Text>
+            <View style={[styles.statusBadge, { backgroundColor: colors.background, borderColor: colors.border }]}>
+              <Text style={[styles.statusText, { color: colors.text }]}>{item.status}</Text>
             </View>
           </View>
 
-          <View style={styles.durationBadge}>
-            <Text style={styles.durationText}>{item.duration}</Text>
-          </View>
+          {duration && (
+            <View style={styles.durationBadge}>
+              <Text style={styles.durationText}>{duration}</Text>
+            </View>
+          )}
         </View>
 
         {/* Details Area */}
         <View style={styles.detailsContainer}>
-          <View style={styles.detailsHeader}>
-            <Text style={styles.title} numberOfLines={1}>{item.title}</Text>
-            <TouchableOpacity style={styles.moreBtn}>
-              <Text style={styles.moreBtnText}>⋮</Text>
-            </TouchableOpacity>
-          </View>
-          
-          <Text style={styles.metaText}>{item.id} • {item.time}</Text>
+          <Text style={styles.title} numberOfLines={1}>{item.title}</Text>
+          <Text style={styles.metaText}>{JOB_TYPE_LABELS[item.type] ?? item.type} • {timeAgo(item.createdAt)}</Text>
+          {item.status === 'Failed' && item.error ? <Text style={styles.errorDetail} numberOfLines={3}>{item.error}</Text> : null}
 
           <View style={styles.footerRow}>
             <View>
-              <Text style={styles.clipsLabel}>EXTRACTED CLIPS</Text>
+              <Text style={styles.clipsLabel}>{item.type === 'clips' ? 'EXTRACTED CLIPS' : 'VIDEOS'}</Text>
               <Text style={styles.clipsValue}>{item.clips}</Text>
             </View>
-            {isCompleted && (
-              <TouchableOpacity style={styles.viewClipsBtn} onPress={() => router.push(`/processing/${item.id}` as any)}>
-                <Text style={styles.viewClipsBtnText}>View Clips →</Text>
-              </TouchableOpacity>
-            )}
+            <Text style={styles.viewClipsBtnText}>
+              {item.status === 'Completed' ? 'View Clips →' : item.status === 'Processing' ? 'View Progress →' : 'View Details →'}
+            </Text>
           </View>
         </View>
-      </View>
+      </TouchableOpacity>
     );
   };
 
@@ -97,7 +102,7 @@ export default function ProjectsScreen() {
       <View style={styles.header}>
         <View style={styles.headerTitleRow}>
           <Text style={styles.headerTitle}>My Projects</Text>
-          <TouchableOpacity style={styles.newProjectBtn}>
+          <TouchableOpacity style={styles.newProjectBtn} onPress={() => router.navigate('/')} accessibilityRole="button">
             <Text style={styles.newProjectBtnText}>+ New</Text>
           </TouchableOpacity>
         </View>
@@ -113,11 +118,23 @@ export default function ProjectsScreen() {
             placeholderTextColor="#666"
             value={searchQuery}
             onChangeText={setSearchQuery}
+            autoCapitalize="none"
+            accessibilityLabel="Search projects"
           />
         </View>
-        <TouchableOpacity style={styles.filterBtn}>
-          <Text style={styles.filterBtnText}>Filter</Text>
-        </TouchableOpacity>
+      </View>
+      <View style={styles.filterRow}>
+        {FILTERS.map(f => (
+          <TouchableOpacity
+            key={f}
+            style={[styles.filterChip, filter === f && styles.filterChipActive]}
+            onPress={() => setFilter(f)}
+            accessibilityRole="button"
+            accessibilityState={{ selected: filter === f }}
+          >
+            <Text style={[styles.filterChipText, filter === f && styles.filterChipTextActive]}>{f}</Text>
+          </TouchableOpacity>
+        ))}
       </View>
 
       {loading ? (
@@ -126,14 +143,17 @@ export default function ProjectsScreen() {
         </View>
       ) : (
         <FlatList
-          data={projects}
+          data={visible}
           keyExtractor={item => item.id}
           renderItem={renderProject}
           contentContainerStyle={styles.listContent}
+          refreshing={refreshing}
+          onRefresh={() => { setRefreshing(true); fetchProjects(); }}
+          ListHeaderComponent={error ? <Text style={styles.errorBanner}>{error}</Text> : null}
           ListEmptyComponent={
             <View style={styles.emptyContainer}>
               <Text style={styles.emptyText}>No projects found</Text>
-              <Text style={styles.emptySubtext}>Submit a new video to get started.</Text>
+              <Text style={styles.emptySubtext}>{projects.length === 0 ? 'Submit a new video to get started.' : 'Try a different search or filter.'}</Text>
             </View>
           }
         />
@@ -180,8 +200,7 @@ const styles = StyleSheet.create({
   searchContainer: {
     flexDirection: 'row',
     paddingHorizontal: 20,
-    marginBottom: 16,
-    gap: 12,
+    marginBottom: 12,
   },
   searchInputWrapper: {
     flex: 1,
@@ -203,18 +222,31 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     fontSize: 14,
   },
-  filterBtn: {
+  filterRow: {
+    flexDirection: 'row',
+    paddingHorizontal: 20,
+    gap: 8,
+    marginBottom: 8,
+  },
+  filterChip: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
     backgroundColor: 'rgba(255,255,255,0.05)',
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.1)',
-    paddingHorizontal: 16,
-    justifyContent: 'center',
-    borderRadius: 12,
   },
-  filterBtnText: {
-    color: '#fff',
+  filterChipActive: {
+    backgroundColor: '#fff',
+    borderColor: '#fff',
+  },
+  filterChipText: {
+    color: '#a3a3a3',
+    fontSize: 12,
     fontWeight: '600',
-    fontSize: 13,
+  },
+  filterChipTextActive: {
+    color: '#000',
   },
   center: {
     flex: 1,
@@ -224,6 +256,15 @@ const styles = StyleSheet.create({
   listContent: {
     padding: 20,
     gap: 20,
+  },
+  errorBanner: {
+    color: '#f87171',
+    backgroundColor: 'rgba(248,113,113,0.1)',
+    borderColor: 'rgba(248,113,113,0.3)',
+    borderWidth: 1,
+    borderRadius: 12,
+    padding: 12,
+    fontSize: 13,
   },
   card: {
     backgroundColor: 'rgba(255,255,255,0.03)',
@@ -242,6 +283,15 @@ const styles = StyleSheet.create({
     height: '100%',
     opacity: 0.7,
   },
+  thumbnailFallback: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#111',
+  },
+  thumbnailFallbackText: {
+    color: '#444',
+    fontSize: 32,
+  },
   thumbnailOverlay: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0,0,0,0.3)',
@@ -257,27 +307,12 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     borderWidth: 1,
   },
-  statusCompleted: {
-    backgroundColor: 'rgba(34, 197, 94, 0.2)',
-    borderColor: 'rgba(34, 197, 94, 0.3)',
-  },
-  statusProcessing: {
-    backgroundColor: 'rgba(59, 130, 246, 0.2)',
-    borderColor: 'rgba(59, 130, 246, 0.3)',
-  },
-  statusFailed: {
-    backgroundColor: 'rgba(248, 113, 113, 0.2)',
-    borderColor: 'rgba(248, 113, 113, 0.3)',
-  },
   statusText: {
     fontSize: 9,
     fontWeight: 'bold',
     textTransform: 'uppercase',
     letterSpacing: 1,
   },
-  statusTextCompleted: { color: '#4ade80' },
-  statusTextProcessing: { color: '#60a5fa' },
-  statusTextFailed: { color: '#f87171' },
   durationBadge: {
     position: 'absolute',
     bottom: 12,
@@ -297,31 +332,22 @@ const styles = StyleSheet.create({
   detailsContainer: {
     padding: 16,
   },
-  detailsHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 4,
-  },
   title: {
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
-    flex: 1,
-  },
-  moreBtn: {
-    padding: 4,
-  },
-  moreBtnText: {
-    color: '#a3a3a3',
-    fontSize: 16,
-    fontWeight: 'bold',
+    marginBottom: 4,
   },
   metaText: {
     color: '#737373',
     fontSize: 11,
     fontWeight: '500',
-    marginBottom: 16,
+    marginBottom: 12,
+  },
+  errorDetail: {
+    color: '#f87171',
+    fontSize: 12,
+    marginBottom: 12,
   },
   footerRow: {
     flexDirection: 'row',
@@ -342,9 +368,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: '#fff',
-  },
-  viewClipsBtn: {
-    paddingVertical: 6,
   },
   viewClipsBtnText: {
     color: '#fff',

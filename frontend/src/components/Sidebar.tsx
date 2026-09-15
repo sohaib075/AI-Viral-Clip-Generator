@@ -31,9 +31,10 @@ const Sidebar = () => {
         {navItems.map((item) => {
           const isActive = location.pathname === item.path;
           return (
-            <Link 
+            <Link
               key={item.name}
               to={item.path}
+              aria-current={isActive ? 'page' : undefined}
               className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-300 text-sm font-medium ${
                 isActive 
                   ? 'bg-white/10 text-white shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)]' 

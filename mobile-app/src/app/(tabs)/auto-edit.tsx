@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { router } from 'expo-router';
-import api from '@/lib/api';
+import api, { errorMessage, postForm } from '@/lib/api';
 import { 
   StyleSheet, 
   Text, 
@@ -12,9 +12,13 @@ import {
   Image
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { VideoSourceInput } from '@/components/video-source-input';
+import { videoFormData, type PickedVideo } from '@/lib/pick-video';
 
 export default function AutoEditScreen() {
   const [videoUrl, setVideoUrl] = useState('');
+  const [video, setVideo] = useState<PickedVideo | null>(null);
+  const [submitError, setSubmitError] = useState('');
   const [layout, setLayout] = useState('9:16');
   const [style, setStyle] = useState('Cinematic');
   const [prompt, setPrompt] = useState('');
@@ -23,22 +27,21 @@ export default function AutoEditScreen() {
   const STYLES = ['Cinematic', 'Viral Reels', 'TikTok', 'Podcast', 'Motivational', 'Vlog', 'Gaming'];
 
   const handleSubmit = async () => {
-    if (!videoUrl) return;
+    if (!videoUrl && !video) return;
     setIsLoading(true);
+    setSubmitError('');
     try {
-      const response = await api.post('/api/auto-edit', {
-        videoUrl: videoUrl,
-        layout: layout,
-        style: style,
-        prompt: prompt
-      });
-      setIsLoading(false);
-      // Navigate to processing screen for auto-edit jobs
-      router.push(`/processing/${response.data.jobId}` as any);
+      const fields = { layout, style, prompt };
+      const data = video
+        ? await postForm<{ jobId: string }>('/api/auto-edit', videoFormData(video, fields))
+        : (await api.post<{ jobId: string }>('/api/auto-edit', { videoUrl: videoUrl.trim(), ...fields })).data;
+      setVideo(null);
+      setVideoUrl('');
+      router.push({ pathname: '/processing/[jobId]', params: { jobId: data.jobId } });
     } catch (error) {
-      console.error("Failed to submit auto edit job", error);
+      setSubmitError(errorMessage(error, 'Failed to submit the job.'));
+    } finally {
       setIsLoading(false);
-      alert('Failed to submit job. Please check the URL and backend connection.');
     }
   };
 
@@ -52,26 +55,19 @@ export default function AutoEditScreen() {
             <Image source={require('@/assets/images/icon.png')} style={{ width: 40, height: 40, marginRight: 12, borderRadius: 8 }} />
             <Text style={styles.title}>Auto Video Editor</Text>
           </View>
-          <Text style={styles.subtitle}>AI-powered professional editing</Text>
+          <Text style={styles.subtitle}>AI cuts your video into a tight story with zooms, color grading and animated subtitles.</Text>
         </View>
 
         <View style={styles.uploadWidget}>
-          <Text style={styles.label}>YOUTUBE OR WEB URL</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="https://www.youtube.com/watch?v=..."
-            placeholderTextColor="#666"
-            value={videoUrl}
-            onChangeText={setVideoUrl}
-            keyboardType="url"
-            autoCapitalize="none"
-          />
+          <VideoSourceInput url={videoUrl} onUrlChange={setVideoUrl} video={video} onVideoChange={setVideo} disabled={isLoading} />
           
           <Text style={styles.label}>TARGET ASPECT RATIO</Text>
           <View style={styles.formatRow}>
             <TouchableOpacity 
               style={[styles.formatBtn, layout === '9:16' && styles.formatBtnActive]}
               onPress={() => setLayout('9:16')}
+              accessibilityRole="button"
+              accessibilityState={{ selected: layout === '9:16' }}
             >
               <Text style={[styles.formatBtnText, layout === '9:16' && styles.formatBtnTextActive]}>9:16 (Reels/TikTok)</Text>
             </TouchableOpacity>
@@ -79,6 +75,8 @@ export default function AutoEditScreen() {
             <TouchableOpacity 
               style={[styles.formatBtn, layout === '16:9' && styles.formatBtnActive]}
               onPress={() => setLayout('16:9')}
+              accessibilityRole="button"
+              accessibilityState={{ selected: layout === '16:9' }}
             >
               <Text style={[styles.formatBtnText, layout === '16:9' && styles.formatBtnTextActive]}>16:9 (YouTube)</Text>
             </TouchableOpacity>
@@ -86,6 +84,8 @@ export default function AutoEditScreen() {
             <TouchableOpacity 
               style={[styles.formatBtn, layout === '1:1' && styles.formatBtnActive]}
               onPress={() => setLayout('1:1')}
+              accessibilityRole="button"
+              accessibilityState={{ selected: layout === '1:1' }}
             >
               <Text style={[styles.formatBtnText, layout === '1:1' && styles.formatBtnTextActive]}>1:1 (Instagram)</Text>
             </TouchableOpacity>
@@ -109,16 +109,19 @@ export default function AutoEditScreen() {
           <Text style={styles.label}>CUSTOM PROMPT (OPTIONAL)</Text>
           <TextInput
             style={[styles.input, {height: 80, textAlignVertical: 'top'}]}
-            placeholder="e.g. Make it highly energetic with fast cuts..."
+            placeholder="e.g. Keep only the funniest moments..."
             placeholderTextColor="#666"
             value={prompt}
             onChangeText={setPrompt}
             multiline
           />
 
+          {submitError ? <Text style={styles.errorText}>{submitError}</Text> : null}
+
           <TouchableOpacity 
-            style={[styles.submitBtn, !videoUrl && styles.submitBtnDisabled]}
-            disabled={!videoUrl || isLoading}
+            style={[styles.submitBtn, (!videoUrl && !video) && styles.submitBtnDisabled]}
+            disabled={(!videoUrl && !video) || isLoading}
+            accessibilityRole="button"
             onPress={handleSubmit}
           >
             {isLoading ? (
@@ -188,6 +191,7 @@ const styles = StyleSheet.create({
   },
   chipText: { color: '#a3a3a3', fontWeight: 'bold', fontSize: 12 },
   chipTextActive: { color: '#000' },
+  errorText: { color: '#f87171', fontSize: 13, marginTop: 8 },
   submitBtn: { backgroundColor: '#fff', padding: 16, borderRadius: 12, alignItems: 'center', marginTop: 10 },
   submitBtnDisabled: { opacity: 0.5 },
   submitBtnText: { color: '#000', fontWeight: 'bold', fontSize: 15 },

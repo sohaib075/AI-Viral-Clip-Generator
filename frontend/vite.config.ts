@@ -8,9 +8,4 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
-  server: {
-    proxy: {
-      '/auth': 'http://localhost:5000',
-    },
-  },
 })

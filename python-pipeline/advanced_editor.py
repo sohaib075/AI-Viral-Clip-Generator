@@ -1,14 +1,12 @@
 import os
 import json
 import ffmpeg
-import imageio_ffmpeg
-from google import genai
 from downloader import download_video, resolve_local_upload
 from audio_extractor import extract_audio
 from transcriber import transcribe_audio
-from video_editor import create_ass
-
-ffmpeg_exe = imageio_ffmpeg.get_ffmpeg_exe()
+from video_editor import create_ass, burn_ass_file, extract_thumbnail
+from gemini_client import generate_json
+from media_utils import run_ffmpeg, get_media_duration, remove_files
 
 # Output resolution for each supported layout
 LAYOUT_SIZES = {
@@ -18,6 +16,8 @@ LAYOUT_SIZES = {
 }
 
 MIN_SEGMENT_SECONDS = 0.2
+# Gemini 2.5 Flash has a very large context window; this only guards against absurd inputs
+MAX_TRANSCRIPT_CHARS = 400_000
 
 def load_style_config(style_name):
     config_path = os.path.join(os.path.dirname(__file__), 'style_configs.json')
@@ -31,21 +31,16 @@ def load_style_config(style_name):
             "fontSize": 60,
             "primaryColor": "&H00FFFFFF",
             "highlightColor": "&H0000FFFF",
-            "colorFilter": "eq=contrast=1.1:saturation=1.2",
-            "zoomFrequency": "medium"
+            "colorFilter": "eq=contrast=1.1:saturation=1.2"
         }
 
 def analyze_storyline_and_metadata(transcript_data, style, prompt):
-    api_key = os.environ.get("GEMINI_API_KEY")
-    if not api_key:
-        print("No GEMINI_API_KEY, using fallback metadata.")
-        return fallback_metadata(transcript_data, style)
-
-    client = genai.Client(api_key=api_key)
-
+    """Asks Gemini which segments to keep and for social metadata. Raises if the analysis fails."""
     text_content = ""
     for idx, seg in enumerate(transcript_data.get("segments", [])):
         text_content += f"[{idx}] {seg['start']:.2f} - {seg['end']:.2f}: {seg['text']}\n"
+    if len(text_content) > MAX_TRANSCRIPT_CHARS:
+        text_content = text_content[:MAX_TRANSCRIPT_CHARS].rsplit('\n', 1)[0] + "\n"
 
     sys_prompt = f"""
     You are an expert video editor and social media manager.
@@ -63,30 +58,10 @@ def analyze_storyline_and_metadata(transcript_data, style, prompt):
     - 'hashtags': ['...', '...']
     - 'zoom_indices': [list of integers representing segments that should have a punch-in zoom effect]
     """
-    try:
-        response = client.models.generate_content(
-            model='gemini-2.5-flash',
-            contents=sys_prompt + "\n\nTranscript:\n" + (text_content[:3000] if text_content else "No transcript available."),
-            config={"response_mime_type": "application/json"}
-        )
-        analysis = json.loads(response.text)
-        if not isinstance(analysis, dict):
-            raise ValueError("Expected a JSON object")
-        return analysis
-    except Exception as e:
-        print(f"Gemini analysis failed: {e}")
-        return fallback_metadata(transcript_data, style)
-
-def fallback_metadata(transcript_data, style):
-    segs = transcript_data.get("segments", [])
-    indices = list(range(len(segs))) if len(segs) < 10 else list(range(10))
-    return {
-        "kept_segment_indices": indices,
-        "title": f"Awesome {style} Edit",
-        "description": "Auto generated video edit.",
-        "hashtags": ["#viral", f"#{style.replace(' ', '')}"],
-        "zoom_indices": [i for i in indices if i % 3 == 0]
-    }
+    analysis = generate_json(sys_prompt + "\n\nTranscript:\n" + text_content)
+    if not isinstance(analysis, dict):
+        raise RuntimeError("AI analysis returned an unexpected format.")
+    return analysis
 
 def build_edit_plan(segments, kept_indices):
     """
@@ -94,13 +69,10 @@ def build_edit_plan(segments, kept_indices):
     Invalid indices and micro segments are dropped.
     """
     def usable(i):
-        return (isinstance(i, int) and 0 <= i < len(segments)
+        return (isinstance(i, int) and not isinstance(i, bool) and 0 <= i < len(segments)
                 and segments[i]['end'] - segments[i]['start'] > MIN_SEGMENT_SECONDS)
 
-    plan = [(i, segments[i]) for i in kept_indices if usable(i)]
-    if not plan:
-        plan = [(i, segments[i]) for i in range(min(len(segments), 10)) if usable(i)]
-    return plan
+    return [(i, segments[i]) for i in kept_indices if usable(i)]
 
 def build_subtitle_clip_data(plan, all_words, layout):
     """
@@ -137,53 +109,63 @@ def parse_eq_filter(color_filter):
     return dict(kv.split('=', 1) for kv in params.split(':') if '=' in kv)
 
 def process_auto_edit(job_id, video_url, layout, style, prompt, progress_callback, input_dir, processed_dir, clips_dir):
+    """
+    Returns (output video path, analysis, info) where info has the source title and duration,
+    a thumbnail path (or None) and warnings about incomplete input.
+    """
     progress_callback(5, "Initializing advanced editor...")
 
     # Load Config
     style_config = load_style_config(style)
+    info = {"source_title": None, "source_duration": None, "thumbnail_path": None, "warnings": []}
 
     # 1. Download Video
     progress_callback(10, "Downloading high-quality video...")
     if video_url.startswith('file://'):
         video_path = resolve_local_upload(video_url, input_dir)
     else:
-        video_path = download_video(video_url, input_dir)
+        video_path, site_info = download_video(video_url, input_dir, file_prefix=job_id)
+        info["source_title"] = site_info.get("title")
 
-    # 2. Audio & Transcription
-    progress_callback(25, "Extracting audio and performing word-level transcription...")
-    audio_path = extract_audio(video_path, processed_dir)
-    transcript_data = transcribe_audio(audio_path)
-
-    segments = transcript_data.get("segments", [])
-    if not segments:
-        raise Exception("Transcription failed: no speech was transcribed.")
-
-    # 3. AI Analysis (Storyline & Metadata)
-    progress_callback(45, "AI analyzing storyline and pacing...")
-    analysis = analyze_storyline_and_metadata(transcript_data, style, prompt)
-
-    plan = build_edit_plan(segments, analysis.get("kept_segment_indices") or [])
-    if not plan:
-        raise Exception("No usable speech segments to edit.")
-    zoom_indices = set(analysis.get("zoom_indices") or [])
-
-    target_w, target_h = LAYOUT_SIZES.get(layout, LAYOUT_SIZES['16:9'])
-
-    # 4. Generate Subtitles
-    progress_callback(60, "Generating animated subtitles and VFX plan...")
-    clip_data = build_subtitle_clip_data(plan, transcript_data.get("words", []), layout)
+    audio_path = None
     ass_path = os.path.join(processed_dir, f"subtitles_{job_id}.ass")
-    create_ass(clip_data, ass_path, is_vertical=(target_h > target_w), style_config=style_config,
-               play_res=(target_w, target_h))
-
-    # 5. FFmpeg Assembly (Cuts, Zooms, Color, Subtitles)
-    progress_callback(75, "Rendering final professional cut (Color, VFX, Subtitles)...")
-
-    output_filename = f"advanced_{job_id}.mp4"
-    output_path = os.path.join(clips_dir, output_filename)
+    output_path = os.path.join(clips_dir, f"advanced_{job_id}.mp4")
     base_output_path = output_path.replace(".mp4", "_base.mp4")
-
     try:
+        info["source_duration"] = get_media_duration(video_path)
+
+        # 2. Audio & Transcription
+        progress_callback(25, "Extracting audio and performing word-level transcription...")
+        audio_path = extract_audio(video_path, processed_dir)
+        transcript_data = transcribe_audio(audio_path)
+
+        segments = transcript_data.get("segments", [])
+        if not segments:
+            raise Exception("Transcription failed: no speech was transcribed.")
+        failed_chunks = transcript_data.get("failed_chunks") or []
+        if failed_chunks:
+            info["warnings"].append(f"{len(failed_chunks)} part(s) of the audio could not be transcribed, so the edit may skip them.")
+
+        # 3. AI Analysis (Storyline & Metadata)
+        progress_callback(45, "AI analyzing storyline and pacing...")
+        analysis = analyze_storyline_and_metadata(transcript_data, style, prompt)
+
+        plan = build_edit_plan(segments, analysis.get("kept_segment_indices") or [])
+        if not plan:
+            raise Exception("The AI did not select any usable parts of the video to keep.")
+        zoom_indices = set(analysis.get("zoom_indices") or [])
+
+        target_w, target_h = LAYOUT_SIZES.get(layout, LAYOUT_SIZES['16:9'])
+
+        # 4. Generate Subtitles
+        progress_callback(60, "Generating animated subtitles and VFX plan...")
+        clip_data = build_subtitle_clip_data(plan, transcript_data.get("words", []), layout)
+        create_ass(clip_data, ass_path, is_vertical=(target_h > target_w), style_config=style_config,
+                   play_res=(target_w, target_h))
+
+        # 5. FFmpeg Assembly (Cuts, Zooms, Color, Subtitles)
+        progress_callback(75, "Rendering final professional cut (Color, VFX, Subtitles)...")
+
         input_vid = ffmpeg.input(video_path)
         concat_v = []
         concat_a = []
@@ -222,42 +204,18 @@ def process_auto_edit(job_id, video_url, layout, style, prompt, progress_callbac
         joined_a = ffmpeg.concat(*concat_a, v=0, a=1)
 
         # Render Base Concat
-        (
-            ffmpeg
-            .output(joined_v, joined_a, base_output_path, vcodec="libx264", acodec="aac", preset="fast", crf=23, pix_fmt="yuv420p")
-            .overwrite_output()
-            .run(cmd=ffmpeg_exe, quiet=True)
+        run_ffmpeg(
+            ffmpeg.output(joined_v, joined_a, base_output_path, vcodec="libx264", acodec="aac", preset="fast", crf=23, pix_fmt="yuv420p")
         )
 
         # Overlay Subtitles (Pass 2)
-        ass_path_ffmpeg = ass_path.replace('\\', '/').replace(':', '\\:')
-        (
-            ffmpeg
-            .input(base_output_path)
-            .output(
-                output_path,
-                vf=f"subtitles='{ass_path_ffmpeg}'",
-                vcodec="libx264",
-                acodec="copy",
-                preset="fast",
-                crf=23,
-                pix_fmt="yuv420p"
-            )
-            .overwrite_output()
-            .run(cmd=ffmpeg_exe, quiet=True)
-        )
-    except ffmpeg.Error as e:
-        # Fail the job with ffmpeg's reason rather than shipping an unedited fallback as a success
-        stderr = e.stderr.decode('utf-8', errors='ignore').strip() if e.stderr else ''
-        print(f"FFMPEG STDERR:\n{stderr}")
-        reason = stderr.splitlines()[-1] if stderr else str(e)
-        raise Exception(f"Rendering failed: {reason}") from e
+        burn_ass_file(base_output_path, ass_path, output_path, preset="fast")
+
+        thumbnail_path = os.path.join(clips_dir, f"advanced_{job_id}.jpg")
+        info["thumbnail_path"] = extract_thumbnail(output_path, 1.0, thumbnail_path)
     finally:
-        # Cleanup base clip
-        try:
-            os.remove(base_output_path)
-        except OSError:
-            pass
+        # The source video, audio and intermediate files aren't needed once the job ends
+        remove_files(base_output_path, ass_path, audio_path, video_path)
 
     progress_callback(100, "Finalizing professional edit...")
-    return output_path, analysis
+    return output_path, analysis, info

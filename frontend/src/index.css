@@ -1,5 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 @import "tailwindcss";
+/* Tailwind v4 doesn't load tailwind.config.js on its own; it defines animate-shimmer, animate-fade-in-up etc. */
+@config "../tailwind.config.js";
 
 @theme {
   --font-sans: 'Inter', sans-serif;

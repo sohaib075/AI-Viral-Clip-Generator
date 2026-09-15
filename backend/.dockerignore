@@ -1,0 +1,8 @@
+# Installed inside the image; host modules may be built for another OS
+node_modules
+npm-debug.log
+# Secrets come from env_file, and runtime data from the data/ volume
+.env
+data
+jobs.json
+temp

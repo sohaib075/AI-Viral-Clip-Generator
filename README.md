@@ -25,8 +25,8 @@ An automated, end-to-end AI pipeline that converts long-form landscape videos (o
   - **Automated Composition**: Stitches images and audio together automatically with FFmpeg and MoviePy.
 - **Automated Social Media Publisher Pipeline**:
   - **Smart Queueing System**: Schedule posts to automatically go live immediately or in the future across YouTube Shorts, Instagram Reels, and TikTok. 
-  - **Global Duplicate Prevention**: Features a strict SHA-256 video fingerprinting system. The backend validates a unique `video_hash` against the database to guarantee that a video is never accidentally uploaded twice globally across any platform.
-  - **Robust Background Worker**: A dedicated background Node.js worker atomically polls the queue, gracefully handles API ratelimits, implements automatic retries, and records success/failure states without overlapping execution threads.
+  - **Duplicate Prevention**: Each clip is fingerprinted with SHA-256, so the same video is never uploaded twice to the same platform, while one clip can still be posted to several platforms.
+  - **Robust Background Worker**: A background Node.js worker publishes due posts, retries temporary failures (only for the platforms that failed), and never retries automatically when an upload's outcome is unclear; failed posts can be retried from the queue.
 - **"Minimalist Stealth" React Dashboard**: A beautiful, completely overhauled React frontend featuring:
   - A premium, developer-focused dark mode aesthetic utilizing translucent glassmorphic panels and subtle micro-animations.
   - An **inline vertical video player preview** and fully-featured **Caption Customizer**.
@@ -50,18 +50,20 @@ All inputs, intermediates, and outputs are systematically organized inside subdi
 
 ```
 temp/
-├── Input/       (Raw downloaded video files and user uploads)
-├── Processed/   (Compressed MP3 audio tracks and Transcript_[JobId].json)
-├── Clips/       (Vertical portrait or horizontal MP4s and Thumbnail_[Seq]_[JobId].jpgs)
-├── Subtitles/   (Generated Sub_[Seq]_[JobId].srt and animated Sub_[Seq]_[JobId].ass subtitle tracks)
-├── StoryVideos/ (Fully generated AI Story-to-Video output files)
-└── Logs/        (Live timestamped job-specific execution logs [JobId].log)
+├── Input/       (Uploads and downloaded source videos; deleted when the job finishes)
+├── Processed/   (Transcript_[JobId].json; extracted audio is deleted after transcription)
+├── Clips/       (Base and final clip MP4s, Auto Edit videos and thumbnails)
+├── Subtitles/   (Generated SRT subtitle files)
+├── StoryVideos/ (AI Story-to-Video output files and thumbnails)
+└── Logs/        (Timestamped job-specific execution logs [JobId].log)
 ```
+
+Only `Clips/` and `StoryVideos/` are served over HTTP; uploads, transcripts and logs stay private.
 
 ### Filename Naming Conventions
 To maintain scalability and prevent file overwriting, assets are automatically saved using clear, descriptive, and unique names:
-* **Generated Video Clip**: `Clip_[Seq]_[Slugified_Title]_[JobId].mp4`
-* **Subtitles ASS File**: `Sub_[Seq]_[Slugified_Title]_[JobId].ass`
+* **Base Clip (no captions)**: `Clip_[Seq]_[Slugified_Title]_[JobId]_base.mp4`
+* **Final Clip (captions burned in)**: `Clip_[Seq]_[Slugified_Title]_[JobId]_final.mp4`
 * **Subtitles SRT File**: `Sub_[Seq]_[Slugified_Title]_[JobId].srt`
 * **Clip Thumbnail Image**: `Thumbnail_[Seq]_[Slugified_Title]_[JobId].jpg`
 * **Job Log File**: `Logs/[JobId].log`
@@ -71,7 +73,7 @@ To maintain scalability and prevent file overwriting, assets are automatically s
 ## 🛠️ Installation & Setup
 
 ### Prerequisites
-- Node.js (v18+)
+- Node.js (v20+)
 - Python (3.10+)
 - FFmpeg (Installed and added to your system PATH)
 - API Keys for **Groq** and **Google Gemini**
@@ -93,6 +95,8 @@ Copy `.env.example` to `.env` in the `python-pipeline` directory and add your AP
 GROQ_API_KEY=your_groq_api_key_here
 GEMINI_API_KEY=your_gemini_api_key_here
 ```
+
+Optional settings in `.env`: `MAX_CONCURRENT_JOBS` (default 2) limits how many videos are processed at once, and `ALLOW_PRIVATE_URLS=1` allows downloading from hosts on your own network (blocked by default).
 
 Start the Python engine:
 ```bash
@@ -116,6 +120,7 @@ Copy `.env.example` to `.env` in the `backend` directory. Clip generation works 
 - `ENCRYPTION_KEY`: 64 hex characters used to encrypt stored OAuth tokens. Generate one with `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"` and keep it stable.
 - The OAuth client ID/secret for each platform you want to publish to (YouTube, X, TikTok, Instagram). Redirect URLs are listed in `.env.example`.
 - `ALLOWED_ORIGINS` if the web UI is served from anywhere other than localhost.
+- `API_TOKEN` to require an access token for the API. The web and mobile apps ask for it once. Recommended whenever the server is reachable by other devices.
 
 Publishing also needs `ffprobe` (included with FFmpeg) on your PATH to validate videos.
 
