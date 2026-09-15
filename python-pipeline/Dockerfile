@@ -1,8 +1,9 @@
 FROM python:3.11-slim
 
-# Install system dependencies, specifically ffmpeg for video processing
+# Install system dependencies: ffmpeg for video processing, and fonts for burned-in captions
+# (Liberation provides Arial-compatible metrics; DejaVu is the fallback for other styles)
 RUN apt-get update && \
-    apt-get install -y ffmpeg && \
+    apt-get install -y --no-install-recommends ffmpeg fonts-liberation fonts-dejavu-core && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app

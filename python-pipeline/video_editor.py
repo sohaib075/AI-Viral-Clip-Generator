@@ -1,6 +1,9 @@
 import os
-from moviepy import VideoFileClip
+import re
+import uuid
 import ffmpeg
+
+from media_utils import run_ffmpeg, remove_files
 
 def verify_ass_file(ass_path):
     if not os.path.exists(ass_path):
@@ -114,17 +117,14 @@ def slugify(text):
     return text[:30] if text else "clip"
 
 def extract_thumbnail(video_path, time_offset, output_path):
-    import imageio_ffmpeg
-    ffmpeg_exe = imageio_ffmpeg.get_ffmpeg_exe()
+    """Saves one frame as a JPEG. Returns the path, or None if no frame could be written."""
     try:
-        (
+        run_ffmpeg(
             ffmpeg
             .input(video_path, ss=time_offset)
             .output(output_path, vframes=1, format='image2', vcodec='mjpeg')
-            .overwrite_output()
-            .run(cmd=ffmpeg_exe, quiet=True)
         )
-        return output_path
+        return output_path if os.path.exists(output_path) else None
     except Exception as e:
         print(f"Error extracting thumbnail: {e}")
         return None
@@ -317,21 +317,19 @@ def process_clip(video_path, clip_data, clips_dir, subtitles_dir, job_id, clip_i
     
     layout = clip_data.get('layout', 'vertical')
     is_vertical = (layout != 'horizontal')
-    
-    import imageio_ffmpeg
-    ffmpeg_exe = imageio_ffmpeg.get_ffmpeg_exe()
-    
+
     if is_vertical:
         vf_filter = f"crop=min(iw\\,ih*9/16):min(ih\\,iw*16/9),scale=1080:1920"
     else:
-        vf_filter = f"scale=1920:1080"
-    
+        # Fit inside 16:9 without stretching, padding the rest
+        vf_filter = "scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2"
+
     try:
-        (
+        run_ffmpeg(
             ffmpeg
             .input(video_path, ss=start_time, t=duration)
             .output(
-                base_clip_path, 
+                base_clip_path,
                 vf=vf_filter,
                 vcodec="libx264",
                 acodec="aac",
@@ -339,15 +337,13 @@ def process_clip(video_path, clip_data, clips_dir, subtitles_dir, job_id, clip_i
                 crf=23,
                 pix_fmt="yuv420p"
             )
-            .overwrite_output()
-            .run(cmd=ffmpeg_exe, quiet=True)
         )
-        
+
         if not verify_video_file(base_clip_path):
             raise Exception("Base video verification failed: missing or empty output.")
-            
-        thumb_time = 1.0 if duration > 1.0 else 0.0
-        extract_thumbnail(base_clip_path, thumb_time, thumbnail_path)
+
+        # Very short clips (e.g. a highlight at the very end of the source) have no frame at 1s
+        thumbnail_path = extract_thumbnail(base_clip_path, min(1.0, duration / 2), thumbnail_path)
         
         create_srt(clip_data, srt_path)
         
@@ -363,45 +359,57 @@ def process_clip(video_path, clip_data, clips_dir, subtitles_dir, job_id, clip_i
         print(f"Error processing clip {clip_index}: {str(e)}")
         raise e
 
+def burn_ass_file(input_path, ass_path, output_path, preset="ultrafast"):
+    """
+    Renders input_path with the ASS subtitles burned in. ffmpeg runs inside the subtitle file's folder and
+    refers to it by a plain name, so drive letters, spaces or apostrophes in the install path can't break
+    the filter. The video is written to a temporary name first, so a failed or concurrent render never
+    leaves a half-written file at output_path.
+    """
+    ass_name = os.path.basename(ass_path)
+    if not re.fullmatch(r'[\w.-]+', ass_name):
+        raise ValueError(f"Unsafe subtitle file name: {ass_name}")
+
+    temp_output = f"{os.path.splitext(output_path)[0]}.rendering_{uuid.uuid4().hex}.mp4"
+    try:
+        run_ffmpeg(
+            ffmpeg
+            .input(input_path)
+            .output(
+                temp_output,
+                vf=f"subtitles={ass_name}",
+                vcodec="libx264",
+                acodec="copy", # Copy audio
+                preset=preset,
+                crf=23,
+                pix_fmt="yuv420p"
+            ),
+            cwd=os.path.dirname(ass_path)
+        )
+        os.replace(temp_output, output_path)
+    finally:
+        remove_files(temp_output)
+    return output_path
+
 def burn_subtitles(base_clip_path, clip_data, style_config, output_path):
     """
     Takes a base clip and burns custom subtitles into it.
     """
-    import imageio_ffmpeg
-    ffmpeg_exe = imageio_ffmpeg.get_ffmpeg_exe()
-    
     layout = clip_data.get('layout', 'vertical')
     is_vertical = (layout != 'horizontal')
-    
-    # Create ASS file
-    ass_path = output_path.replace('.mp4', '.ass')
-    create_ass(clip_data, ass_path, is_vertical=is_vertical, style_config=style_config)
-    
-    if not verify_ass_file(ass_path):
-        raise Exception("ASS file verification failed: empty or missing Dialogue events.")
-    
-    ass_path_ffmpeg = ass_path.replace('\\', '/').replace(':', '\\:')
-    
+
+    # Create ASS file with a unique, filter-safe name next to the output
+    output_stem = re.sub(r'[^\w.-]', '_', os.path.splitext(os.path.basename(output_path))[0])
+    ass_path = os.path.join(os.path.dirname(output_path), f"{output_stem}_{uuid.uuid4().hex[:8]}.ass")
     try:
-        (
-            ffmpeg
-            .input(base_clip_path)
-            .output(
-                output_path, 
-                vf=f"subtitles='{ass_path_ffmpeg}'",
-                vcodec="libx264",
-                acodec="copy", # Copy audio
-                preset="ultrafast",
-                crf=23,
-                pix_fmt="yuv420p"
-            )
-            .overwrite_output()
-            .run(cmd=ffmpeg_exe, quiet=True)
-        )
-        return output_path
-    except ffmpeg.Error as e:
-        print(f"Error burning subtitles: {e.stderr.decode() if e.stderr else str(e)}")
-        raise e
+        create_ass(clip_data, ass_path, is_vertical=is_vertical, style_config=style_config)
+
+        if not verify_ass_file(ass_path):
+            raise Exception("ASS file verification failed: empty or missing Dialogue events.")
+
+        return burn_ass_file(base_clip_path, ass_path, output_path)
+    finally:
+        remove_files(ass_path)
 
 if __name__ == '__main__':
     pass

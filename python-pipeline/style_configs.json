@@ -1,65 +1,51 @@
 {
   "Cinematic": {
-    "fontName": "Montserrat",
+    "fontName": "Arial",
     "fontSize": 48,
     "primaryColor": "&H00F0F0F0",
     "highlightColor": "&H0000A5FF",
-    "colorFilter": "eq=contrast=1.1:saturation=1.2",
-    "zoomFrequency": "low",
-    "sfxFrequency": "low"
+    "colorFilter": "eq=contrast=1.1:saturation=1.2"
   },
   "Viral Reels": {
     "fontName": "Arial Black",
     "fontSize": 64,
     "primaryColor": "&H00FFFFFF",
     "highlightColor": "&H0000FFFF",
-    "colorFilter": "eq=contrast=1.2:saturation=1.4",
-    "zoomFrequency": "high",
-    "sfxFrequency": "high"
+    "colorFilter": "eq=contrast=1.2:saturation=1.4"
   },
   "TikTok": {
-    "fontName": "Proxima Nova",
+    "fontName": "Arial Black",
     "fontSize": 60,
     "primaryColor": "&H00FFFFFF",
     "highlightColor": "&H0052F0FF",
-    "colorFilter": "eq=contrast=1.15:saturation=1.3",
-    "zoomFrequency": "high",
-    "sfxFrequency": "high"
+    "colorFilter": "eq=contrast=1.15:saturation=1.3"
   },
   "Podcast": {
-    "fontName": "Helvetica",
+    "fontName": "Arial",
     "fontSize": 44,
     "primaryColor": "&H00FFFFFF",
     "highlightColor": "&H0000FF00",
-    "colorFilter": "eq=contrast=1.05:saturation=1.1",
-    "zoomFrequency": "medium",
-    "sfxFrequency": "low"
+    "colorFilter": "eq=contrast=1.05:saturation=1.1"
   },
   "Motivational": {
     "fontName": "Impact",
     "fontSize": 72,
     "primaryColor": "&H00FFFFFF",
     "highlightColor": "&H000000FF",
-    "colorFilter": "eq=contrast=1.25:saturation=1.1",
-    "zoomFrequency": "medium",
-    "sfxFrequency": "medium"
+    "colorFilter": "eq=contrast=1.25:saturation=1.1"
   },
   "Vlog": {
     "fontName": "Comic Sans MS",
     "fontSize": 50,
     "primaryColor": "&H00FFFFFF",
     "highlightColor": "&H00FF00FF",
-    "colorFilter": "eq=contrast=1.1:saturation=1.25",
-    "zoomFrequency": "low",
-    "sfxFrequency": "medium"
+    "colorFilter": "eq=contrast=1.1:saturation=1.25"
   },
   "Gaming": {
     "fontName": "Verdana",
     "fontSize": 55,
     "primaryColor": "&H00FFFFFF",
     "highlightColor": "&H0000FF00",
-    "colorFilter": "eq=contrast=1.3:saturation=1.5",
-    "zoomFrequency": "high",
-    "sfxFrequency": "high"
+    "colorFilter": "eq=contrast=1.3:saturation=1.5"
   }
 }
