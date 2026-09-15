@@ -1,6 +1,6 @@
-# Welcome to your Expo app 👋
+# AI Viral Clips mobile app
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+The Expo app for the AI Viral Clip Generator: submit links or video files, follow processing, restyle and export clips, publish them, and generate story videos.
 
 ## Get started
 
@@ -9,6 +9,8 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
    ```bash
    npm install
    ```
+
+   If you pulled a version that added native modules (for example `expo-document-picker` and `expo-secure-store`), run `npx expo install --check` afterwards so the versions match your Expo SDK and `package-lock.json` is updated. Rebuild development clients after adding native modules.
 
 2. Start the app
 
@@ -25,7 +27,12 @@ Standalone builds (APK/AAB/IPA) need `EXPO_PUBLIC_API_URL` set to a URL the phon
 - **Phone on the same Wi-Fi as your PC:** your PC's local IP, e.g. `http://192.168.1.100:5000`. The `preview` profile in `eas.json` sets this; update the IP to match your PC.
 - **Deployed backend:** an `https://` URL. Add `"env": { "EXPO_PUBLIC_API_URL": "https://..." }` to the `production` profile in `eas.json`.
 
-Plain `http://` URLs are allowed in release builds only when `EXPO_PUBLIC_API_URL` starts with `http://` (see `plugins/with-cleartext-http.js`).
+Plain `http://` URLs are allowed in release builds only when `EXPO_PUBLIC_API_URL` starts with `http://` (see `plugins/with-cleartext-http.js`). Production builds fail if `EXPO_PUBLIC_API_URL` isn't set, rather than shipping an app that can't reach the server.
+
+## Access token and social accounts
+
+- If the backend sets `API_TOKEN`, enter it once in **Settings → Access Token**. It is stored in the device's secure storage. You can also bake a token into a build with `EXPO_PUBLIC_API_TOKEN`.
+- **Settings → Social Accounts** connects YouTube, TikTok, Instagram or X in an in-app browser and returns to the app when done. The backend's `BASE_URL` (used for OAuth redirects) must be reachable from the phone, e.g. your PC's LAN IP.
 
 In the output, you'll find options to open the app in a
 

@@ -1,27 +1,37 @@
 import React, { useEffect, useState } from 'react';
-import { 
-  StyleSheet, 
-  Text, 
-  View, 
+import {
+  StyleSheet,
+  Text,
+  View,
   TouchableOpacity,
-  ActivityIndicator,
   Image
 } from 'react-native';
 import Animated, { Easing, withRepeat, withTiming, useSharedValue, useAnimatedStyle, withSequence } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, router } from 'expo-router';
-import api from '@/lib/api';
+import api, { errorMessage, errorStatus } from '@/lib/api';
+import type { JobStatusResponse } from '@/lib/types';
+
+const POLL_INTERVAL_MS = 2000;
+// Keep retrying through brief outages (Wi-Fi blips, the AI service restarting) before giving up
+const MAX_CONSECUTIVE_ERRORS = 15;
+
+const leave = () => {
+  if (router.canGoBack()) router.back();
+  else router.replace('/');
+};
 
 export default function ProcessingScreen() {
-  const { jobId } = useLocalSearchParams();
+  const { jobId } = useLocalSearchParams<{ jobId: string }>();
   const [statusMessage, setStatusMessage] = useState('Initializing AI Pipeline...');
   const [progress, setProgress] = useState(0);
-  const [startTime] = useState(Date.now());
   const [estimatedTimeLeft, setEstimatedTimeLeft] = useState('Calculating...');
-  const [hasError, setHasError] = useState(false);
+  const [connectionIssue, setConnectionIssue] = useState('');
+  const [error, setError] = useState('');
+  const [attempt, setAttempt] = useState(0);
 
   const pulseScale = useSharedValue(1);
-  
+
   useEffect(() => {
     pulseScale.value = withRepeat(
       withSequence(
@@ -31,7 +41,7 @@ export default function ProcessingScreen() {
       -1, // infinite
       true
     );
-  }, []);
+  }, [pulseScale]);
 
   const animatedLogoStyle = useAnimatedStyle(() => ({
     transform: [{ scale: pulseScale.value }]
@@ -39,71 +49,74 @@ export default function ProcessingScreen() {
 
   useEffect(() => {
     if (!jobId) return;
-    
-    const interval = setInterval(async () => {
+
+    const startTime = Date.now();
+    const controller = new AbortController();
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    let consecutiveErrors = 0;
+
+    const poll = async () => {
       try {
-        const response = await api.get(`/api/jobs/${jobId}`);
-        const data = response.data;
-        
-        setStatusMessage(data.message || 'Processing...');
+        const { data } = await api.get<JobStatusResponse>(`/api/jobs/${encodeURIComponent(jobId)}`, { signal: controller.signal });
+        if (controller.signal.aborted) return;
+        consecutiveErrors = 0;
+        setConnectionIssue('');
+
+        if (data.status === 'failed') {
+          setError(data.message || 'Processing failed');
+          return;
+        }
+
         const currentProgress = data.progress || 0;
         setProgress(currentProgress);
-        
-        if (currentProgress > 0 && currentProgress < 100) {
-          const elapsedMs = Date.now() - startTime;
-          const estimatedTotalMs = (elapsedMs / currentProgress) * 100;
-          const remainingMs = estimatedTotalMs - elapsedMs;
-          
-          if (remainingMs > 0) {
-            const remainingSecs = Math.floor(remainingMs / 1000);
-            if (remainingSecs > 60) {
-              setEstimatedTimeLeft(`~${Math.ceil(remainingSecs / 60)} mins`);
-            } else {
-              setEstimatedTimeLeft(`~${remainingSecs} secs`);
-            }
-          } else {
-            setEstimatedTimeLeft('Almost done...');
-          }
-        } else if (currentProgress >= 100 || data.status === 'completed') {
-          setEstimatedTimeLeft('Complete');
-        }
+        setStatusMessage(data.message || 'Processing...');
 
         if (data.status === 'completed') {
-          clearInterval(interval);
-          setTimeout(() => {
-            router.replace({
-              pathname: '/results',
-              params: { jobId: jobId as string }
-            });
+          setEstimatedTimeLeft('Complete');
+          timer = setTimeout(() => {
+            router.replace({ pathname: '/results', params: { jobId } });
           }, 1000);
-        } else if (data.status === 'failed') {
-          clearInterval(interval);
-          setStatusMessage(data.message || 'Processing Failed');
-          setEstimatedTimeLeft('Failed');
-          setHasError(true);
+          return;
+        }
+
+        if (currentProgress > 0 && currentProgress < 100) {
+          const elapsedMs = Date.now() - startTime;
+          const remainingSecs = Math.floor(((elapsedMs / currentProgress) * 100 - elapsedMs) / 1000);
+          setEstimatedTimeLeft(remainingSecs <= 0 ? 'Almost done...' : remainingSecs > 60 ? `~${Math.ceil(remainingSecs / 60)} mins` : `~${remainingSecs} secs`);
         }
       } catch (e) {
-        console.error("Polling error", e);
-        clearInterval(interval);
-        setStatusMessage('Network Error occurred while polling');
-        setEstimatedTimeLeft('Failed');
-        setHasError(true);
+        if (controller.signal.aborted) return;
+        consecutiveErrors += 1;
+        const notFound = errorStatus(e) === 404;
+        if (consecutiveErrors >= MAX_CONSECUTIVE_ERRORS) {
+          setError(notFound ? 'This job could not be found.' : errorMessage(e, 'Lost connection to the server.'));
+          return;
+        }
+        setConnectionIssue(notFound ? 'Waiting for the job to start...' : 'Connection problem, retrying...');
       }
-    }, 2000);
-    
-    return () => clearInterval(interval);
-  }, [jobId, startTime]);
+      timer = setTimeout(poll, POLL_INTERVAL_MS);
+    };
 
-  if (hasError) {
+    poll();
+    return () => {
+      controller.abort();
+      if (timer) clearTimeout(timer);
+    };
+  }, [jobId, attempt]);
+
+  if (error) {
     return (
       <SafeAreaView style={[styles.safeArea, styles.center]}>
         <View style={styles.errorIcon}>
           <Text style={{fontSize: 48, color: '#ef4444'}}>❌</Text>
         </View>
         <Text style={styles.errorTitle}>Oops! Something went wrong.</Text>
-        <Text style={styles.errorMessage}>{statusMessage}</Text>
-        <TouchableOpacity style={styles.btn} onPress={() => router.push('/')}>
-          <Text style={styles.btnText}>Return to Main Page</Text>
+        <Text style={styles.errorMessage}>{error}</Text>
+        <TouchableOpacity style={[styles.btn, styles.btnSecondary]} onPress={() => { setError(''); setAttempt(a => a + 1); }} accessibilityRole="button">
+          <Text style={styles.btnSecondaryText}>Check Again</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.btn} onPress={leave} accessibilityRole="button">
+          <Text style={styles.btnText}>Close</Text>
         </TouchableOpacity>
       </SafeAreaView>
     );
@@ -114,20 +127,22 @@ export default function ProcessingScreen() {
       <Animated.View style={[styles.iconWrapper, animatedLogoStyle]}>
         <Image source={require('@/assets/images/icon.png')} style={{ width: 80, height: 80, borderRadius: 20 }} />
       </Animated.View>
-      
+
       <Text style={styles.title}>AI Magic at Work</Text>
-      <Text style={styles.subtitle}>{statusMessage}</Text>
-      
-      <View style={styles.progressBarContainer}>
+      <Text style={styles.subtitle} accessibilityLiveRegion="polite">{statusMessage}</Text>
+      <Text style={styles.connectionText}>{connectionIssue}</Text>
+
+      <View style={styles.progressBarContainer} accessibilityRole="progressbar" accessibilityValue={{ min: 0, max: 100, now: progress }}>
         <View style={[styles.progressBarFill, { width: `${progress}%` }]} />
       </View>
-      
+
       <View style={styles.progressTextRow}>
         <Text style={styles.progressText}>{progress}% Completed</Text>
-        {jobId && <Text style={styles.jobIdText}>Job ID: {jobId}</Text>}
+        {jobId && <Text style={styles.jobIdText} numberOfLines={1}>Job ID: {jobId}</Text>}
       </View>
-      
+
       <Text style={styles.etaText}>Estimated Time Left: {estimatedTimeLeft}</Text>
+      <Text style={styles.hint}>You can close this screen; the job keeps running and appears in Projects.</Text>
     </SafeAreaView>
   );
 }
@@ -164,7 +179,14 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: 'rgba(255,255,255,0.8)',
     fontWeight: 'bold',
-    marginBottom: 40,
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  connectionText: {
+    color: '#facc15',
+    fontSize: 13,
+    minHeight: 18,
+    marginBottom: 24,
     textAlign: 'center',
   },
   progressBarContainer: {
@@ -185,6 +207,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 16,
+    gap: 12,
   },
   progressText: {
     color: '#fff',
@@ -193,11 +216,18 @@ const styles = StyleSheet.create({
   jobIdText: {
     color: 'rgba(255,255,255,0.5)',
     fontSize: 12,
+    flexShrink: 1,
   },
   etaText: {
     color: '#fff',
     fontWeight: 'bold',
     fontSize: 16,
+  },
+  hint: {
+    color: '#737373',
+    fontSize: 12,
+    marginTop: 24,
+    textAlign: 'center',
   },
   errorIcon: {
     marginBottom: 24,
@@ -221,10 +251,21 @@ const styles = StyleSheet.create({
     paddingHorizontal: 32,
     paddingVertical: 16,
     borderRadius: 12,
+    marginTop: 12,
+    minWidth: 220,
+    alignItems: 'center',
   },
   btnText: {
     color: '#000',
     fontWeight: 'bold',
     fontSize: 16,
-  }
+  },
+  btnSecondary: {
+    backgroundColor: 'rgba(255,255,255,0.1)',
+  },
+  btnSecondaryText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
 });

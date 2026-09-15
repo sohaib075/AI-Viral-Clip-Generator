@@ -6,9 +6,11 @@
   "build": {
     "development": {
       "developmentClient": true,
-      "distribution": "internal"
+      "distribution": "internal",
+      "channel": "development"
     },
     "preview": {
+      "channel": "preview",
       "env": {
         "EXPO_PUBLIC_API_URL": "http://192.168.100.21:5000"
       },
@@ -20,6 +22,7 @@
       }
     },
     "production": {
+      "channel": "production",
       "android": {
         "buildType": "app-bundle"
       }
