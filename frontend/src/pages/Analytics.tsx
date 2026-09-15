@@ -1,28 +1,38 @@
-import React, { useState, useEffect } from 'react';
-import { BarChart as BarChartIcon, TrendingUp, Users, Activity, Clock, Download, ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { BarChart as BarChartIcon, Activity, Clock, Film, Send, AlertTriangle } from 'lucide-react';
+import { apiFetch, errorMessage } from '../api';
+import { JOB_TYPE_LABELS } from '../jobs';
+import { platformName, type Analytics as AnalyticsData, type JobType } from '../types';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const Bar = ({ label, value, total, color }: { label: string; value: number; total: number; color: string }) => {
+  const percent = total > 0 ? Math.round((value / total) * 100) : 0;
+  return (
+    <div>
+      <div className="flex justify-between text-sm font-bold text-gray-300 mb-2">
+        <span>{label}</span>
+        <span>{value} <span className="text-gray-500 font-medium">({percent}%)</span></span>
+      </div>
+      <div className="w-full h-2 bg-black/40 rounded-full overflow-hidden" role="presentation">
+        <div className={`h-full ${color}`} style={{ width: `${percent}%` }}></div>
+      </div>
+    </div>
+  );
+};
 
 const Analytics = () => {
-  const [data, setData] = useState<any>(null);
+  const [data, setData] = useState<AnalyticsData | null>(null);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    fetch(`${API_URL}/api/analytics`)
-      .then(res => {
-        if (!res.ok) throw new Error(`Server responded with ${res.status}`);
-        return res.json();
-      })
-      .then(resData => setData(resData))
-      .catch(err => {
-        console.error('Failed to fetch analytics:', err);
-        setError('Could not load analytics. Make sure the backend is running.');
-      });
+    apiFetch<AnalyticsData>('/api/analytics')
+      .then(setData)
+      .catch(err => setError(errorMessage(err, 'Could not load analytics.')));
   }, []);
 
   if (error) {
     return (
-      <div className="flex justify-center items-center h-screen w-full">
+      <div className="flex flex-col justify-center items-center h-[70vh] w-full gap-3" role="alert">
+        <AlertTriangle className="w-8 h-8 text-red-400" aria-hidden="true" />
         <p className="text-red-400 font-medium">{error}</p>
       </div>
     );
@@ -30,130 +40,102 @@ const Analytics = () => {
 
   if (!data) {
     return (
-      <div className="flex justify-center items-center h-screen w-full">
-        <div className="w-12 h-12 border-4 border-white/20 border-t-purple-500 rounded-full animate-spin"></div>
+      <div className="flex justify-center items-center h-[70vh] w-full" role="status" aria-label="Loading analytics">
+        <div className="w-12 h-12 border-4 border-white/20 border-t-white rounded-full animate-spin"></div>
       </div>
     );
   }
 
+  const kpis = [
+    { label: 'Jobs Run', value: data.jobs.total.toLocaleString(), icon: <Activity className="w-5 h-5 text-white" aria-hidden="true" /> },
+    { label: 'Clips Generated', value: data.totalClips.toLocaleString(), icon: <Film className="w-5 h-5 text-white" aria-hidden="true" /> },
+    { label: 'Avg Virality Score', value: data.avgViralityScore != null ? `${data.avgViralityScore}/100` : '—', icon: <BarChartIcon className="w-5 h-5 text-white" aria-hidden="true" /> },
+    { label: 'Hours Processed', value: data.hoursProcessed != null ? `${data.hoursProcessed}h` : '—', icon: <Clock className="w-5 h-5 text-white" aria-hidden="true" /> },
+  ];
+  const platformEntries = Object.entries(data.platforms);
+  const jobTypes = Object.entries(data.jobsByType) as [JobType, number][];
+
   return (
     <div className="w-full flex flex-col p-8 animate-fade-in-up">
       {/* Header */}
-      <div className="mb-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-white mb-2 flex items-center gap-3">
-            <BarChartIcon className="w-8 h-8 text-white" />
-            Analytics Dashboard
-          </h1>
-          <p className="text-gray-400 font-medium">Track your content performance and processing metrics.</p>
-        </div>
-        <button className="flex items-center gap-2 px-6 py-3 bg-white/5 border border-white/10 hover:bg-white/10 text-white font-bold rounded-xl transition-all">
-          <Download className="w-4 h-4" /> Export Report
-        </button>
+      <div className="mb-10">
+        <h1 className="text-3xl font-bold text-white mb-2 flex items-center gap-3">
+          <BarChartIcon className="w-8 h-8 text-white" aria-hidden="true" />
+          Analytics Dashboard
+        </h1>
+        <p className="text-gray-400 font-medium">Processing and publishing results from your jobs. Values that aren't measured are shown as —.</p>
       </div>
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <div className="glass-panel p-6 rounded-2xl flex flex-col relative overflow-hidden group">
-          <div className="flex justify-between items-start mb-4">
-            <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center border border-white/20">
-              <TrendingUp className="w-5 h-5 text-white" />
-            </div>
-            <span className="flex items-center text-xs font-bold text-green-400 bg-green-500/10 px-2 py-1 rounded-md">
-              <ArrowUpRight className="w-3 h-3 mr-1" /> +14.5%
-            </span>
+        {kpis.map(kpi => (
+          <div key={kpi.label} className="glass-panel p-6 rounded-2xl flex flex-col">
+            <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center border border-white/20 mb-4">{kpi.icon}</div>
+            <p className="text-sm text-gray-400 font-bold uppercase tracking-wider mb-1">{kpi.label}</p>
+            <p className="text-3xl font-bold text-white">{kpi.value}</p>
           </div>
-          <p className="text-sm text-gray-400 font-bold uppercase tracking-wider mb-1">Total Views (Generated Clips)</p>
-          <p className="text-3xl font-bold text-white">{data.views}</p>
-        </div>
-
-        <div className="glass-panel p-6 rounded-2xl flex flex-col relative overflow-hidden group">
-          <div className="flex justify-between items-start mb-4">
-            <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center border border-white/20">
-              <Activity className="w-5 h-5 text-white" />
-            </div>
-            <span className="flex items-center text-xs font-bold text-gray-400 bg-white/10 px-2 py-1 rounded-md">
-              Real Data
-            </span>
-          </div>
-          <p className="text-sm text-gray-400 font-bold uppercase tracking-wider mb-1">Avg Virality Score</p>
-          <p className="text-3xl font-bold text-white">{data.avgVirality}</p>
-        </div>
-
-        <div className="glass-panel p-6 rounded-2xl flex flex-col relative overflow-hidden group">
-          <div className="flex justify-between items-start mb-4">
-            <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center border border-white/20">
-              <Users className="w-5 h-5 text-white" />
-            </div>
-            <span className="flex items-center text-xs font-bold text-red-400 bg-red-500/10 px-2 py-1 rounded-md">
-              <ArrowDownRight className="w-3 h-3 mr-1" /> -2.1%
-            </span>
-          </div>
-          <p className="text-sm text-gray-400 font-bold uppercase tracking-wider mb-1">Engagement Rate</p>
-          <p className="text-3xl font-bold text-white">{data.engagementRate}</p>
-        </div>
-
-        <div className="glass-panel p-6 rounded-2xl flex flex-col relative overflow-hidden group">
-          <div className="flex justify-between items-start mb-4">
-            <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center border border-blue-500/20">
-              <Clock className="w-5 h-5 text-white" />
-            </div>
-            <span className="flex items-center text-xs font-bold text-gray-400 bg-white/10 px-2 py-1 rounded-md">
-              Real Data
-            </span>
-          </div>
-          <p className="text-sm text-gray-400 font-bold uppercase tracking-wider mb-1">Processing Time Saved</p>
-          <p className="text-3xl font-bold text-white">{data.timeSaved}</p>
-        </div>
+        ))}
       </div>
 
-      {/* Charts Area */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 glass-panel p-6 rounded-3xl">
-          <h3 className="text-lg font-bold text-white mb-6">Processing Volume vs Virality</h3>
-          <div className="h-64 w-full flex items-end gap-2 px-4 pb-4 border-b border-l border-white/10 relative">
-            {/* Mock Chart Bars */}
-            {[40, 60, 45, 80, 55, 90, 70, 85, 60, 95, 75, 100].map((val, i) => (
-              <div key={i} className="flex-1 flex flex-col justify-end items-center gap-2 group relative">
-                <div 
-                  className="w-full bg-gradient-to-t from-white/10/40 to-purple-400/80 rounded-t-sm group-hover:from-purple-400/60 group-hover:to-purple-300 transition-all"
-                  style={{ height: `${val}%` }}
-                ></div>
-                {/* Tooltip on hover */}
-                <div className="absolute -top-10 bg-black/80 px-2 py-1 rounded text-xs text-white opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
-                  Vol: {val * 10}
-                </div>
-              </div>
-            ))}
-            <div className="absolute left-0 bottom-0 w-full flex justify-between text-[10px] text-gray-500 font-bold uppercase -mb-6">
-              <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span>
-            </div>
-            <div className="absolute left-0 bottom-0 h-full flex flex-col justify-between items-end text-[10px] text-gray-500 font-bold uppercase -ml-8 py-4">
-              <span>100</span><span>50</span><span>0</span>
-            </div>
-          </div>
+        <div className="glass-panel p-6 rounded-3xl flex flex-col gap-6">
+          <h3 className="text-lg font-bold text-white">Job Outcomes</h3>
+          {data.jobs.total === 0 ? (
+            <p className="text-sm text-gray-500">No jobs yet.</p>
+          ) : (
+            <>
+              <Bar label="Completed" value={data.jobs.completed} total={data.jobs.total} color="bg-green-500" />
+              <Bar label="Failed" value={data.jobs.failed} total={data.jobs.total} color="bg-red-500" />
+              <Bar label="Processing" value={data.jobs.processing} total={data.jobs.total} color="bg-blue-500" />
+            </>
+          )}
         </div>
 
-        <div className="glass-panel p-6 rounded-3xl flex flex-col">
-          <h3 className="text-lg font-bold text-white mb-6">Top Performing Categories</h3>
-          <div className="flex-1 flex flex-col gap-6 justify-center">
+        <div className="glass-panel p-6 rounded-3xl flex flex-col gap-6">
+          <h3 className="text-lg font-bold text-white">Jobs by Type</h3>
+          {jobTypes.length === 0 ? (
+            <p className="text-sm text-gray-500">No jobs yet.</p>
+          ) : jobTypes.map(([type, count]) => (
+            <Bar key={type} label={JOB_TYPE_LABELS[type] ?? type} value={count} total={data.jobs.total} color="bg-white" />
+          ))}
+        </div>
+
+        <div className="glass-panel p-6 rounded-3xl flex flex-col gap-4">
+          <h3 className="text-lg font-bold text-white flex items-center gap-2"><Send className="w-4 h-4" aria-hidden="true" /> Publishing</h3>
+          <div className="grid grid-cols-3 gap-3 text-center">
             {[
-              { name: 'Podcasts', percent: 45, color: 'bg-white' },
-              { name: 'Educational', percent: 30, color: 'bg-white' },
-              { name: 'Gaming', percent: 15, color: 'bg-white' },
-              { name: 'Vlogs', percent: 10, color: 'bg-blue-500' },
-            ].map(cat => (
-              <div key={cat.name}>
-                <div className="flex justify-between text-sm font-bold text-gray-300 mb-2">
-                  <span>{cat.name}</span>
-                  <span>{cat.percent}%</span>
-                </div>
-                <div className="w-full h-2 bg-black/40 rounded-full overflow-hidden">
-                  <div className={`h-full ${cat.color}`} style={{ width: `${cat.percent}%` }}></div>
-                </div>
+              { label: 'Published', value: data.posts.uploaded, color: 'text-green-400' },
+              { label: 'Scheduled', value: data.posts.scheduled, color: 'text-yellow-400' },
+              { label: 'Failed', value: data.posts.failed, color: 'text-red-400' },
+            ].map(item => (
+              <div key={item.label} className="bg-black/40 rounded-xl p-3 border border-white/5">
+                <p className={`text-2xl font-bold ${item.color}`}>{item.value}</p>
+                <p className="text-[10px] uppercase tracking-wider text-gray-500 font-bold">{item.label}</p>
               </div>
             ))}
           </div>
+          {platformEntries.length === 0 ? (
+            <p className="text-sm text-gray-500">Nothing has been published yet.</p>
+          ) : (
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="text-left text-[10px] uppercase tracking-wider text-gray-500">
+                  <th className="py-2 font-bold">Platform</th>
+                  <th className="py-2 font-bold text-right">Uploaded</th>
+                  <th className="py-2 font-bold text-right">Failed</th>
+                </tr>
+              </thead>
+              <tbody>
+                {platformEntries.map(([platform, counts]) => (
+                  <tr key={platform} className="border-t border-white/5">
+                    <td className="py-2 text-gray-200 font-semibold">{platformName(platform)}</td>
+                    <td className="py-2 text-right text-green-400 font-bold">{counts.uploaded}</td>
+                    <td className="py-2 text-right text-red-400 font-bold">{counts.failed}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
       </div>
     </div>

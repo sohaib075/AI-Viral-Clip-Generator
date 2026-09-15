@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { BookOpen, Play, CheckCircle2, Loader2, Sparkles, AlertCircle, Video } from 'lucide-react';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+import { useState, useEffect } from 'react';
+import { BookOpen, Play, CheckCircle2, Loader2, Sparkles, AlertCircle, Video, Download } from 'lucide-react';
+import { apiFetch, ApiError, errorMessage, mediaUrl } from '../api';
+import { downloadFile, fileNameFromUrl } from '../utils';
+import type { JobStatusResponse } from '../types';
 
 const StoryToVideo = () => {
   const [story, setStory] = useState('');
@@ -21,86 +22,71 @@ const StoryToVideo = () => {
       setErrorMsg('Please enter a story or text first.');
       return;
     }
-    
+
     setErrorMsg('');
+    setVideoUrl(null);
     setStatus('processing');
     setProgress(5);
     setMessage('Submitting your story...');
 
     try {
-      const response = await fetch(`${API_URL}/api/story-to-video`, {
+      const data = await apiFetch<{ jobId: string }>('/api/story-to-video', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ story, style, voice, aspectRatio }),
       });
-
-      // Check if response is HTML (like a 404 page from missing route)
-      const contentType = response.headers.get("content-type");
-      if (contentType && contentType.indexOf("application/json") !== -1) {
-        const data = await response.json();
-        if (!response.ok) throw new Error(data.error || 'Failed to start job');
-        setJobId(data.jobId);
-      } else {
-        throw new Error('Server returned an invalid response. Did you forget to restart the backend?');
-      }
-    } catch (err: any) {
-      console.error(err);
+      setJobId(data.jobId);
+    } catch (err) {
       setStatus('error');
-      setErrorMsg(err.message);
+      setErrorMsg(errorMessage(err, 'Failed to start the job.'));
     }
   };
 
   useEffect(() => {
-    let interval: ReturnType<typeof setInterval> | undefined;
+    if (!jobId || status !== 'processing') return;
+
+    let cancelled = false;
+    let timer: ReturnType<typeof setTimeout> | undefined;
     let consecutiveErrors = 0;
 
-    if (jobId && status === 'processing') {
-      interval = setInterval(async () => {
-        try {
-          const res = await fetch(`${API_URL}/api/jobs/${jobId}`);
-          if (!res.ok) {
-             if (res.status === 404) return; // Not registered yet
-             throw new Error('Failed to fetch status');
-          }
-          
-          const contentType = res.headers.get("content-type");
-          if (!contentType || contentType.indexOf("application/json") === -1) {
-            throw new Error('Invalid polling response. Backend might be down.');
-          }
+    const poll = async () => {
+      try {
+        const data = await apiFetch<JobStatusResponse>(`/api/jobs/${encodeURIComponent(jobId)}`);
+        if (cancelled) return;
+        consecutiveErrors = 0;
 
-          const data = await res.json();
-          consecutiveErrors = 0;
-
-          if (data.status === 'processing') {
-            setProgress(data.progress || 10);
-            setMessage(data.message || 'Processing...');
-          } else if (data.status === 'completed' || data.status === 'Completed') {
-            setStatus('completed');
-            setProgress(100);
-            setMessage('Video generation complete!');
-            
-            if (data.clips && data.clips.length > 0) {
-               setVideoUrl(`${API_URL}${data.clips[0].video_url}`);
-            } else if (data.clipsData && data.clipsData.length > 0) {
-               setVideoUrl(`${API_URL}${data.clipsData[0].video_url}`);
-            }
-          } else if (data.status === 'failed' || data.status === 'Failed') {
-            setStatus('error');
-            setErrorMsg(data.message || 'Job failed');
-          }
-        } catch (e) {
-          console.error(e);
-          // Tolerate brief hiccups, but don't spin forever if the server stays unreachable
-          consecutiveErrors += 1;
-          if (consecutiveErrors >= 5) {
-            setStatus('error');
-            setErrorMsg(e instanceof Error ? e.message : 'Lost connection to the server.');
-          }
+        if (data.status === 'completed') {
+          setStatus('completed');
+          setProgress(100);
+          setMessage('Video generation complete!');
+          setVideoUrl(mediaUrl(data.clips?.[0]?.video_url));
+          return;
         }
-      }, 2000);
-    }
-    
-    return () => clearInterval(interval);
+        if (data.status === 'failed') {
+          setStatus('error');
+          setErrorMsg(data.message || 'Job failed');
+          return;
+        }
+        setProgress(data.progress || 10);
+        setMessage(data.message || 'Processing...');
+      } catch (e) {
+        if (cancelled) return;
+        // Tolerate brief hiccups, but don't spin forever if the server stays unreachable
+        consecutiveErrors += 1;
+        const limit = e instanceof ApiError && e.status === 404 ? 10 : 5;
+        if (consecutiveErrors >= limit) {
+          setStatus('error');
+          setErrorMsg(errorMessage(e, 'Lost connection to the server.'));
+          return;
+        }
+      }
+      timer = setTimeout(poll, 2000);
+    };
+
+    poll();
+    return () => {
+      cancelled = true;
+      if (timer) clearTimeout(timer);
+    };
   }, [jobId, status]);
 
   return (
@@ -134,8 +120,8 @@ const StoryToVideo = () => {
               disabled={status === 'processing'}
             ></textarea>
 
-            {errorMsg && (
-              <div className="mt-4 p-3 bg-red-500/10 border border-red-500/20 rounded-lg flex items-start gap-3">
+            {errorMsg && status !== 'error' && (
+              <div className="mt-4 p-3 bg-red-500/10 border border-red-500/20 rounded-lg flex items-start gap-3" role="alert">
                 <AlertCircle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
                 <p className="text-sm text-red-200">{errorMsg}</p>
               </div>
@@ -241,27 +227,47 @@ const StoryToVideo = () => {
               </div>
             )}
             
+            {status === 'error' && (
+              <div className="flex-1 flex flex-col items-center justify-center text-center gap-4" role="alert">
+                <AlertCircle className="w-12 h-12 text-red-400" aria-hidden="true" />
+                <p className="text-sm text-red-300">{errorMsg || 'The video could not be generated.'}</p>
+              </div>
+            )}
+
+            {status === 'completed' && !videoUrl && (
+              <p className="text-sm text-red-300" role="alert">The job finished but returned no video.</p>
+            )}
+
             {status === 'completed' && videoUrl && (
               <div className="flex-1 flex flex-col">
                 <div className="flex items-center gap-2 text-green-400 mb-4 bg-green-400/10 p-3 rounded-lg border border-green-400/20">
                   <CheckCircle2 className="w-5 h-5" />
                   <span className="text-sm font-medium">Video successfully generated!</span>
                 </div>
-                <div className="relative w-full aspect-[9/16] bg-black rounded-lg overflow-hidden border border-white/10 shadow-2xl mx-auto max-w-[280px]">
-                  <video 
-                    src={videoUrl} 
-                    controls 
-                    autoPlay 
-                    className="w-full h-full object-cover"
+                <div className={`relative w-full bg-black rounded-lg overflow-hidden border border-white/10 shadow-2xl mx-auto ${aspectRatio === '16:9' ? 'aspect-video' : aspectRatio === '1:1' ? 'aspect-square max-w-[320px]' : 'aspect-[9/16] max-w-[280px]'}`}>
+                  <video
+                    src={videoUrl}
+                    controls
+                    autoPlay
+                    className="w-full h-full object-contain"
                   ></video>
                 </div>
-                <a 
-                  href={videoUrl}
-                  download
+                <button
+                  type="button"
+                  onClick={() => downloadFile(videoUrl, fileNameFromUrl(videoUrl))}
                   className="mt-6 w-full bg-white/10 hover:bg-white/20 text-white font-medium py-3 rounded-lg transition-colors flex items-center justify-center gap-2"
                 >
-                  Download Video
-                </a>
+                  <Download className="w-4 h-4" aria-hidden="true" /> Download Video
+                </button>
+                {jobId && (
+                  <button
+                    type="button"
+                    onClick={() => { setStatus('idle'); setJobId(null); setVideoUrl(null); setProgress(0); }}
+                    className="mt-3 w-full text-sm text-gray-400 hover:text-white font-medium py-2"
+                  >
+                    Create another video
+                  </button>
+                )}
               </div>
             )}
           </div>
