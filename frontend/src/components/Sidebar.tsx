@@ -1,44 +1,33 @@
-import { Home, Folder, BarChart, Settings, Zap, Key, LayoutDashboard, BookOpen, Share2, ListVideo } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
+import { MAIN_NAV } from '../nav';
 
 const Sidebar = () => {
   const location = useLocation();
 
-  const navItems = [
-    { name: 'Dashboard', path: '/', icon: <LayoutDashboard className="w-[18px] h-[18px]" /> },
-    { name: 'Auto Video Editor', path: '/auto-edit', icon: <Zap className="w-[18px] h-[18px]" /> },
-    { name: 'Story to Video', path: '/story-to-video', icon: <BookOpen className="w-[18px] h-[18px]" /> },
-    { name: 'My Projects', path: '/projects', icon: <Folder className="w-[18px] h-[18px]" /> },
-    { name: 'Social Accounts', path: '/accounts', icon: <Share2 className="w-[18px] h-[18px]" /> },
-    { name: 'Publishing Queue', path: '/queue', icon: <ListVideo className="w-[18px] h-[18px]" /> },
-    { name: 'Analytics', path: '/analytics', icon: <BarChart className="w-[18px] h-[18px]" /> },
-    { name: 'Settings', path: '/settings', icon: <Settings className="w-[18px] h-[18px]" /> },
-  ];
-
   return (
-    <aside className="w-64 h-screen fixed left-0 top-0 border-r border-white/5 bg-black/90 backdrop-blur-3xl hidden md:flex flex-col z-50">
-      <div className="p-8 flex items-center gap-3">
-        <div className="bg-gradient-to-tr from-[#66fcf1]/20 to-white/5 p-[1px] rounded-xl shadow-[0_0_15px_rgba(102,252,241,0.2)]">
-          <div className="bg-black p-1 rounded-[11px]">
-            <img src="/logo.png" alt="Logo" className="w-7 h-7 rounded-lg" />
-          </div>
-        </div>
-        <span className="text-xl font-bold tracking-tight text-white">ClipGenius</span>
-      </div>
+    <aside className="w-60 h-screen fixed left-0 top-0 border-r border-[var(--color-border)] bg-[var(--color-canvas)] hidden md:flex flex-col z-50">
+      <Link to="/" className="px-6 py-7 flex items-center gap-3 group">
+        <img src="/logo.png" alt="" className="w-8 h-8 rounded-md" />
+        <span className="font-display text-lg font-bold tracking-tight text-[var(--color-ink)] group-hover:text-white transition-colors">
+          ClipGenius
+        </span>
+      </Link>
 
-      <div className="flex-1 py-4 px-4 flex flex-col gap-1.5">
-        <div className="text-[10px] font-semibold text-gray-500 uppercase tracking-widest mb-3 px-3">Menu</div>
-        {navItems.map((item) => {
+      <nav className="flex-1 px-3 pb-6 flex flex-col gap-0.5 overflow-y-auto" aria-label="Main">
+        <p className="px-3 mb-2 text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--color-faint)]">
+          Workspace
+        </p>
+        {MAIN_NAV.map((item) => {
           const isActive = location.pathname === item.path;
           return (
             <Link
-              key={item.name}
+              key={item.path}
               to={item.path}
               aria-current={isActive ? 'page' : undefined}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-300 text-sm font-medium ${
-                isActive 
-                  ? 'bg-white/10 text-white shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)]' 
-                  : 'text-gray-400 hover:text-white hover:bg-white/5'
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                isActive
+                  ? 'bg-[var(--color-accent-soft)] text-[var(--color-accent)]'
+                  : 'text-[var(--color-muted)] hover:text-[var(--color-ink)] hover:bg-white/[0.03]'
               }`}
             >
               {item.icon}
@@ -46,8 +35,13 @@ const Sidebar = () => {
             </Link>
           );
         })}
-      </div>
+      </nav>
 
+      <div className="px-5 py-5 border-t border-[var(--color-border)]">
+        <p className="text-[11px] text-[var(--color-faint)] leading-relaxed">
+          Turn long videos into short, captioned clips ready to publish.
+        </p>
+      </div>
     </aside>
   );
 };

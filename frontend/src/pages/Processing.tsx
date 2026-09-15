@@ -1,18 +1,18 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
+import { Loader2 } from 'lucide-react';
 import { apiFetch, ApiError, errorMessage } from '../api';
 import type { JobStatusResponse } from '../types';
 
 const POLL_INTERVAL_MS = 2000;
-// Keep retrying through brief outages (e.g. the AI service restarting) before giving up
 const MAX_CONSECUTIVE_ERRORS = 15;
 
 const Processing = () => {
   const { jobId } = useParams();
   const navigate = useNavigate();
-  const [statusMessage, setStatusMessage] = useState('Initializing AI Pipeline...');
+  const [statusMessage, setStatusMessage] = useState('Initializing pipeline…');
   const [progress, setProgress] = useState(0);
-  const [estimatedTimeLeft, setEstimatedTimeLeft] = useState('Calculating...');
+  const [estimatedTimeLeft, setEstimatedTimeLeft] = useState('Calculating…');
   const [connectionIssue, setConnectionIssue] = useState('');
   const [error, setError] = useState('');
   const [attempt, setAttempt] = useState(0);
@@ -39,7 +39,7 @@ const Processing = () => {
 
         const currentProgress = data.progress || 0;
         setProgress(currentProgress);
-        setStatusMessage(data.message || 'Processing...');
+        setStatusMessage(data.message || 'Processing…');
 
         if (data.status === 'completed') {
           setEstimatedTimeLeft('Complete');
@@ -50,7 +50,11 @@ const Processing = () => {
         if (currentProgress > 0 && currentProgress < 100) {
           const elapsedMs = Date.now() - startTime;
           const remainingSecs = Math.floor(((elapsedMs / currentProgress) * 100 - elapsedMs) / 1000);
-          setEstimatedTimeLeft(remainingSecs <= 0 ? 'Almost done...' : remainingSecs > 60 ? `~${Math.ceil(remainingSecs / 60)} mins` : `~${remainingSecs} secs`);
+          setEstimatedTimeLeft(
+            remainingSecs <= 0 ? 'Almost done…'
+              : remainingSecs > 60 ? `~${Math.ceil(remainingSecs / 60)} min`
+              : `~${remainingSecs}s`
+          );
         }
       } catch (err) {
         if (cancelled) return;
@@ -60,7 +64,7 @@ const Processing = () => {
           setError(notFound ? 'This job could not be found.' : errorMessage(err, 'Lost connection to the server.'));
           return;
         }
-        setConnectionIssue(notFound ? 'Waiting for the job to start...' : 'Connection problem, retrying...');
+        setConnectionIssue(notFound ? 'Waiting for the job to start…' : 'Connection problem, retrying…');
       }
       timer = setTimeout(poll, POLL_INTERVAL_MS);
     };
@@ -74,69 +78,54 @@ const Processing = () => {
 
   if (error) {
     return (
-      <div className="w-full max-w-2xl mx-auto flex flex-col items-center text-center animate-fade-in-up mt-20 px-4">
-        <div className="mb-10 text-red-500">
-          <svg className="w-32 h-32 mx-auto drop-shadow-[0_0_20px_rgba(239,68,68,0.5)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-        </div>
-        <h2 className="text-4xl font-bold text-white mb-4 drop-shadow-xl">Oops! Something went wrong.</h2>
-        <p className="text-xl text-red-400 mb-10 font-bold drop-shadow-md" role="alert">{error}</p>
-
-        <div className="flex flex-wrap gap-4 justify-center">
-          <button
-            onClick={() => { setError(''); setAttempt(a => a + 1); }}
-            className="px-8 py-4 bg-white/10 hover:bg-white/20 text-white font-bold rounded-xl transition-all border border-white/20"
-          >
-            Check Again
-          </button>
-          <Link
-            to="/"
-            className="px-8 py-4 bg-white hover:bg-gray-200 text-black font-bold rounded-xl transition-all shadow-[0_0_20px_rgba(255,255,255,0.4)] hover:scale-105"
-          >
-            Return to Main Page
-          </Link>
+      <div className="page-shell max-w-lg mx-auto text-center animate-fade-in-up pt-16">
+        <div className="panel p-8">
+          <h2 className="page-title mb-3">Processing failed</h2>
+          <p className="text-[var(--color-danger)] mb-8 font-medium" role="alert">{error}</p>
+          <div className="flex flex-wrap gap-3 justify-center">
+            <button type="button" onClick={() => { setError(''); setAttempt((a) => a + 1); }} className="btn-secondary">
+              Check again
+            </button>
+            <Link to="/" className="btn-primary">Back to dashboard</Link>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="w-full max-w-2xl mx-auto flex flex-col items-center text-center animate-fade-in-up mt-20 px-4">
-      <div className="relative mb-16">
-        <div className="w-40 h-40 rounded-full border-8 border-white/5 flex items-center justify-center relative">
-          <div className="absolute inset-[-8px] rounded-full border-8 border-t-[#66fcf1] border-r-transparent border-b-[#66fcf1]/30 border-l-transparent animate-spin drop-shadow-[0_0_15px_rgba(102,252,241,0.5)]"></div>
-          <div className="bg-black p-5 rounded-3xl border border-[#66fcf1]/30 animate-pulse shadow-[0_0_40px_rgba(102,252,241,0.3)] flex items-center justify-center relative z-10 overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-tr from-[#66fcf1]/10 to-transparent"></div>
-            <img src="/logo.png" alt="ClipGenius Logo" className="w-14 h-14 rounded-xl object-contain relative z-10 drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]" />
-          </div>
+    <div className="page-shell max-w-lg mx-auto text-center animate-fade-in-up pt-12">
+      <div className="panel p-8 sm:p-10">
+        <div className="mx-auto mb-8 w-14 h-14 rounded-xl bg-[var(--color-accent-soft)] flex items-center justify-center">
+          <Loader2 className="w-7 h-7 text-[var(--color-accent)] animate-spin" aria-hidden="true" />
         </div>
-      </div>
 
-      <h2 className="text-5xl font-bold text-white mb-6 drop-shadow-xl">AI Magic at Work</h2>
-      <p className="text-2xl text-white/90 mb-4 font-bold animate-pulse drop-shadow-md" role="status">{statusMessage}</p>
-      <p className="text-sm text-yellow-400 mb-8 h-5">{connectionIssue}</p>
+        <h2 className="font-display text-2xl font-bold text-[var(--color-ink)] mb-2 tracking-tight">Rendering your clips</h2>
+        <p className="text-[var(--color-muted)] mb-2 font-medium" role="status">{statusMessage}</p>
+        <p className="text-sm text-[var(--color-warn)] h-5 mb-8">{connectionIssue}</p>
 
-      <div
-        className="w-full glass-panel-dark rounded-full h-6 mb-4 overflow-hidden p-1"
-        role="progressbar"
-        aria-valuemin={0}
-        aria-valuemax={100}
-        aria-valuenow={progress}
-      >
         <div
-          className="bg-white h-full rounded-full transition-all duration-500 ease-out relative shadow-[0_0_20px_rgba(255,255,255,0.8)] overflow-hidden"
-          style={{ width: `${progress}%` }}
+          className="w-full h-2 rounded-full bg-[var(--color-canvas)] border border-[var(--color-border)] overflow-hidden mb-4"
+          role="progressbar"
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={progress}
         >
-          <div className="absolute inset-0 bg-black/10 animate-shimmer"></div>
+          <div
+            className="h-full bg-[var(--color-accent)] transition-all duration-500 ease-out"
+            style={{ width: `${progress}%` }}
+          />
         </div>
-      </div>
-      <div className="flex justify-between items-center w-full text-lg text-white font-bold px-4 mb-4">
-        <span className="drop-shadow-md">{progress}% Completed</span>
-        {jobId && <span className="drop-shadow-md opacity-80 text-sm">Job ID: {jobId}</span>}
-      </div>
-      <div className="text-white font-bold text-lg">
-        Estimated Time Left: {estimatedTimeLeft}
+
+        <div className="flex justify-between text-sm font-semibold text-[var(--color-ink)] mb-2">
+          <span>{progress}%</span>
+          <span className="text-[var(--color-muted)] font-medium">{estimatedTimeLeft}</span>
+        </div>
+        {jobId && (
+          <p className="text-[11px] text-[var(--color-faint)] font-mono mt-4 truncate" title={jobId}>
+            Job {jobId}
+          </p>
+        )}
       </div>
     </div>
   );

@@ -5,7 +5,6 @@ import type { Session } from '../types';
 
 type GateState = 'checking' | 'ready' | 'needs-token';
 
-// When the backend has API_TOKEN set, asks for the token before showing the app
 const AuthGate = ({ children }: { children: ReactNode }) => {
   const [state, setState] = useState<GateState>('checking');
   const [input, setInput] = useState('');
@@ -17,7 +16,6 @@ const AuthGate = ({ children }: { children: ReactNode }) => {
       const session = await apiFetch<Session>('/api/session');
       setState(!session.tokenRequired || session.authenticated ? 'ready' : 'needs-token');
     } catch {
-      // Backend unreachable: let the pages show their own connection errors
       setState('ready');
     }
   }, []);
@@ -57,45 +55,43 @@ const AuthGate = ({ children }: { children: ReactNode }) => {
 
   if (state === 'checking') {
     return (
-      <div className="min-h-screen flex items-center justify-center" role="status" aria-label="Connecting to the server">
-        <Loader2 className="w-8 h-8 text-white/60 animate-spin" />
+      <div className="min-h-screen studio-bg flex items-center justify-center" role="status" aria-label="Connecting to the server">
+        <Loader2 className="w-7 h-7 text-[var(--color-accent)] animate-spin" />
       </div>
     );
   }
 
   if (state === 'needs-token') {
     return (
-      <div className="min-h-screen flex items-center justify-center p-6">
-        <form onSubmit={submit} className="glass-panel w-full max-w-md rounded-3xl p-8 space-y-6">
-          <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center">
-              <KeyRound className="w-5 h-5 text-white" />
+      <div className="min-h-screen studio-bg flex items-center justify-center p-6">
+        <form onSubmit={submit} className="panel w-full max-w-md p-8 space-y-6">
+          <div className="flex items-start gap-3">
+            <div className="w-10 h-10 rounded-lg bg-[var(--color-accent-soft)] flex items-center justify-center shrink-0">
+              <KeyRound className="w-5 h-5 text-[var(--color-accent)]" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-white">Access token required</h1>
-              <p className="text-sm text-gray-400">This server is protected. Enter the API_TOKEN from backend/.env.</p>
+              <h1 className="font-display text-xl font-bold text-[var(--color-ink)]">Access token required</h1>
+              <p className="text-sm text-[var(--color-muted)] mt-1">
+                Enter the <code className="text-[var(--color-ink)]">API_TOKEN</code> from <code className="text-[var(--color-ink)]">backend/.env</code>.
+              </p>
             </div>
           </div>
 
-          <div className="space-y-2">
-            <label htmlFor="access-token" className="text-xs font-semibold text-gray-400 uppercase tracking-widest">Access token</label>
+          <div>
+            <label htmlFor="access-token" className="field-label">Access token</label>
             <input
               id="access-token"
               type="password"
               autoComplete="current-password"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              className="w-full px-4 py-3 bg-black/40 border border-white/10 rounded-xl focus:outline-none focus:border-white/40 text-white text-sm"
+              className="field-input"
               autoFocus
             />
-            {error && <p className="text-sm text-red-400" role="alert">{error}</p>}
+            {error && <p className="mt-2 text-sm text-[var(--color-danger)]" role="alert">{error}</p>}
           </div>
 
-          <button
-            type="submit"
-            disabled={!input.trim() || submitting}
-            className="w-full py-3 rounded-xl bg-white text-black font-bold disabled:opacity-50 flex items-center justify-center gap-2"
-          >
+          <button type="submit" disabled={!input.trim() || submitting} className="btn-primary w-full">
             {submitting && <Loader2 className="w-4 h-4 animate-spin" />}
             Continue
           </button>

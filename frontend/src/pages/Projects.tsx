@@ -3,7 +3,8 @@ import { Folder, Play, Clock, CheckCircle, XCircle, Search, Film, AlertTriangle 
 import { Link } from 'react-router-dom';
 import { apiFetch, errorMessage, mediaUrl } from '../api';
 import { formatDuration, timeAgo } from '../utils';
-import { jobLink, JOB_TYPE_LABELS } from '../jobs';
+import { jobLink, JOB_TYPE_LABELS, statusBadgeClass } from '../jobs';
+import { PageHeader, Panel } from '../components/ui';
 import type { JobSummary } from '../types';
 
 type StatusFilter = 'all' | JobSummary['status'];
@@ -29,40 +30,34 @@ const Projects = () => {
   );
 
   return (
-    <div className="w-full flex flex-col p-8 animate-fade-in-up">
-      {/* Header */}
-      <div className="mb-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-white mb-2 flex items-center gap-3">
-            <Folder className="w-8 h-8 text-white" aria-hidden="true" />
-            My Projects
-          </h1>
-          <p className="text-gray-400 font-medium">Manage and review all your video processing jobs.</p>
-        </div>
+    <div className="page-shell animate-fade-in-up max-w-6xl mx-auto">
+      <PageHeader
+        title="My Projects"
+        subtitle="Manage and review all your video processing jobs."
+        action={
+          <Link to="/" className="btn-primary">
+            New project
+          </Link>
+        }
+      />
 
-        <Link to="/" className="px-6 py-3 bg-white hover:bg-gray-200 text-black font-bold rounded-xl transition-all shadow-lg">
-          New Project
-        </Link>
-      </div>
-
-      {/* Toolbar */}
       <div className="flex flex-col md:flex-row gap-4 mb-8">
-        <div className="relative flex-1 group">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-white transition-colors" aria-hidden="true" />
+        <div className="relative flex-1">
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--color-faint)]" aria-hidden="true" />
           <input
             type="search"
             aria-label="Search projects"
             placeholder="Search projects..."
             value={query}
             onChange={e => setQuery(e.target.value)}
-            className="w-full pl-12 pr-4 py-3 bg-black/40 border border-white/10 rounded-xl focus:outline-none focus:border-white/50 transition-all text-white placeholder:text-gray-600"
+            className="field-input pl-10"
           />
         </div>
         <select
           aria-label="Filter by status"
           value={statusFilter}
           onChange={e => setStatusFilter(e.target.value as StatusFilter)}
-          className="px-4 py-3 bg-black/40 border border-white/10 rounded-xl text-white font-semibold focus:outline-none focus:border-white/50"
+          className="field-input md:w-48"
         >
           <option value="all">All statuses</option>
           <option value="Completed">Completed</option>
@@ -71,52 +66,42 @@ const Projects = () => {
         </select>
       </div>
 
-      {/* Project Grid */}
       {loading ? (
         <div className="flex justify-center items-center py-20" role="status" aria-label="Loading projects">
-          <div className="w-12 h-12 border-4 border-white/20 border-t-[#66fcf1] rounded-full animate-spin"></div>
+          <div className="w-10 h-10 border-2 border-[var(--color-border)] border-t-[var(--color-accent)] rounded-full animate-spin" />
         </div>
       ) : error ? (
-        <div className="flex flex-col items-center justify-center py-20 bg-black/40 rounded-2xl border border-red-500/20" role="alert">
-          <AlertTriangle className="w-12 h-12 text-red-400 mb-4" aria-hidden="true" />
-          <p className="text-red-400 font-medium">{error}</p>
+        <div className="alert-error flex flex-col items-center justify-center py-16 text-center" role="alert">
+          <AlertTriangle className="w-10 h-10 mb-3" aria-hidden="true" />
+          <p className="font-medium">{error}</p>
         </div>
       ) : visible.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-20 bg-black/40 rounded-2xl border border-white/10">
-          <Folder className="w-16 h-16 text-gray-500 mb-4 opacity-50" aria-hidden="true" />
-          <h2 className="text-xl font-bold text-white mb-2">No projects found</h2>
-          <p className="text-gray-400">{projects.length === 0 ? 'Start by submitting a new video on the dashboard.' : 'Try a different search or filter.'}</p>
-        </div>
+        <Panel className="flex flex-col items-center justify-center py-20 text-center">
+          <Folder className="w-12 h-12 text-[var(--color-faint)] mb-4 opacity-60" aria-hidden="true" />
+          <h2 className="font-display text-xl font-bold text-[var(--color-ink)] mb-2">No projects found</h2>
+          <p className="text-[var(--color-muted)] text-sm">{projects.length === 0 ? 'Start by submitting a new video on the dashboard.' : 'Try a different search or filter.'}</p>
+        </Panel>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {visible.map((project, i) => {
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          {visible.map((project) => {
             const thumbnail = mediaUrl(project.thumbnail);
             const duration = formatDuration(project.sourceDuration);
             return (
-              <div
-                key={project.id}
-                className="glass-panel-dark rounded-2xl overflow-hidden border border-white/10 hover:border-white/30 transition-all group flex flex-col hover:-translate-y-1 hover:shadow-xl"
-                style={{ animationDelay: `${i * 0.1}s`, animationFillMode: 'both' }}
-              >
-                {/* Thumbnail Area */}
-                <div className="h-40 relative overflow-hidden bg-black/50 border-b border-white/10 flex items-center justify-center">
+              <Panel key={project.id} className="overflow-hidden flex flex-col">
+                <div className="h-40 relative overflow-hidden bg-[var(--color-canvas)] border-b border-[var(--color-border)] flex items-center justify-center group">
                   {thumbnail ? (
                     <img
                       src={thumbnail}
                       alt=""
-                      className="w-full h-full object-cover opacity-70 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"
+                      className="w-full h-full object-cover opacity-80"
                     />
                   ) : (
-                    <Film className="w-10 h-10 text-gray-700" aria-hidden="true" />
+                    <Film className="w-10 h-10 text-[var(--color-faint)]" aria-hidden="true" />
                   )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
 
-                  <div className="absolute top-3 right-3 flex gap-2">
-                    <span className={`px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider backdrop-blur-md shadow-lg
-                      ${project.status === 'Completed' ? 'bg-green-500/20 text-green-400 border border-green-500/30' :
-                        project.status === 'Processing' ? 'bg-blue-500/20 text-white border border-blue-500/30 animate-pulse' :
-                        'bg-red-500/20 text-red-400 border border-red-500/30'}`}
-                    >
+                  <div className="absolute top-3 right-3">
+                    <span className={`px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider border ${statusBadgeClass(project.status)}`}>
                       {project.status === 'Completed' && <CheckCircle className="w-3 h-3 inline mr-1" aria-hidden="true" />}
                       {project.status === 'Processing' && <Clock className="w-3 h-3 inline mr-1" aria-hidden="true" />}
                       {project.status === 'Failed' && <XCircle className="w-3 h-3 inline mr-1" aria-hidden="true" />}
@@ -125,45 +110,44 @@ const Projects = () => {
                   </div>
 
                   {duration && (
-                    <div className="absolute bottom-3 right-3 bg-black/60 backdrop-blur-sm px-2 py-1 rounded text-xs font-bold text-white border border-white/10" title="Source video length">
+                    <div className="absolute bottom-3 right-3 bg-black/60 px-2 py-1 rounded text-xs font-bold text-white border border-white/10" title="Source video length">
                       {duration}
                     </div>
                   )}
 
-                  <Link to={jobLink(project)} aria-label={`Open ${project.title}`} className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity bg-black/30 backdrop-blur-[2px]">
-                    <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center transform scale-75 group-hover:scale-100 transition-transform duration-300">
-                      <Play className="w-5 h-5 text-black ml-1" fill="currentColor" aria-hidden="true" />
+                  <Link to={jobLink(project)} aria-label={`Open ${project.title}`} className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity bg-black/25">
+                    <div className="w-11 h-11 bg-[var(--color-accent)] rounded-full flex items-center justify-center">
+                      <Play className="w-5 h-5 text-white ml-0.5" fill="currentColor" aria-hidden="true" />
                     </div>
                   </Link>
                 </div>
 
-                {/* Details Area */}
                 <div className="p-5 flex-1 flex flex-col">
-                  <h3 className="text-lg font-bold text-white line-clamp-1 mb-2" title={project.title}>{project.title}</h3>
+                  <h3 className="font-display text-base font-bold text-[var(--color-ink)] line-clamp-1 mb-2" title={project.title}>{project.title}</h3>
 
-                  <p className="text-xs text-gray-500 font-medium mb-4 flex items-center gap-2">
+                  <p className="text-xs text-[var(--color-faint)] font-medium mb-4 flex items-center gap-2">
                     <span>{JOB_TYPE_LABELS[project.type] ?? project.type}</span>
                     <span aria-hidden="true">•</span>
                     <span>{timeAgo(project.createdAt)}</span>
                   </p>
 
                   {project.status === 'Failed' && project.error && (
-                    <p className="text-xs text-red-400/90 mb-4 line-clamp-3" title={project.error}>{project.error}</p>
+                    <p className="text-xs text-[var(--color-danger)] mb-4 line-clamp-3" title={project.error}>{project.error}</p>
                   )}
 
-                  <div className="mt-auto pt-4 border-t border-white/5 flex justify-between items-center">
+                  <div className="mt-auto pt-4 border-t border-[var(--color-border)] flex justify-between items-center">
                     <div className="flex flex-col">
-                      <span className="text-[10px] uppercase tracking-wider text-gray-500 font-bold mb-1">
+                      <span className="text-[10px] uppercase tracking-wider text-[var(--color-faint)] font-bold mb-1">
                         {project.type === 'clips' ? 'Extracted Clips' : 'Videos'}
                       </span>
-                      <span className="text-lg font-bold text-white">{project.clips}</span>
+                      <span className="text-lg font-bold text-[var(--color-ink)]">{project.clips}</span>
                     </div>
-                    <Link to={jobLink(project)} className="text-sm font-bold text-white hover:underline">
+                    <Link to={jobLink(project)} className="text-sm font-semibold text-[var(--color-accent)] hover:underline">
                       {project.status === 'Completed' ? 'View Clips' : project.status === 'Processing' ? 'View Progress' : 'View Details'} &rarr;
                     </Link>
                   </div>
                 </div>
-              </div>
+              </Panel>
             );
           })}
         </div>
