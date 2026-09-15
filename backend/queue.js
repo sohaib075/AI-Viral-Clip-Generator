@@ -1,5 +1,6 @@
 const db = require('./db');
 const { decrypt } = require('./crypto');
+const { resolveMediaUrl } = require('./paths');
 const { validateVideo } = require('./uploaders/validator');
 const { refreshAccessToken } = require('./uploaders/tokens');
 const { uploadToYouTube } = require('./uploaders/youtube');
@@ -7,11 +8,7 @@ const { uploadToTwitter } = require('./uploaders/twitter');
 const { uploadToTikTok } = require('./uploaders/tiktok');
 const { uploadToInstagram } = require('./uploaders/instagram');
 const fs = require('fs');
-const path = require('path');
-const axios = require('axios');
 const crypto = require('crypto');
-const { Transform } = require('stream');
-const { pipeline } = require('stream/promises');
 
 const UPLOADERS = {
     youtube: uploadToYouTube,
@@ -19,45 +16,43 @@ const UPLOADERS = {
     tiktok: uploadToTikTok,
     instagram: uploadToInstagram,
 };
+const SUPPORTED_PLATFORMS = Object.keys(UPLOADERS);
 
 const MAX_RETRIES = 3;
-const DOWNLOAD_TIMEOUT_MS = 5 * 60 * 1000;
 
 // An error that won't go away by retrying (validation failure, duplicate, revoked credentials)
 const permanentError = (message) => Object.assign(new Error(message), { retryable: false });
 
-const downloadAndHashVideo = async (url) => {
-    const tempDir = path.join(__dirname, 'temp');
-    fs.mkdirSync(tempDir, { recursive: true });
-    const tempVideoPath = path.join(tempDir, `queue_${Date.now()}_${Math.floor(Math.random()*1000)}.mp4`);
-
-    console.log(`[Queue] Downloading video to compute global hash...`);
+const hashFile = (filePath) => new Promise((resolve, reject) => {
     const hash = crypto.createHash('sha256');
+    fs.createReadStream(filePath)
+        .on('data', chunk => hash.update(chunk))
+        .on('error', reject)
+        .on('end', () => resolve(hash.digest('hex')));
+});
+
+// Global duplicate lock: one upload per video per platform.
+// 'uploading' = in progress, 'completed' = published, 'unconfirmed' = may have been published.
+const acquireUploadLock = async (videoHash, platform, retryRequested) => {
     try {
-        // The abort signal also covers the body download, which axios' timeout does not
-        const response = await axios({
-            url,
-            method: 'GET',
-            responseType: 'stream',
-            timeout: DOWNLOAD_TIMEOUT_MS,
-            signal: AbortSignal.timeout(DOWNLOAD_TIMEOUT_MS)
-        });
-        const hasher = new Transform({
-            transform(chunk, encoding, callback) {
-                hash.update(chunk);
-                callback(null, chunk);
-            }
-        });
-        await pipeline(response.data, hasher, fs.createWriteStream(tempVideoPath));
+        await db.runAsync(`INSERT INTO uploaded_videos (video_hash, platform, upload_status) VALUES (?, ?, 'uploading')`, [videoHash, platform]);
+        return;
     } catch (err) {
-        fs.rmSync(tempVideoPath, { force: true });
-        throw err;
+        if (err.code !== 'SQLITE_CONSTRAINT') throw err;
     }
 
-    return { tempVideoPath, videoHash: hash.digest('hex') };
+    const existing = await db.getAsync(`SELECT upload_status FROM uploaded_videos WHERE video_hash = ? AND platform = ?`, [videoHash, platform]);
+    if (existing?.upload_status === 'completed') {
+        throw permanentError('Blocked: Video already uploaded to this platform.');
+    }
+    if (!retryRequested) {
+        throw permanentError('An earlier upload of this video may have been published. Check the platform, then use Retry to upload it again.');
+    }
+    // The user checked and asked to try again
+    await db.runAsync(`UPDATE uploaded_videos SET upload_status = 'uploading' WHERE video_hash = ? AND platform = ?`, [videoHash, platform]);
 };
 
-const uploadToPlatform = async (post, platform, tempVideoPath, videoHash) => {
+const uploadToPlatform = async (post, platform, videoPath, videoHash, retryRequested) => {
     const upload = UPLOADERS[platform];
     if (!upload) {
         throw permanentError('Platform SDK not implemented yet.');
@@ -79,7 +74,7 @@ const uploadToPlatform = async (post, platform, tempVideoPath, videoHash) => {
 
     // 1. Validate video (the result won't change on retry)
     try {
-        await validateVideo(tempVideoPath, platform);
+        await validateVideo(videoPath, platform);
     } catch (err) {
         throw permanentError(err.message);
     }
@@ -87,22 +82,18 @@ const uploadToPlatform = async (post, platform, tempVideoPath, videoHash) => {
     // 2. Refresh short-lived tokens
     await refreshAccessToken(credentials);
 
-    // 3. Strict Duplicate Check (Global Lock per platform)
-    try {
-        await db.runAsync(`INSERT INTO uploaded_videos (video_hash, platform, upload_status) VALUES (?, ?, 'uploading')`, [videoHash, platform]);
-    } catch (err) {
-        if (err.code !== 'SQLITE_CONSTRAINT') throw err;
-        const existing = await db.getAsync(`SELECT upload_status FROM uploaded_videos WHERE video_hash = ? AND platform = ?`, [videoHash, platform]);
-        if (existing?.upload_status === 'uploading') {
-            throw permanentError('An earlier upload of this video was interrupted or is still running. Check the platform before posting again.');
-        }
-        throw permanentError('Blocked: Video already uploaded to this platform.');
-    }
+    // 3. Strict Duplicate Check
+    await acquireUploadLock(videoHash, platform, retryRequested);
 
-    // 4. Upload using local file
+    // 4. Upload the local file
     try {
-        await upload(post, credentials, tempVideoPath);
+        await upload(post, credentials, videoPath);
     } catch (err) {
+        if (err.mayHavePublished) {
+            // Keep the lock so an automatic retry can't post the video twice
+            await db.runAsync(`UPDATE uploaded_videos SET upload_status = 'unconfirmed' WHERE video_hash = ? AND platform = ?`, [videoHash, platform]);
+            throw permanentError(`${err.message} It may still have been published, so check the platform before using Retry.`);
+        }
         // Release the lock on failure so the file can be retried
         await db.runAsync(`DELETE FROM uploaded_videos WHERE video_hash = ? AND platform = ?`, [videoHash, platform]);
         throw err;
@@ -126,7 +117,7 @@ const saveOutcome = async (post, platforms, results) => {
     const errorParts = failed.map(p => `[${p}] ${results[p]?.error || 'Not attempted'}`);
     if (platforms.length === 0) errorParts.push('No platforms selected.');
     if (uploaded.length > 0) errorParts.unshift(`Uploaded to: ${uploaded.join(', ')}`);
-    const errorStr = errorParts.join(' | ').substring(0, 500);
+    const errorStr = errorParts.join(' | ').substring(0, 1000);
 
     const nextRetry = post.retry_count + 1;
     const canRetry = nextRetry <= MAX_RETRIES && failed.some(p => results[p]?.retryable);
@@ -152,42 +143,49 @@ const processPost = async (post) => {
     let results = {};
     try { results = JSON.parse(post.platform_results || '{}') || {}; } catch (e) {}
 
-    let tempVideoPath = null;
-    try {
-        const download = await downloadAndHashVideo(post.clip_url);
-        tempVideoPath = download.tempVideoPath;
-        console.log(`[Queue] Video hash generated: ${download.videoHash}`);
-
-        for (const platform of platforms) {
-            if (results[platform] === 'uploaded') continue; // Done on an earlier attempt
-            try {
-                await uploadToPlatform(post, platform, tempVideoPath, download.videoHash);
-                results[platform] = 'uploaded';
-            } catch (err) {
-                console.error(`[Queue] [${platform}] Upload failed for post ${post.id}:`, err.message);
-                results[platform] = { error: err.message || 'Unknown error', retryable: err.retryable !== false };
-            }
-            // Save progress per platform in case the server stops mid-post
-            await db.runAsync(`UPDATE posts SET platform_results = ? WHERE id = ?`, [JSON.stringify(results), post.id]);
-        }
-    } catch (err) {
-        console.error(`[Queue] Failed to download video for post ${post.id}:`, err.message);
+    // Clips are read straight from the temp folder; nothing is fetched over the network
+    const videoPath = resolveMediaUrl(post.clip_url);
+    if (!videoPath) {
         for (const platform of platforms) {
             if (results[platform] !== 'uploaded') {
-                results[platform] = { error: `Failed to download video: ${err.message}`, retryable: true };
+                results[platform] = { error: 'The clip file no longer exists.', retryable: false };
             }
         }
-    } finally {
-        // Cleanup local temp file
-        if (tempVideoPath) fs.rmSync(tempVideoPath, { force: true });
+        return saveOutcome(post, platforms, results);
+    }
+
+    let videoHash;
+    try {
+        videoHash = await hashFile(videoPath);
+        console.log(`[Queue] Video hash generated: ${videoHash}`);
+    } catch (err) {
+        console.error(`[Queue] Failed to read clip for post ${post.id}:`, err.message);
+        for (const platform of platforms) {
+            if (results[platform] !== 'uploaded') {
+                results[platform] = { error: `Failed to read the clip: ${err.message}`, retryable: true };
+            }
+        }
+        return saveOutcome(post, platforms, results);
+    }
+
+    for (const platform of platforms) {
+        if (results[platform] === 'uploaded') continue; // Done on an earlier attempt
+        const retryRequested = results[platform]?.retryRequested === true;
+        try {
+            await uploadToPlatform(post, platform, videoPath, videoHash, retryRequested);
+            results[platform] = 'uploaded';
+        } catch (err) {
+            console.error(`[Queue] [${platform}] Upload failed for post ${post.id}:`, err.message);
+            results[platform] = { error: err.message || 'Unknown error', retryable: err.retryable !== false };
+        }
+        // Save progress per platform in case the server stops mid-post
+        await db.runAsync(`UPDATE posts SET platform_results = ? WHERE id = ?`, [JSON.stringify(results), post.id]);
     }
 
     await saveOutcome(post, platforms, results);
 };
 
 const processQueue = async () => {
-    console.log("[Queue] Checking for scheduled posts...");
-
     try {
         // scheduled_time is stored in UTC, so compare against UTC
         const rows = await db.allAsync(`SELECT * FROM posts WHERE status = 'pending' AND scheduled_time <= datetime('now')`);
@@ -203,7 +201,7 @@ const processQueue = async () => {
         await Promise.all(rows.map(post => processPost(post).catch(async (err) => {
             console.error(`[Queue] Unexpected error processing post ${post.id}:`, err);
             await db.runAsync(`UPDATE posts SET status = 'failed', error_message = ? WHERE id = ?`,
-                [String(err.message || err).substring(0, 500), post.id]).catch(() => {});
+                [String(err.message || err).substring(0, 1000), post.id]).catch(() => {});
         })));
     } catch (err) {
         console.error('[Queue] Failed to process scheduled posts:', err);
@@ -213,16 +211,18 @@ const processQueue = async () => {
 const startQueueWorker = async () => {
     await db.ready;
     try {
+        // Uploads that were in flight when the server stopped may or may not have been published
+        await db.runAsync(`UPDATE uploaded_videos SET upload_status = 'unconfirmed' WHERE upload_status = 'uploading'`);
         // Posts left 'processing' were interrupted by a restart; queue them again.
         // Their platform_results keep already-finished platforms from being uploaded twice.
         const { changes } = await db.runAsync(`UPDATE posts SET status = 'pending' WHERE status = 'processing'`);
         if (changes > 0) console.log(`[Queue] Re-queued ${changes} interrupted post(s).`);
     } catch (err) {
-        console.error('[Queue] Failed to re-queue interrupted posts:', err);
+        console.error('[Queue] Failed to recover interrupted posts:', err);
     }
 
     setInterval(processQueue, 15000);
     console.log("[Queue] Worker started. Checking every 15 seconds.");
 };
 
-module.exports = { startQueueWorker };
+module.exports = { startQueueWorker, SUPPORTED_PLATFORMS };

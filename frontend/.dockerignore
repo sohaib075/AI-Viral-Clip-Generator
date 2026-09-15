@@ -1,0 +1,5 @@
+# Installed inside the image; host modules may be built for another OS
+node_modules
+dist
+.env
+.env.local
