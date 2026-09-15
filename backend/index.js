@@ -9,7 +9,7 @@ require('dotenv').config();
 const db = require('./db');
 const httpError = require('./httpError');
 const { startQueueWorker, SUPPORTED_PLATFORMS } = require('./queue');
-const { TEMP_DIR, DATA_DIR, PUBLIC_MEDIA_DIRS, resolveMediaUrl } = require('./paths');
+const { TEMP_DIR, DATA_DIR, PUBLIC_MEDIA_DIRS, resolveMediaUrl, publicMediaPath } = require('./paths');
 const { isAllowedOrigin, isAllowedHost, tokenRequired, isAuthorized, requireToken } = require('./security');
 const { router: authRouter, createOAuthTicket } = require('./auth');
 
@@ -26,18 +26,23 @@ app.use((req, res, next) => {
         return res.status(403).json({ error: 'Host not allowed. Add it to ALLOWED_HOSTS.' });
     }
     const origin = req.headers.origin;
-    if (origin && !isAllowedOrigin(origin)) {
+    if (origin && !isAllowedOrigin(origin, req.headers.host)) {
         return res.status(403).json({ error: 'Origin not allowed. Add it to ALLOWED_ORIGINS.' });
     }
     next();
 });
-app.use(cors({ origin: (origin, callback) => callback(null, !origin || isAllowedOrigin(origin)) }));
+app.use((req, res, next) => {
+    cors({
+        origin: (origin, callback) => callback(null, !origin || isAllowedOrigin(origin, req.headers.host)),
+    })(req, res, next);
+});
 // Export requests carry a clip's word timings, which can exceed the 100kb default
 app.use(express.json({ limit: '5mb' }));
 
-// Rendered clips and story videos are viewable by URL. Uploads, transcripts and logs are not served.
+// Rendered clips and story videos. When API_TOKEN is set, require the same token
+// (Authorization header or ?access_token= for <video>/<img> tags). Uploads/transcripts/logs stay private.
 for (const dir of PUBLIC_MEDIA_DIRS) {
-    app.use(`/temp/${dir}`, express.static(path.join(TEMP_DIR, dir), { index: false, dotfiles: 'deny' }));
+    app.use(`/temp/${dir}`, requireToken, express.static(path.join(TEMP_DIR, dir), { index: false, dotfiles: 'deny' }));
 }
 
 const isHttpUrl = (value) => {
@@ -84,6 +89,8 @@ const discardUpload = (req) => {
 // ---------------------------------------------------------------------------
 const JOBS_FILE = path.join(DATA_DIR, 'jobs.json');
 const LEGACY_JOBS_FILE = path.join(__dirname, 'jobs.json');
+// Cap stored history so jobs.json and memory cannot grow forever
+const MAX_JOB_HISTORY = Math.max(50, Number(process.env.MAX_JOB_HISTORY) || 500);
 // A 'Processing' job the AI service doesn't know about after this long was lost in a restart
 const JOB_LOST_AFTER_MS = 60 * 1000;
 
@@ -113,6 +120,9 @@ let jobsHistory = (readJobsFile(JOBS_FILE) ?? readJobsFile(LEGACY_JOBS_FILE) ?? 
 // Writes to a temp file first so a crash mid-write can't corrupt the history
 const saveJobs = () => {
     try {
+        if (jobsHistory.length > MAX_JOB_HISTORY) {
+            jobsHistory = jobsHistory.slice(0, MAX_JOB_HISTORY);
+        }
         const tmpFile = `${JOBS_FILE}.tmp`;
         fs.writeFileSync(tmpFile, JSON.stringify(jobsHistory, null, 2));
         fs.renameSync(tmpFile, JOBS_FILE);
@@ -353,7 +363,11 @@ app.get('/api/jobs/:id', async (req, res) => {
 });
 
 app.post('/api/export', async (req, res) => {
-    const response = await callPipeline('/api/export', { body: req.body || {}, timeoutMs: 10 * 60 * 1000 });
+    const body = { ...(req.body || {}) };
+    if (typeof body.clipUrl === 'string') {
+        body.clipUrl = publicMediaPath(body.clipUrl) || body.clipUrl;
+    }
+    const response = await callPipeline('/api/export', { body, timeoutMs: 10 * 60 * 1000 });
     const data = await response.json().catch(() => ({}));
     if (!response.ok) {
         throw httpError(response.status >= 500 ? 502 : response.status, data.error || 'Export failed');
@@ -437,9 +451,10 @@ app.get('/api/posts', async (req, res) => {
 
 app.post('/api/posts', async (req, res) => {
     const { clip_url, platforms, title, description, hashtags, scheduled_time } = req.body || {};
+    const storedClipUrl = publicMediaPath(clip_url);
 
     // Only clips this server rendered can be published; the queue reads them straight from disk
-    if (!resolveMediaUrl(clip_url)) {
+    if (!storedClipUrl || !resolveMediaUrl(storedClipUrl)) {
         throw httpError(400, 'Choose a generated clip to publish. Export it first if you customized it.');
     }
     const targets = Array.isArray(platforms) ? [...new Set(platforms)] : [];
@@ -463,7 +478,7 @@ app.post('/api/posts', async (req, res) => {
 
     const id = createId('post');
     await db.runAsync(`INSERT INTO posts (id, clip_url, platforms, title, description, hashtags, scheduled_time) VALUES (?, ?, ?, ?, ?, ?, ?)`,
-        [id, clip_url, JSON.stringify(targets), text(title, 200), text(description, 5000), text(hashtags, 1000), sqlTime]);
+        [id, storedClipUrl, JSON.stringify(targets), text(title, 200), text(description, 5000), text(hashtags, 1000), sqlTime]);
     res.json({ success: true, id, scheduled_time: sqlTime });
 });
 
@@ -516,11 +531,19 @@ app.use((err, req, res, next) => {
     res.status(status).json({ error: expected ? err.message : 'Internal server error' });
 });
 
-// Start background worker
-startQueueWorker().catch((err) => console.error('[Queue] Worker failed to start:', err));
+(async () => {
+    try {
+        await db.ready;
+    } catch (err) {
+        console.error('[DB] Initialization failed:', err);
+        process.exit(1);
+    }
 
-app.listen(port, () => {
-    console.log(`Backend server running on http://localhost:${port}`);
-    console.log(`Proxying AI requests to ${PYTHON_API_URL}`);
-    if (tokenRequired()) console.log('API access token required (API_TOKEN is set).');
-});
+    startQueueWorker().catch((err) => console.error('[Queue] Worker failed to start:', err));
+
+    app.listen(port, () => {
+        console.log(`Backend server running on http://localhost:${port}`);
+        console.log(`Proxying AI requests to ${PYTHON_API_URL}`);
+        if (tokenRequired()) console.log('API access token required (API_TOKEN is set).');
+    });
+})();

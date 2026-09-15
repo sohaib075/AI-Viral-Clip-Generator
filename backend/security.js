@@ -23,10 +23,18 @@ const configuredOriginUrls = [...(process.env.ALLOWED_ORIGINS || '').split(','),
     .filter(Boolean);
 const allowedOrigins = new Set(configuredOriginUrls.map(u => u.origin));
 
-const isAllowedOrigin = (origin) => {
+// requestHost: when the UI and API share a host (Docker nginx proxy), allow that origin
+// if the Host header itself is already allowed (blocks DNS-rebinding abuse).
+const isAllowedOrigin = (origin, requestHost = null) => {
     if (allowedOrigins.has(origin)) return true;
     const url = toUrl(origin);
-    return Boolean(url) && LOCAL_HOSTNAMES.has(url.hostname);
+    if (!url) return false;
+    if (LOCAL_HOSTNAMES.has(url.hostname)) return true;
+    if (requestHost && isAllowedHost(requestHost)) {
+        const hostUrl = toUrl(`http://${requestHost}`);
+        if (hostUrl && url.hostname.toLowerCase() === hostUrl.hostname.toLowerCase()) return true;
+    }
+    return false;
 };
 
 // ---------------------------------------------------------------------------
@@ -55,11 +63,19 @@ const digest = (value) => createHash('sha256').update(value).digest();
 
 const tokenRequired = () => Boolean(API_TOKEN);
 
+const tokenMatches = (value) => {
+    if (typeof value !== 'string' || !value) return false;
+    // Same length digest comparison; digest() always returns 32 bytes so lengths match
+    return timingSafeEqual(digest(value), digest(API_TOKEN));
+};
+
 const isAuthorized = (req) => {
     if (!API_TOKEN) return true;
     const header = req.headers.authorization || '';
-    if (!header.startsWith('Bearer ')) return false;
-    return timingSafeEqual(digest(header.slice('Bearer '.length)), digest(API_TOKEN));
+    if (header.startsWith('Bearer ') && tokenMatches(header.slice('Bearer '.length))) return true;
+    // <video>/<img> tags cannot send Authorization; clients append ?access_token= for media URLs
+    const queryToken = typeof req.query?.access_token === 'string' ? req.query.access_token : '';
+    return tokenMatches(queryToken);
 };
 
 const requireToken = (req, res, next) => {

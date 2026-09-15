@@ -81,7 +81,7 @@ const SOCIAL = [
   { key: 'instagram', label: 'Instagram' },
   { key: 'youtube_shorts', label: 'YouTube Shorts' },
   { key: 'x', label: 'X' },
-  { key: 'linkedin', label: 'LinkedIn' },
+  { key: 'linkedin', label: 'LinkedIn (copy only)' },
 ];
 const hashtagText = (tags?: string[]) => (tags || []).map(t => `#${t.replace(/^#/, '')}`).join(' ');
 const copyText = (copy: PlatformCopy) =>
@@ -158,7 +158,9 @@ export default function ResultsScreen() {
 
   useEffect(() => { load(); }, [load]);
 
-  const finalUrl = clip ? `${clip.url}${exportedAt[clip.id] ? `?v=${exportedAt[clip.id]}` : ''}` : null;
+  const finalUrl = clip
+    ? `${clip.url}${exportedAt[clip.id] ? `${clip.url.includes('?') ? '&' : '?'}v=${exportedAt[clip.id]}` : ''}`
+    : null;
 
   // One player whose source follows the selected clip
   const player = useVideoPlayer(null, p => { p.loop = true; });

@@ -32,4 +32,16 @@ function resolveMediaUrl(value) {
     }
 }
 
-module.exports = { TEMP_DIR, DATA_DIR, PUBLIC_MEDIA_DIRS, resolveMediaUrl };
+// Drop ?access_token= so tokens are never persisted in the publishing queue
+function publicMediaPath(value) {
+    if (typeof value !== 'string' || !value) return null;
+    try {
+        const url = new URL(value, 'http://localhost');
+        if (!url.pathname.startsWith('/temp/')) return null;
+        return url.pathname;
+    } catch {
+        return null;
+    }
+}
+
+module.exports = { TEMP_DIR, DATA_DIR, PUBLIC_MEDIA_DIRS, resolveMediaUrl, publicMediaPath };

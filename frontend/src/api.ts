@@ -21,25 +21,41 @@ export class ApiError extends Error {
   }
 }
 
+const withAccessToken = (url: string) => {
+  const token = getToken();
+  if (!token) return url;
+  const sep = url.includes('?') ? '&' : '?';
+  return `${url}${sep}access_token=${encodeURIComponent(token)}`;
+};
+
 // Rendered media is served by the backend under /temp/...
 export const mediaUrl = (path?: string | null) => {
   if (!path) return null;
-  return /^https?:\/\//.test(path) ? path : `${API_URL}${path}`;
+  const absolute = /^https?:\/\//.test(path) ? path : `${API_URL}${path}`;
+  return withAccessToken(absolute);
 };
 
 // Calls the backend API: adds the access token, parses JSON and turns error responses into ApiError
-export async function apiFetch<T>(path: string, init: RequestInit = {}): Promise<T> {
-  const headers = new Headers(init.headers);
+export async function apiFetch<T>(path: string, init: RequestInit & { timeoutMs?: number } = {}): Promise<T> {
+  const { timeoutMs, ...fetchInit } = init;
+  const headers = new Headers(fetchInit.headers);
   const token = getToken();
   if (token) headers.set('Authorization', `Bearer ${token}`);
-  if (typeof init.body === 'string' && !headers.has('Content-Type')) {
+  if (typeof fetchInit.body === 'string' && !headers.has('Content-Type')) {
     headers.set('Content-Type', 'application/json');
   }
 
+  const signal = timeoutMs
+    ? AbortSignal.timeout(timeoutMs)
+    : fetchInit.signal;
+
   let response: Response;
   try {
-    response = await fetch(`${API_URL}${path}`, { ...init, headers });
-  } catch {
+    response = await fetch(`${API_URL}${path}`, { ...fetchInit, headers, signal });
+  } catch (err) {
+    if (err instanceof DOMException && (err.name === 'TimeoutError' || err.name === 'AbortError')) {
+      throw new ApiError('The request timed out. The server may still be working — try refreshing in a minute.', 0);
+    }
     throw new ApiError('Could not reach the server. Make sure the backend is running.', 0);
   }
 
