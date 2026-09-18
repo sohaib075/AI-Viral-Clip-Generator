@@ -119,7 +119,7 @@ AI-Viral-Clip-Generator/
 | `security.js` | Origins, hosts, API token |
 | `paths.js` | Temp dirs, media URL → disk |
 | `uploaders/` | YouTube, TikTok, Instagram, X |
-| `data/` | `jobs.json`, `scheduler.db` |
+| `data/` | `jobs.json` (summaries), `jobs/<id>.json` (clips + transcript), `scheduler.db` |
 
 ### Python (`python-pipeline/`)
 
@@ -203,7 +203,7 @@ See [§13 Mobile app](#13-mobile-app) and `mobile-app/README.md`.
 | `ALLOWED_ORIGINS` | Extra browser origins (comma-separated) |
 | `ALLOWED_HOSTS` | Extra Host header names |
 | `MAX_UPLOAD_MB` | Upload size limit (default `2048`) |
-| `MAX_JOB_HISTORY` | Cap for `data/jobs.json` (default `500`) |
+| `MAX_JOB_HISTORY` | Cap for `data/jobs.json` (default `500`); dropped jobs' detail files are deleted too |
 | `ENCRYPTION_KEY` | 64 hex chars; encrypts stored OAuth tokens |
 | `MOBILE_APP_SCHEME` | Deep-link scheme after OAuth |
 | `YOUTUBE_*` / `X_*` / `TIKTOK_*` / `INSTAGRAM_*` | Platform OAuth |
@@ -223,6 +223,7 @@ node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"        
 | `GEMINI_API_KEY` | Required for highlights / auto-edit |
 | `MAX_CONCURRENT_JOBS` | Parallel jobs (default `2`) |
 | `ALLOW_PRIVATE_URLS` | `1` to allow private-network downloads |
+| `OUTPUT_RETENTION_DAYS` | Delete clips/uploads/logs older than N days (unset = keep forever) |
 | `FLASK_HOST` | Bind address (`0.0.0.0` in Docker) |
 | `PORT` | Listen port (default `5001`) |
 | `FLASK_DEBUG` | Never enable on shared hosts |
@@ -547,8 +548,8 @@ Same-host UI+API through nginx allows browser origins that match an allowed Host
 | **Uploads** | Video MIME/extension filter; size limit; stored under `temp/Input` |
 | **Local paths** | Clients cannot pass arbitrary filesystem paths — only server-built `file://` after upload |
 | **OAuth secrets** | Encrypted with `ENCRYPTION_KEY` |
-| **Private URLs** | Download of private-network hosts blocked unless `ALLOW_PRIVATE_URLS=1` |
-| **Job history** | Trimmed to `MAX_JOB_HISTORY` |
+| **Private URLs** | Download of private-network hosts blocked unless `ALLOW_PRIVATE_URLS=1`. Checked before the download only — yt-dlp follows redirects and re-resolves DNS itself, so a public host redirecting to a private one is still reachable. Don't give the pipeline a route to anything sensitive if untrusted people can submit URLs. |
+| **Job history** | Trimmed to `MAX_JOB_HISTORY`; clips/transcripts kept in `backend/data/jobs/<id>.json` |
 
 ---
 
