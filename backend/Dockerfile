@@ -9,7 +9,7 @@ WORKDIR /app
 # (build tools are only needed if sqlite3 has to compile its native module)
 COPY package*.json ./
 RUN apk add --no-cache --virtual .build-deps python3 make g++ && \
-    npm install --omit=dev && \
+    npm ci --omit=dev && \
     apk del .build-deps
 
 # Copy application code
