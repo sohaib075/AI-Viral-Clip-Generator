@@ -94,6 +94,30 @@ const MAX_JOB_HISTORY = Math.max(50, Number(process.env.MAX_JOB_HISTORY) || 500)
 // A 'Processing' job the AI service doesn't know about after this long was lost in a restart
 const JOB_LOST_AFTER_MS = 60 * 1000;
 
+// Clips and transcripts are stored per job, so the history file stays small and quick to rewrite
+const JOB_DETAILS_DIR = path.join(DATA_DIR, 'jobs');
+const detailsFile = (id) => path.join(JOB_DETAILS_DIR, `${encodeURIComponent(id)}.json`);
+
+const readJobDetails = (id) => {
+    try {
+        return JSON.parse(fs.readFileSync(detailsFile(id), 'utf-8'));
+    } catch (e) {
+        if (e.code !== 'ENOENT') console.error(`Failed to read details for ${id}:`, e.message);
+        return { clips: [], transcript: '' };
+    }
+};
+
+const writeJobDetails = (id, details) => {
+    try {
+        fs.mkdirSync(JOB_DETAILS_DIR, { recursive: true });
+        const tmpFile = `${detailsFile(id)}.tmp`;
+        fs.writeFileSync(tmpFile, JSON.stringify(details));
+        fs.renameSync(tmpFile, detailsFile(id));
+    } catch (e) {
+        console.error(`Failed to save details for ${id}:`, e.message);
+    }
+};
+
 const readJobsFile = (file) => {
     try {
         const data = JSON.parse(fs.readFileSync(file, 'utf-8'));
@@ -106,7 +130,7 @@ const readJobsFile = (file) => {
 
 // Older versions stored placeholders ("Just now", "0:00:00", stock photos) that never changed
 const normalizeJob = (job) => {
-    const { time, duration, ...rest } = job;
+    const { time: _time, duration: _duration, ...rest } = job;
     if (typeof rest.thumbnail === 'string' && rest.thumbnail.startsWith('https://images.unsplash.com/')) {
         rest.thumbnail = null;
     }
@@ -115,12 +139,28 @@ const normalizeJob = (job) => {
 
 fs.mkdirSync(DATA_DIR, { recursive: true });
 const hasJobsFile = fs.existsSync(JOBS_FILE);
-let jobsHistory = (readJobsFile(JOBS_FILE) ?? readJobsFile(LEGACY_JOBS_FILE) ?? []).map(normalizeJob);
+let migratedDetails = false;
+
+// Older versions kept clips and transcripts inside jobs.json; move them into per-job files
+const splitDetails = (job) => {
+    const { clipsData, transcript, ...summary } = normalizeJob(job);
+    if (clipsData || transcript) {
+        writeJobDetails(summary.id, { clips: clipsData || [], transcript: transcript || '' });
+        summary.scores = (clipsData || []).map(c => Number(c?.score)).filter(score => Number.isFinite(score) && score > 0);
+        migratedDetails = true;
+    }
+    return summary;
+};
+
+let jobsHistory = (readJobsFile(JOBS_FILE) ?? readJobsFile(LEGACY_JOBS_FILE) ?? []).map(splitDetails);
 
 // Writes to a temp file first so a crash mid-write can't corrupt the history
 const saveJobs = () => {
     try {
         if (jobsHistory.length > MAX_JOB_HISTORY) {
+            for (const dropped of jobsHistory.slice(MAX_JOB_HISTORY)) {
+                fs.rm(detailsFile(dropped.id), { force: true }, () => {});
+            }
             jobsHistory = jobsHistory.slice(0, MAX_JOB_HISTORY);
         }
         const tmpFile = `${JOBS_FILE}.tmp`;
@@ -132,7 +172,7 @@ const saveJobs = () => {
 };
 
 // Job history used to live next to the code. Copy it into data/ (a rename fails across Docker volumes).
-if (!hasJobsFile && jobsHistory.length > 0) {
+if ((!hasJobsFile || migratedDetails) && jobsHistory.length > 0) {
     saveJobs();
     fs.rm(LEGACY_JOBS_FILE, { force: true }, () => {});
     console.log('Moved job history into data/jobs.json');
@@ -152,19 +192,31 @@ const jobSummary = (job) => ({
 });
 
 // A saved job in the AI service's status format, for when the service no longer has it
-const savedStatus = (job) => (job.status === 'Completed'
-    ? { status: 'completed', progress: 100, message: 'Processing Complete!', title: job.title, clips: job.clipsData || [], transcript: job.transcript || '', warnings: job.warnings || [] }
-    : { status: 'failed', progress: 0, message: job.error || 'Job failed', title: job.title, clips: [] });
+const savedStatus = (job) => {
+    if (job.status !== 'Completed') {
+        return { status: 'failed', progress: 0, message: job.error || 'Job failed', title: job.title, clips: [] };
+    }
+    const details = readJobDetails(job.id);
+    return {
+        status: 'completed',
+        progress: 100,
+        message: 'Processing Complete!',
+        title: job.title,
+        clips: details.clips || [],
+        transcript: details.transcript || '',
+        warnings: job.warnings || [],
+    };
+};
 
 const recordStatus = (job, data) => {
     if (data.status === 'completed' && job.status !== 'Completed') {
         const clips = Array.isArray(data.clips) ? data.clips : [];
+        writeJobDetails(job.id, { clips, transcript: data.transcript || '' });
         Object.assign(job, {
             status: 'Completed',
             clips: clips.length,
-            clipsData: clips,
+            scores: clips.map(c => Number(c?.score)).filter(score => Number.isFinite(score) && score > 0),
             thumbnail: clips.find(c => c.thumbnail_url)?.thumbnail_url || null,
-            transcript: data.transcript || '',
             sourceDuration: data.source_duration ?? null,
             warnings: data.warnings || [],
         });
@@ -363,7 +415,7 @@ app.get('/api/jobs/:id', async (req, res) => {
 });
 
 app.post('/api/export', async (req, res) => {
-    const body = { ...(req.body || {}) };
+    const body = { ...req.body };
     if (typeof body.clipUrl === 'string') {
         body.clipUrl = publicMediaPath(body.clipUrl) || body.clipUrl;
     }
@@ -383,15 +435,14 @@ app.get('/api/analytics', async (req, res) => {
     }, {});
 
     const completed = jobsHistory.filter(j => j.status === 'Completed');
-    const clips = completed.flatMap(j => (Array.isArray(j.clipsData) ? j.clipsData : []));
-    const scores = clips.map(c => Number(c.score)).filter(s => Number.isFinite(s) && s > 0);
+    const scores = completed.flatMap(j => (Array.isArray(j.scores) ? j.scores : []));
     const durations = completed.map(j => Number(j.sourceDuration)).filter(d => Number.isFinite(d) && d > 0);
 
     const posts = await db.allAsync(`SELECT status, platform_results FROM posts`);
     const platforms = {};
     for (const post of posts) {
         let results = {};
-        try { results = JSON.parse(post.platform_results || '{}') || {}; } catch (e) {}
+        try { results = JSON.parse(post.platform_results || '{}') || {}; } catch {}
         for (const [platform, result] of Object.entries(results)) {
             const counts = platforms[platform] || (platforms[platform] = { uploaded: 0, failed: 0 });
             if (result === 'uploaded') counts.uploaded++;
@@ -491,8 +542,8 @@ app.post('/api/posts/:id/retry', async (req, res) => {
 
     let platforms = [];
     let results = {};
-    try { platforms = JSON.parse(post.platforms); } catch (e) {}
-    try { results = JSON.parse(post.platform_results || '{}') || {}; } catch (e) {}
+    try { platforms = JSON.parse(post.platforms); } catch {}
+    try { results = JSON.parse(post.platform_results || '{}') || {}; } catch {}
     for (const platform of Array.isArray(platforms) ? platforms : []) {
         if (results[platform] !== 'uploaded') results[platform] = { retryRequested: true };
     }
@@ -515,7 +566,7 @@ app.use('/api', (req, res) => {
     res.status(404).json({ error: 'Not found' });
 });
 
-app.use((err, req, res, next) => {
+app.use((err, req, res, _next) => {
     discardUpload(req);
 
     if (err instanceof multer.MulterError) {
