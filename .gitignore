@@ -15,4 +15,7 @@ python-pipeline/temp_story/
 *.mp4
 *.mp3
 *.ass
-test_*.py
+
+# Editor settings are per-developer
+.idea/
+.vscode/
