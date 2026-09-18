@@ -59,7 +59,7 @@ function safeReturnTo(value) {
     try {
         const url = new URL(value);
         if ((url.protocol === 'http:' || url.protocol === 'https:') && isAllowedOrigin(url.origin)) return url.toString();
-    } catch (e) {}
+    } catch {}
     return DEFAULT_RETURN_TO;
 }
 
@@ -68,7 +68,7 @@ function finishFlow(res, returnTo, params) {
     let url;
     try {
         url = new URL(returnTo);
-    } catch (e) {
+    } catch {
         url = new URL(DEFAULT_RETURN_TO);
     }
     for (const [key, value] of Object.entries(params)) url.searchParams.set(key, value);

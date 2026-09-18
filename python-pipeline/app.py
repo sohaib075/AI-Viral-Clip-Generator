@@ -50,12 +50,17 @@ for d in [TEMP_DIR, INPUT_DIR, PROCESSED_DIR, CLIPS_DIR, SUBTITLES_DIR, LOGS_DIR
 MAX_CONCURRENT_JOBS = max(1, int(os.environ.get('MAX_CONCURRENT_JOBS') or 2))
 # Finished jobs are kept in memory this long (the backend saves its own copy)
 FINISHED_JOB_TTL_SECONDS = 24 * 3600
+# Rendered clips, logs and uploads are kept forever unless this is set (in days)
+OUTPUT_RETENTION_DAYS = max(0.0, float(os.environ.get('OUTPUT_RETENTION_DAYS') or 0))
+# Sweeping every directory on every job would be wasteful, so do it at most once an hour
+RETENTION_SWEEP_INTERVAL_SECONDS = 3600
 # Job ids end up in file names
 JOB_ID_PATTERN = re.compile(r'^[A-Za-z0-9_-]{1,100}$')
 BASE_CLIP_PATTERN = re.compile(r'^[\w.-]+_base\.mp4$')
 
 JOBS = {}
 JOBS_LOCK = threading.Lock()
+LAST_RETENTION_SWEEP = 0.0
 JOB_EXECUTOR = concurrent.futures.ThreadPoolExecutor(max_workers=MAX_CONCURRENT_JOBS)
 
 def log_job_message(job_id, message):
@@ -100,6 +105,34 @@ def prune_finished_jobs():
         for job_id in [key for key, job in JOBS.items() if job.get("finished_at", time.time()) < cutoff]:
             del JOBS[job_id]
 
+def prune_old_outputs():
+    """Deletes rendered output older than OUTPUT_RETENTION_DAYS. Off unless the variable is set."""
+    global LAST_RETENTION_SWEEP
+    now = time.time()
+    if OUTPUT_RETENTION_DAYS <= 0 or now - LAST_RETENTION_SWEEP < RETENTION_SWEEP_INTERVAL_SECONDS:
+        return
+    LAST_RETENTION_SWEEP = now
+    cutoff = now - OUTPUT_RETENTION_DAYS * 86400
+    removed = 0
+    for directory in (INPUT_DIR, PROCESSED_DIR, CLIPS_DIR, SUBTITLES_DIR, LOGS_DIR, STORY_DIR):
+        try:
+            entries = os.scandir(directory)
+        except OSError as e:
+            print(f"Retention sweep could not read {directory}: {e}")
+            continue
+        with entries:
+            for entry in entries:
+                try:
+                    # mtime, not ctime: a clip restyled today should survive the sweep
+                    if not entry.is_file(follow_symlinks=False) or entry.stat().st_mtime >= cutoff:
+                        continue
+                    os.remove(entry.path)
+                    removed += 1
+                except OSError as e:
+                    print(f"Retention sweep could not delete {entry.path}: {e}")
+    if removed:
+        print(f"Retention sweep deleted {removed} file(s) older than {OUTPUT_RETENTION_DAYS} day(s).")
+
 def run_job(job_id, target, *args):
     """Runs a job function and records any failure as the job's status."""
     try:
@@ -110,6 +143,7 @@ def run_job(job_id, target, *args):
 
 def submit_job(job_id, target, *args):
     prune_finished_jobs()
+    prune_old_outputs()
     # Registered before it starts, so status checks never see a 404 while it waits for a worker
     update_job_status(job_id, status="processing", progress=0, message="Waiting for other jobs to finish...", log=False)
     JOB_EXECUTOR.submit(run_job, job_id, target, *args)
@@ -446,4 +480,5 @@ if __name__ == '__main__':
     host = os.environ.get('FLASK_HOST', '127.0.0.1')
     port = int(os.environ.get('PORT') or 5001)
     debug = os.environ.get('FLASK_DEBUG', '').lower() in ('1', 'true', 'yes')
+    prune_old_outputs()
     app.run(host=host, port=port, debug=debug, use_reloader=False)

@@ -34,6 +34,11 @@ def ensure_public_url(url):
     """
     Refuses URLs that point at this machine or a private network (internal services, cloud metadata
     endpoints). Set ALLOW_PRIVATE_URLS=1 to download from hosts on your own network.
+
+    This checks the address the host resolves to right now. yt-dlp resolves and follows redirects
+    itself afterwards, so a public host that redirects to a private one, or whose DNS record changes
+    between this check and the download, would still be reached. Run the pipeline where it has no
+    route to anything sensitive if you let untrusted people submit URLs.
     """
     parsed = urlparse(url)
     if parsed.scheme not in ('http', 'https') or not parsed.hostname:
