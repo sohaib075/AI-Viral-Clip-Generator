@@ -24,7 +24,7 @@ module.exports = function withCleartextHttp(config) {
   });
 
   config = withInfoPlist(config, (mod) => {
-    const ats = { ...(mod.modResults.NSAppTransportSecurity || {}), NSAllowsArbitraryLoads: true };
+    const ats = { ...mod.modResults.NSAppTransportSecurity, NSAllowsArbitraryLoads: true };
     // iOS ignores NSAllowsArbitraryLoads while this more specific key is present
     delete ats.NSAllowsLocalNetworking;
     mod.modResults.NSAppTransportSecurity = ats;

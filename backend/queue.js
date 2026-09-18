@@ -137,11 +137,11 @@ const processPost = async (post) => {
     console.log(`[Queue] Processing post ${post.id} for platforms: ${post.platforms}`);
 
     let platforms = [];
-    try { platforms = JSON.parse(post.platforms); } catch (e) {}
+    try { platforms = JSON.parse(post.platforms); } catch {}
     if (!Array.isArray(platforms)) platforms = [];
 
     let results = {};
-    try { results = JSON.parse(post.platform_results || '{}') || {}; } catch (e) {}
+    try { results = JSON.parse(post.platform_results || '{}') || {}; } catch {}
 
     // Clips are read straight from the temp folder; nothing is fetched over the network
     const videoPath = resolveMediaUrl(post.clip_url);
