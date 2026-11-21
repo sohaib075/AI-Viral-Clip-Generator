@@ -41,12 +41,24 @@ export interface ClipData {
   layout?: string;
 }
 
+export interface HighlightData {
+  title: string;
+  start_time: number;
+  end_time: number;
+  score: number;
+  reasoning?: string;
+  emphasized_words?: string[];
+  metadata?: Record<string, PlatformCopy>;
+}
+
 export interface JobStatusResponse {
-  status: 'processing' | 'completed' | 'failed';
+  status: 'processing' | 'awaiting_approval' | 'completed' | 'failed';
   progress?: number;
   message?: string;
   title?: string;
+  source_title?: string;
   clips?: ClipData[];
+  highlights?: HighlightData[];
   transcript?: string;
   warnings?: string[];
 }

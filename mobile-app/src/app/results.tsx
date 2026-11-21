@@ -297,7 +297,7 @@ export default function ResultsScreen() {
       {!clip ? (
         <View style={[styles.center, { flex: 1 }]}>
           <Text style={styles.stateTitle}>No clips</Text>
-          <Text style={styles.stateBody}>This job didn't produce any videos.</Text>
+          <Text style={styles.stateBody}>{"This job didn't produce any videos."}</Text>
         </View>
       ) : (
         <>
@@ -389,7 +389,7 @@ export default function ResultsScreen() {
             {activeTab === 'customizer' && clip.baseUrl && (
               <View style={styles.section}>
                 <Text style={styles.sectionTitle}>Caption Customizer</Text>
-                <Text style={styles.sectionDesc}>Re-render this clip's captions with your own style. The export replaces its final video.</Text>
+                <Text style={styles.sectionDesc}>{"Re-render this clip's captions with your own style. The export replaces its final video."}</Text>
 
                 <Text style={styles.label}>THEME</Text>
                 <View style={styles.chipRow}>
@@ -497,7 +497,7 @@ export default function ResultsScreen() {
               </View>
               {platforms.some(id => !accounts.some(a => a.platform === id)) && (
                 <TouchableOpacity onPress={() => { setPublishOpen(false); router.push('/accounts'); }}>
-                  <Text style={styles.warningText}>Posts to platforms that aren't connected will fail. Tap to connect accounts.</Text>
+                  <Text style={styles.warningText}>{"Posts to platforms that aren't connected will fail. Tap to connect accounts."}</Text>
                 </TouchableOpacity>
               )}
 

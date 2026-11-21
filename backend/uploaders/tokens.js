@@ -34,6 +34,19 @@ const refreshers = {
             throw rejected(res.data.error_description || res.data.error || 'No access token returned');
         }
         return { accessToken: res.data.access_token, refreshToken: res.data.refresh_token };
+    },
+    youtube: async (refreshToken) => {
+        const { google } = require('googleapis');
+        const oauth2Client = new google.auth.OAuth2(
+            process.env.YOUTUBE_CLIENT_ID,
+            process.env.YOUTUBE_CLIENT_SECRET
+        );
+        oauth2Client.setCredentials({ refresh_token: refreshToken });
+        const { credentials } = await oauth2Client.refreshAccessToken();
+        if (!credentials.access_token) {
+            throw rejected('No access token returned from YouTube');
+        }
+        return { accessToken: credentials.access_token, refreshToken: credentials.refresh_token || refreshToken };
     }
 };
 

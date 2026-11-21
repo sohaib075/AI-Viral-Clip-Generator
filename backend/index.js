@@ -4,6 +4,7 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const { randomBytes } = require('crypto');
+require('dotenv').config({ path: path.join(__dirname, '.env') });
 require('dotenv').config();
 
 const db = require('./db');
@@ -283,7 +284,7 @@ app.use('/api', requireToken);
 // Jobs
 // ---------------------------------------------------------------------------
 app.post('/api/jobs', upload.single('video'), async (req, res) => {
-    const { videoUrl, layout } = req.body || {};
+    const { videoUrl, layout, isLive, liveDuration } = req.body || {};
     const file = req.file;
 
     if (videoUrl && file) {
@@ -299,7 +300,7 @@ app.post('/api/jobs', upload.single('video'), async (req, res) => {
 
     const job = {
         id: createId('job'),
-        type: 'clips',
+        type: isLive ? 'live_clips' : 'clips',
         title: file ? file.originalname : videoUrl,
         status: 'Processing',
         clips: 0,
@@ -309,7 +310,10 @@ app.post('/api/jobs', upload.single('video'), async (req, res) => {
 
     await startPipelineJob(job, '/api/process', {
         videoUrl: file ? `file://${file.path}` : videoUrl,
-        layout: pick(layout, ['vertical', 'horizontal'], 'vertical')
+        layout: pick(layout, ['vertical', 'horizontal'], 'vertical'),
+        isLive: Boolean(isLive),
+        liveDuration: Number(liveDuration) || 600,
+        autoApprove: Boolean(req.body && (req.body.autoApprove === 'true' || req.body.autoApprove === true))
     });
 
     res.json({ message: 'Job received successfully', jobId: job.id, status: 'queued' });
@@ -411,6 +415,36 @@ app.get('/api/jobs/:id', async (req, res) => {
 
     const data = await response.json();
     if (job) recordStatus(job, data);
+    res.json(data);
+});
+
+app.post('/api/jobs/:id/approve', async (req, res) => {
+    const response = await callPipeline(`/api/jobs/${encodeURIComponent(req.params.id)}/approve`, {
+        body: req.body,
+        timeoutMs: 30000
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) {
+        throw httpError(response.status >= 500 ? 502 : response.status, data.error || 'Approval failed');
+    }
+    res.json(data);
+});
+
+app.post('/api/jobs/:id/reject', async (req, res) => {
+    const response = await callPipeline(`/api/jobs/${encodeURIComponent(req.params.id)}/reject`, {
+        body: req.body,
+        timeoutMs: 30000
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) {
+        throw httpError(response.status >= 500 ? 502 : response.status, data.error || 'Rejection failed');
+    }
+    const job = jobsHistory.find(j => j.id === req.params.id);
+    if (job) {
+        job.status = 'Failed';
+        job.error = 'Cancelled by user';
+        saveJobs();
+    }
     res.json(data);
 });
 

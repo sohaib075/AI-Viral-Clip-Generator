@@ -198,11 +198,15 @@ const processQueue = async () => {
         const placeholders = ids.map(() => '?').join(',');
         await db.runAsync(`UPDATE posts SET status = 'processing' WHERE id IN (${placeholders})`, ids);
 
-        await Promise.all(rows.map(post => processPost(post).catch(async (err) => {
-            console.error(`[Queue] Unexpected error processing post ${post.id}:`, err);
-            await db.runAsync(`UPDATE posts SET status = 'failed', error_message = ? WHERE id = ?`,
-                [String(err.message || err).substring(0, 1000), post.id]).catch(() => {});
-        })));
+        for (const post of rows) {
+            try {
+                await processPost(post);
+            } catch (err) {
+                console.error(`[Queue] Unexpected error processing post ${post.id}:`, err);
+                await db.runAsync(`UPDATE posts SET status = 'failed', error_message = ? WHERE id = ?`,
+                    [String(err.message || err).substring(0, 1000), post.id]).catch(() => {});
+            }
+        }
     } catch (err) {
         console.error('[Queue] Failed to process scheduled posts:', err);
     }

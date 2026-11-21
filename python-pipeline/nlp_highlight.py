@@ -17,14 +17,15 @@ def extract_highlights(transcript_data, num_clips=10):
         text_content += f"[{idx}] {seg['start']:.2f} - {seg['end']:.2f}: {seg['text']}\n"
 
     prompt = f"""
-You are an expert viral content editor. Analyze the ENTIRE following transcript from a video.
-Identify the most engaging, viral, and stand-alone highlights from beginning to end.
+You are an expert viral content editor. Analyze the ENTIRE following transcript from a video or live stream.
+Identify the most engaging, viral, exciting, and entertaining highlights from beginning to end.
 You can return up to {num_clips} clips, but only if they are genuinely good.
 
-CRITICAL QUALITY RULES:
-1. Scan the ENTIRE transcript, do not just look at the beginning. We want highlights from the middle and end of the video too.
-2. Focus on QUALITY and RELEVANCE. Each clip MUST be meaningful and contextually complete.
-3. There is no strict length limit—clips can be longer than 60 seconds if necessary to preserve context.
+CRITICAL QUALITY & DURATION RULES:
+1. DURATION: Each viral clip MUST be between 20 and 60 seconds long (optimal for vertical YouTube Shorts, TikTok, and Instagram Reels). NEVER output clips shorter than 15 seconds! A clip that lasts only 1-5 seconds cannot be used as a short video.
+2. If a funny reaction, clutch moment, fight, or dialogue is short (e.g. 5-10 seconds), you MUST include the 10-15 seconds before it (the setup/buildup) and 10 seconds after (the reaction/aftermath) so the clip is at least 20 to 35 seconds long.
+3. Completeness: Each clip must feel like a complete mini-story with a hook/setup, the main dialogue or action, and the resolution.
+4. Scan the ENTIRE transcript from start to finish.
 
 Formatting Rules:
 1. Return ONLY a valid JSON array of objects.
@@ -55,8 +56,23 @@ Transcript:
     if not isinstance(highlights, list):
         raise RuntimeError("AI analysis returned an unexpected format.")
     highlights = [h for h in highlights if isinstance(h, dict)]
-    print(f"Gemini identified {len(highlights)} viral clips!")
-    return highlights
+
+    # Clean and enforce minimum clip duration (at least 20s) so no 1s clips are produced
+    valid_highlights = []
+    for h in highlights:
+        start_t = max(0.0, float(h.get("start_time") or 0.0))
+        end_t = float(h.get("end_time") or 0.0)
+        dur = end_t - start_t
+        if dur < 20.0:
+            needed = 25.0 - max(0.0, dur)
+            start_t = max(0.0, start_t - (needed / 2.0))
+            end_t = start_t + 25.0
+        h["start_time"] = round(start_t, 2)
+        h["end_time"] = round(end_t, 2)
+        valid_highlights.append(h)
+
+    print(f"Gemini identified {len(valid_highlights)} viral clips!")
+    return valid_highlights
 
 if __name__ == "__main__":
     from dotenv import load_dotenv

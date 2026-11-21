@@ -63,6 +63,9 @@ JOBS_LOCK = threading.Lock()
 LAST_RETENTION_SWEEP = 0.0
 JOB_EXECUTOR = concurrent.futures.ThreadPoolExecutor(max_workers=MAX_CONCURRENT_JOBS)
 
+PENDING_APPROVAL_JOBS = {}
+APPROVAL_LOCK = threading.Lock()
+
 def log_job_message(job_id, message):
     timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     log_line = f"[{timestamp}] [{job_id}] {message}\n"
@@ -97,7 +100,46 @@ def update_job_status(job_id, status=None, progress=None, message=None, log=True
 def get_job(job_id):
     with JOBS_LOCK:
         job = JOBS.get(job_id)
-        return dict(job) if job else None
+        if job:
+            return dict(job)
+    # Disk check fallback for approval jobs
+    approval_file = os.path.join(PROCESSED_DIR, f"Approval_{job_id}.json")
+    if os.path.isfile(approval_file):
+        try:
+            with open(approval_file, "r", encoding="utf-8") as f:
+                state = json.load(f)
+            return {
+                "status": "awaiting_approval",
+                "progress": 70,
+                "message": f"Found {len(state.get('highlights', []))} viral highlights! Waiting for human review...",
+                "highlights": state.get("highlights", []),
+                "title": state.get("source_title", "Video")
+            }
+        except Exception:
+            pass
+    return None
+
+def get_pending_approval(job_id):
+    with APPROVAL_LOCK:
+        if job_id in PENDING_APPROVAL_JOBS:
+            return PENDING_APPROVAL_JOBS[job_id]
+
+    approval_file = os.path.join(PROCESSED_DIR, f"Approval_{job_id}.json")
+    if os.path.isfile(approval_file):
+        try:
+            with open(approval_file, "r", encoding="utf-8") as f:
+                state = json.load(f)
+            if not state.get("transcript_data"):
+                transcript_file = os.path.join(PROCESSED_DIR, f"Transcript_{job_id}.json")
+                if os.path.isfile(transcript_file):
+                    with open(transcript_file, "r", encoding="utf-8") as tf:
+                        state["transcript_data"] = json.load(tf)
+            with APPROVAL_LOCK:
+                PENDING_APPROVAL_JOBS[job_id] = state
+            return state
+        except Exception as e:
+            print(f"Error loading approval state for {job_id}: {e}")
+    return None
 
 def prune_finished_jobs():
     cutoff = time.time() - FINISHED_JOB_TTL_SECONDS
@@ -151,7 +193,141 @@ def submit_job(job_id, target, *args):
 def clip_url(folder, path):
     return f"/temp/{folder}/{os.path.basename(path)}" if path else None
 
-def process_video_job(job_id, video_url, layout='vertical'):
+def render_approved_clips_job(job_id, state, approved_highlights):
+    video_path = state.get("video_path")
+    source_duration = state.get("source_duration")
+    source_title = state.get("source_title")
+    transcript_data = state.get("transcript_data") or {}
+    layout = state.get("layout", "vertical")
+    job_warnings = list(state.get("job_warnings") or [])
+
+    if not video_path or not os.path.isfile(video_path):
+        raise Exception(f"Source video file not found on disk: {video_path}")
+
+    shape = "horizontal" if layout == "horizontal" else "vertical"
+    update_job_status(job_id, status="processing", progress=75,
+                      message=f"Rendering {len(approved_highlights)} approved {shape} clips...")
+    log_job_message(job_id, f"Rendering {len(approved_highlights)} approved clips with burnt-in subtitles...")
+
+    final_clips = []
+
+    def process_highlight(idx_and_clip):
+        idx, clip_data = idx_and_clip
+
+        clip_start = max(0.0, float(clip_data.get('start_time') or 0.0))
+        clip_end = float(clip_data.get('end_time') or 0.0)
+        if clip_end <= clip_start:
+            clip_end = clip_start + 25.0
+
+        # Enforce minimum viral clip duration (at least 20 seconds, up to 60s)
+        clip_duration = clip_end - clip_start
+        MIN_CLIP_DURATION = 20.0
+        if clip_duration < MIN_CLIP_DURATION:
+            needed = MIN_CLIP_DURATION - clip_duration
+            clip_start = max(0.0, clip_start - (needed / 2.0))
+            clip_end = clip_start + MIN_CLIP_DURATION
+
+        if source_duration:
+            if clip_end > source_duration:
+                clip_end = source_duration
+                clip_start = max(0.0, clip_end - MIN_CLIP_DURATION)
+            if clip_end <= clip_start:
+                raise Exception("The highlight starts after the end of the video.")
+        clip_duration = clip_end - clip_start
+        clip_data['start_time'] = clip_start
+        clip_data['end_time'] = clip_end
+
+        relevant_segments = [seg for seg in transcript_data.get("segments", [])
+                             if seg["start"] < clip_end and seg["end"] > clip_start]
+        relevant_words = [w for w in transcript_data.get("words", [])
+                          if w["start"] < clip_end and w["end"] > clip_start]
+
+        if not relevant_words:
+            log_job_message(job_id, f"WARNING: Clip {idx+1} missing captions. Generating estimated captions.")
+            title_words = str(clip_data.get("title") or f"Clip {idx+1}").split() or ["Highlight"]
+            word_dur = clip_duration / len(title_words)
+            for i, tw in enumerate(title_words):
+                relevant_words.append({
+                    "start": clip_start + (i * word_dur),
+                    "end": clip_start + ((i+1) * word_dur),
+                    "word": tw
+                })
+
+        clip_data["segments"] = relevant_segments
+        clip_data["words"] = relevant_words
+        clip_data["layout"] = layout
+
+        max_render_retries = 3
+        for attempt in range(max_render_retries):
+            try:
+                final_clip_path, base_clip_path, srt_path, thumbnail_path = process_clip(
+                    video_path, clip_data, CLIPS_DIR, SUBTITLES_DIR, job_id, idx
+                )
+                break
+            except Exception as e:
+                log_job_message(job_id, f"ERROR: Clip {idx+1} render failed on attempt {attempt+1}: {e}")
+                if attempt == max_render_retries - 1:
+                    raise
+
+        return {
+            "title": clip_data.get("title", f"Clip {idx+1}"),
+            "start_time": clip_start,
+            "end_time": clip_end,
+            "score": clip_data.get("score", 0),
+            "reasoning": clip_data.get("reasoning", ""),
+            "video_url": clip_url("Clips", final_clip_path),
+            "base_url": clip_url("Clips", base_clip_path),
+            "thumbnail_url": clip_url("Clips", thumbnail_path),
+            "segments": relevant_segments,
+            "words": relevant_words,
+            "metadata": clip_data.get("metadata", {}),
+            "emphasized_words": clip_data.get("emphasized_words", []),
+            "layout": layout
+        }
+
+    try:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
+            futures = [executor.submit(process_highlight, item) for item in enumerate(approved_highlights)]
+            for idx, future in enumerate(futures):
+                try:
+                    result = future.result()
+                except Exception as e:
+                    log_job_message(job_id, f"ERROR: Skipping clip {idx+1}: {e}")
+                    continue
+                final_clips.append(result)
+                update_job_status(job_id, progress=75 + int(24 * (idx + 1) / len(futures)),
+                                  message=f"Clip rendered: {result['title']} ({len(final_clips)}/{len(approved_highlights)})")
+
+        if not final_clips:
+            raise Exception("None of the approved clips could be rendered.")
+        if len(final_clips) < len(approved_highlights):
+            job_warnings.append(f"{len(approved_highlights) - len(final_clips)} of {len(approved_highlights)} approved clips could not be rendered.")
+
+        update_job_status(
+            job_id,
+            status="completed",
+            progress=100,
+            message="Processing Complete!",
+            clips=final_clips,
+            transcript=transcript_data.get("text", ""),
+            source_title=source_title,
+            source_duration=source_duration,
+            warnings=job_warnings
+        )
+        log_job_message(job_id, f"Job Completed Successfully! Generated {len(final_clips)} clips.")
+
+        with APPROVAL_LOCK:
+            PENDING_APPROVAL_JOBS.pop(job_id, None)
+        approval_file = os.path.join(PROCESSED_DIR, f"Approval_{job_id}.json")
+        if os.path.exists(approval_file):
+            try:
+                os.remove(approval_file)
+            except OSError:
+                pass
+    finally:
+        remove_files(video_path)
+
+def process_video_job(job_id, video_url, layout='vertical', is_live=False, live_duration=600, auto_approve=False):
     log_job_message(job_id, f"=== Starting Video Processing Job ===")
     log_job_message(job_id, f"URL: {video_url}")
 
@@ -175,10 +351,22 @@ def process_video_job(job_id, video_url, layout='vertical'):
             video_path = resolve_local_upload(video_url, INPUT_DIR)
             log_job_message(job_id, f"Using uploaded video file: {video_path}")
         else:
-            log_job_message(job_id, "Downloading video using yt-dlp...")
-            video_path, site_info = download_video(video_url, INPUT_DIR, progress_callback=yt_progress, file_prefix=job_id)
+            is_url_live = '/live/' in video_url.lower() or 'youtube.com/live' in video_url.lower()
+            if is_live or is_url_live:
+                mins = max(1, int(live_duration or 600) // 60)
+                update_job_status(job_id, progress=15, message=f"🔴 Capturing live broadcast buffer ({mins} min)... Please wait.")
+                log_job_message(job_id, f"🔴 Live Stream Mode: Capturing {live_duration or 600}s ({mins} min) from live stream...")
+                video_path, site_info = download_video(
+                    video_url, INPUT_DIR, progress_callback=yt_progress, file_prefix=job_id,
+                    is_live=True, live_duration=live_duration or 600
+                )
+            else:
+                log_job_message(job_id, "Downloading video using yt-dlp...")
+                video_path, site_info = download_video(
+                    video_url, INPUT_DIR, progress_callback=yt_progress, file_prefix=job_id
+                )
             source_title = site_info.get("title")
-            log_job_message(job_id, f"Video downloaded to Input folder: {video_path}")
+            log_job_message(job_id, f"Video ready in Input folder: {video_path}")
         source_duration = get_media_duration(video_path)
 
         # 2. Extract Audio
@@ -211,108 +399,61 @@ def process_video_job(job_id, video_url, layout='vertical'):
             raise Exception("No highlights could be found in the transcript.")
         log_job_message(job_id, f"Highlight detection complete! Found {len(highlights)} potential clips.")
 
-        # 5. Video Editing
-        shape = "horizontal" if layout == "horizontal" else "vertical"
-        update_job_status(job_id, progress=85, message=f"Rendering {shape} clips with burnt-in subtitles...")
-        final_clips = []
+        state = {
+            "video_path": video_path,
+            "source_duration": source_duration,
+            "source_title": source_title,
+            "transcript_data": transcript_data,
+            "layout": layout,
+            "highlights": highlights,
+            "job_warnings": job_warnings
+        }
+        with APPROVAL_LOCK:
+            PENDING_APPROVAL_JOBS[job_id] = state
 
-        def process_highlight(idx_and_clip):
-            idx, clip_data = idx_and_clip
+        try:
+            approval_file = os.path.join(PROCESSED_DIR, f"Approval_{job_id}.json")
+            with open(approval_file, "w", encoding="utf-8") as f:
+                json.dump({
+                    "job_id": job_id,
+                    "video_path": video_path,
+                    "source_duration": source_duration,
+                    "source_title": source_title,
+                    "layout": layout,
+                    "highlights": highlights,
+                    "job_warnings": job_warnings
+                }, f, indent=2, ensure_ascii=False)
+        except Exception as e:
+            log_job_message(job_id, f"Warning: could not save approval file: {e}")
 
-            clip_start = max(0.0, float(clip_data.get('start_time') or 0.0))
-            clip_end = float(clip_data.get('end_time') or 0.0)
-            if clip_end <= clip_start:
-                clip_end = clip_start + 15.0
-            if source_duration:
-                clip_end = min(clip_end, source_duration)
-                if clip_end <= clip_start:
-                    raise Exception("The highlight starts after the end of the video.")
-            clip_duration = clip_end - clip_start
-            # process_clip reads the times from clip_data, so store the corrected values there
-            clip_data['start_time'] = clip_start
-            clip_data['end_time'] = clip_end
+        # Remove audio track now since transcription is done
+        if audio_path:
+            remove_files(audio_path)
+            audio_path = None
 
-            relevant_segments = [seg for seg in transcript_data.get("segments", [])
-                                 if seg["start"] < clip_end and seg["end"] > clip_start]
-            relevant_words = [w for w in transcript_data.get("words", [])
-                              if w["start"] < clip_end and w["end"] > clip_start]
+        if not auto_approve:
+            update_job_status(
+                job_id,
+                status="awaiting_approval",
+                progress=70,
+                message=f"Gemini identified {len(highlights)} viral clips. Awaiting your approval to render.",
+                highlights=highlights,
+                source_title=source_title
+            )
+            log_job_message(job_id, f"Paused for human review: {len(highlights)} highlights ready for approval.")
+            return
 
-            if not relevant_words:
-                log_job_message(job_id, f"WARNING: Clip {idx+1} missing captions. Generating estimated captions.")
-                title_words = str(clip_data.get("title") or f"Clip {idx+1}").split() or ["Highlight"]
-                word_dur = clip_duration / len(title_words)
-                for i, tw in enumerate(title_words):
-                    relevant_words.append({
-                        "start": clip_start + (i * word_dur),
-                        "end": clip_start + ((i+1) * word_dur),
-                        "word": tw
-                    })
-
-            clip_data["segments"] = relevant_segments
-            clip_data["words"] = relevant_words
-            clip_data["layout"] = layout
-
-            max_render_retries = 3
-            for attempt in range(max_render_retries):
-                try:
-                    final_clip_path, base_clip_path, srt_path, thumbnail_path = process_clip(
-                        video_path, clip_data, CLIPS_DIR, SUBTITLES_DIR, job_id, idx
-                    )
-                    break
-                except Exception as e:
-                    log_job_message(job_id, f"ERROR: Clip {idx+1} render failed on attempt {attempt+1}: {e}")
-                    if attempt == max_render_retries - 1:
-                        raise
-
-            return {
-                "title": clip_data.get("title", f"Clip {idx+1}"),
-                "start_time": clip_start,
-                "end_time": clip_end,
-                "score": clip_data.get("score", 0),
-                "reasoning": clip_data.get("reasoning", ""),
-                "video_url": clip_url("Clips", final_clip_path),
-                "base_url": clip_url("Clips", base_clip_path),
-                "thumbnail_url": clip_url("Clips", thumbnail_path),
-                "segments": relevant_segments,
-                "words": relevant_words,
-                "metadata": clip_data.get("metadata", {}),
-                "emphasized_words": clip_data.get("emphasized_words", []),
-                "layout": layout
-            }
-
-        with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
-            futures = [executor.submit(process_highlight, item) for item in enumerate(highlights)]
-            for idx, future in enumerate(futures):
-                # One bad highlight shouldn't throw away every other clip
-                try:
-                    result = future.result()
-                except Exception as e:
-                    log_job_message(job_id, f"ERROR: Skipping clip {idx+1}: {e}")
-                    continue
-                final_clips.append(result)
-                update_job_status(job_id, progress=85 + int(14 * (idx + 1) / len(futures)),
-                                  message=f"Clip rendered: {result['title']} ({len(final_clips)}/{len(highlights)})")
-
-        if not final_clips:
-            raise Exception("None of the clips could be rendered.")
-        if len(final_clips) < len(highlights):
-            job_warnings.append(f"{len(highlights) - len(final_clips)} of {len(highlights)} highlights could not be rendered.")
-
-        update_job_status(
-            job_id,
-            status="completed",
-            progress=100,
-            message="Processing Complete!",
-            clips=final_clips,
-            transcript=transcript_data.get("text", ""),
-            source_title=source_title,
-            source_duration=source_duration,
-            warnings=job_warnings
-        )
-        log_job_message(job_id, f"Job Completed Successfully! Generated {len(final_clips)} clips.")
+        render_approved_clips_job(job_id, state, highlights)
     finally:
-        # The source video and extracted audio aren't needed once the clips are rendered
-        remove_files(video_path, audio_path)
+        current_status = (get_job(job_id) or {}).get("status")
+        if current_status == "awaiting_approval":
+            if audio_path:
+                remove_files(audio_path)
+        else:
+            if audio_path:
+                remove_files(audio_path)
+            if not auto_approve and video_path:
+                remove_files(video_path)
 
 def process_story_job(job_id, story, style, voice, aspect_ratio):
     log_job_message(job_id, f"=== Starting Story to Video Job ===")
@@ -420,7 +561,67 @@ def process_video():
     if not data or not isinstance(data.get('videoUrl'), str):
         return jsonify({"error": "Missing jobId or videoUrl"}), 400
     layout = data.get('layout') if data.get('layout') in ('vertical', 'horizontal') else 'vertical'
-    return start_job_or_error(data, process_video_job, data['videoUrl'], layout)
+    is_live = bool(data.get('isLive'))
+    live_duration = int(data.get('liveDuration') or 600)
+    auto_approve = bool(data.get('autoApprove', False))
+    return start_job_or_error(data, process_video_job, data['videoUrl'], layout, is_live, live_duration, auto_approve)
+
+@app.route('/api/jobs/<job_id>/approve', methods=['POST'])
+def approve_job_highlights(job_id):
+    if not JOB_ID_PATTERN.match(job_id):
+        return jsonify({"error": "Invalid jobId"}), 400
+
+    state = get_pending_approval(job_id)
+    if not state:
+        return jsonify({"error": "Job is not pending approval or approval state expired."}), 404
+
+    data = json_body() or {}
+    approved_input = data.get("approvedHighlights")
+
+    all_highlights = state.get("highlights", [])
+    if isinstance(approved_input, list) and len(approved_input) > 0:
+        if isinstance(approved_input[0], int):
+            selected = [all_highlights[i] for i in approved_input if 0 <= i < len(all_highlights)]
+        elif isinstance(approved_input[0], dict):
+            selected = approved_input
+        else:
+            return jsonify({"error": "Invalid approvedHighlights format"}), 400
+    else:
+        selected = all_highlights
+
+    if not selected:
+        return jsonify({"error": "At least one highlight must be approved."}), 400
+
+    update_job_status(job_id, status="processing", progress=72, message=f"Approval received! Rendering {len(selected)} clips...")
+    log_job_message(job_id, f"Human approval received for {len(selected)} clips. Submitting to render queue...")
+    JOB_EXECUTOR.submit(run_job, job_id, render_approved_clips_job, state, selected)
+
+    return jsonify({
+        "message": f"Rendering started for {len(selected)} approved clips",
+        "status": "processing"
+    })
+
+@app.route('/api/jobs/<job_id>/reject', methods=['POST'])
+def reject_job_highlights(job_id):
+    if not JOB_ID_PATTERN.match(job_id):
+        return jsonify({"error": "Invalid jobId"}), 400
+
+    state = get_pending_approval(job_id)
+    if state and state.get("video_path"):
+        remove_files(state.get("video_path"))
+    with APPROVAL_LOCK:
+        PENDING_APPROVAL_JOBS.pop(job_id, None)
+
+    approval_file = os.path.join(PROCESSED_DIR, f"Approval_{job_id}.json")
+    if os.path.exists(approval_file):
+        try:
+            os.remove(approval_file)
+        except OSError:
+            pass
+
+    update_job_status(job_id, status="failed", progress=0, message="Job cancelled by user.")
+    log_job_message(job_id, "Job was cancelled by user during approval review.")
+    return jsonify({"message": "Job cancelled.", "status": "failed"})
 
 @app.route('/api/story-to-video', methods=['POST'])
 def process_story_video():

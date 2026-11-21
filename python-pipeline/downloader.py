@@ -54,9 +54,10 @@ def ensure_public_url(url):
         if not ipaddress.ip_address(address.split('%')[0]).is_global:
             raise ValueError("Video URLs must point to a public website.")
 
-def download_video(url, output_dir, progress_callback=None, file_prefix=None):
+def download_video(url, output_dir, progress_callback=None, file_prefix=None, is_live=False, live_duration=None):
     """
     Downloads a video from the given URL using yt-dlp.
+    If is_live or live_duration is set, records a segment from an active live broadcast (live_duration seconds, default 600s).
     Returns (path to the downloaded video file, {"title", "duration"} from the site).
     file_prefix keeps files from different jobs apart when the same video is submitted twice.
     """
@@ -75,7 +76,7 @@ def download_video(url, output_dir, progress_callback=None, file_prefix=None):
 
     name_template = f"{file_prefix}_%(id)s.%(ext)s" if file_prefix else '%(id)s.%(ext)s'
     base_ydl_opts = {
-        'format': 'bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]/best[height<=1080][ext=mp4]/best[height<=1080]/best',
+        'format': 'bv*[height<=?1080]+ba/b[height<=?1080]/bv*+ba/best',
         'outtmpl': os.path.join(output_dir, name_template),
         'merge_output_format': 'mp4',
         'noplaylist': True,
@@ -87,6 +88,16 @@ def download_video(url, output_dir, progress_callback=None, file_prefix=None):
         'retries': 15,
         'fragment_retries': 15,
     }
+
+    is_url_live = '/live/' in url.lower() or 'youtube.com/live' in url.lower()
+    effective_live = bool(is_live or is_url_live)
+    target_duration = int(live_duration or 600)
+    if effective_live:
+        print(f"[yt-dlp] Live stream mode enabled: capturing {target_duration}s buffer via ffmpeg...")
+        base_ydl_opts['format'] = 'best[ext=mp4]/best'
+        base_ydl_opts['live_from_start'] = False
+        base_ydl_opts['external_downloader'] = {'default': 'ffmpeg'}
+        base_ydl_opts['external_downloader_args'] = {'ffmpeg': ['-t', str(target_duration)]}
 
     browsers_to_try = [None, 'chrome', 'edge', 'firefox', 'brave', 'opera', 'vivaldi']
     errors = []
@@ -102,7 +113,9 @@ def download_video(url, output_dir, progress_callback=None, file_prefix=None):
         try:
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 info_dict = ydl.extract_info(url, download=True)
-                info = {"title": info_dict.get("title"), "duration": info_dict.get("duration")}
+                title = info_dict.get("title") or ("Live Stream Clip" if effective_live else "Video")
+                duration = target_duration if effective_live else info_dict.get("duration")
+                info = {"title": title, "duration": duration}
                 # Prefer the path yt-dlp actually wrote: a single-file fallback format may not be .mp4
                 downloads = info_dict.get('requested_downloads') or []
                 candidates = [d.get('filepath') for d in downloads if d.get('filepath')]
@@ -115,7 +128,11 @@ def download_video(url, output_dir, progress_callback=None, file_prefix=None):
         except Exception as e:
             err_str = str(e).lower()
             errors.append(str(e))
-            # Catch bot detection, missing cookies, or locked database errors to retry with next browser
+            # Catch bot detection, missing cookies, locked database, or format availability errors to retry
+            if 'requested format is not available' in err_str:
+                print("[yt-dlp] Format restriction failed; switching format to 'best' and retrying...")
+                base_ydl_opts['format'] = 'best'
+                continue
             if 'sign in' in err_str or 'cookie' in err_str or 'locked' in err_str or 'sqlite' in err_str or 'bot' in err_str:
                 continue
             else:

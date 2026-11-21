@@ -12,4 +12,5 @@ export const JOB_TYPE_LABELS: Record<JobType, string> = {
   clips: 'Viral clips',
   auto_edit: 'Auto edit',
   story_to_video: 'Story video',
+  live_clips: 'Live stream clips',
 };

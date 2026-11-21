@@ -8,16 +8,27 @@ import subprocess
 
 RETRY_DELAYS = [5, 15, 45]
 
-def retry_delay(error, attempt):
-    """Waits longer each attempt, or as long as the API asks (Retry-After) when rate limited."""
-    response = getattr(error, 'response', None)
-    retry_after = response.headers.get('retry-after') if response is not None and hasattr(response, 'headers') else None
-    try:
-        if retry_after:
-            return min(float(retry_after), 120)
-    except ValueError:
-        pass
-    return RETRY_DELAYS[min(attempt, len(RETRY_DELAYS) - 1)]
+HALLUCINATION_PHRASES = [
+    "ensure every single word is captured",
+    "without omitting any important words",
+    "transcribe all spoken content",
+    "accurately transcribe",
+    "thank you for watching",
+    "thanks for watching",
+    "subtitles by",
+    "amara.org",
+    "subscribe to my channel",
+    "like and subscribe",
+]
+
+def is_hallucinated_segment(text):
+    if not text:
+        return True
+    t_lower = text.strip().lower()
+    for phrase in HALLUCINATION_PHRASES:
+        if phrase in t_lower:
+            return True
+    return False
 
 def transcribe_chunk(client, chunk_path, offset_seconds):
     """
@@ -27,23 +38,26 @@ def transcribe_chunk(client, chunk_path, offset_seconds):
     for attempt in range(max_retries):
         try:
             with open(chunk_path, "rb") as file:
+                # Omit prompt instruction: Whisper is autoregressive and repeats prompts on silence/music
                 transcription = client.audio.transcriptions.create(
                     file=(os.path.basename(chunk_path), file.read()),
                     model="whisper-large-v3",
                     response_format="verbose_json",
                     temperature=0.0,
-                    prompt="Please accurately transcribe all spoken content. Ensure every single word is captured with high accuracy without omitting any important words or sentences.",
                     timestamp_granularities=["word", "segment"]
                 )
             
             segments = []
             words = []
-            if hasattr(transcription, 'segments'):
+            if hasattr(transcription, 'segments') and transcription.segments:
                 for seg in transcription.segments:
                     start_t = seg["start"] if isinstance(seg, dict) else seg.start
                     end_t = seg["end"] if isinstance(seg, dict) else seg.end
                     text_content = (seg["text"] if isinstance(seg, dict) else seg.text).strip()
                     
+                    if is_hallucinated_segment(text_content):
+                        continue
+
                     segments.append({
                         "start": start_t + offset_seconds,
                         "end": end_t + offset_seconds,
@@ -54,16 +68,21 @@ def transcribe_chunk(client, chunk_path, offset_seconds):
                 for w in transcription.words:
                     start_t = w["start"] if isinstance(w, dict) else w.start
                     end_t = w["end"] if isinstance(w, dict) else w.end
-                    word_text = w["word"] if isinstance(w, dict) else w.word
+                    word_text = (w["word"] if isinstance(w, dict) else w.word).strip()
                     
+                    if is_hallucinated_segment(word_text):
+                        continue
+
                     words.append({
                         "start": start_t + offset_seconds,
                         "end": end_t + offset_seconds,
                         "word": word_text
                     })
             
+            # Reconstruct clean text from verified non-hallucinated segments
+            cleaned_text = " ".join(s["text"] for s in segments)
             return {
-                "text": transcription.text,
+                "text": cleaned_text,
                 "segments": segments,
                 "words": words
             }

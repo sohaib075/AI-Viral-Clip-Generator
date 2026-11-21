@@ -174,7 +174,7 @@ export default function AccountsScreen() {
           })}
 
           <Text style={styles.footnote}>
-            The server's BASE_URL must be reachable from this phone for the connection to finish.
+            {"The server's BASE_URL must be reachable from this phone for the connection to finish."}
           </Text>
         </ScrollView>
       )}

@@ -31,6 +31,23 @@ const uploadToYouTube = async (post, account, tempVideoPath) => {
             .catch(err => console.error('[YouTube] Failed to save refreshed tokens:', err.message));
     });
 
+    // Actively refresh the access token before uploading to prevent expired token rejections
+    try {
+        const { credentials } = await oauth2Client.refreshAccessToken();
+        if (credentials.access_token) {
+            oauth2Client.setCredentials(credentials);
+            account.access_token = credentials.access_token;
+            account.refresh_token = credentials.refresh_token || account.refresh_token;
+            await saveAccountTokens(account.id, {
+                accessToken: credentials.access_token,
+                refreshToken: credentials.refresh_token || account.refresh_token
+            });
+            console.log('[YouTube] Refreshed access token successfully before upload.');
+        }
+    } catch (refreshErr) {
+        console.warn('[YouTube] Proactive token refresh notice:', refreshErr.message);
+    }
+
     const youtube = google.youtube({
         version: 'v3',
         auth: oauth2Client
@@ -62,14 +79,31 @@ const uploadToYouTube = async (post, account, tempVideoPath) => {
                     body: fs.createReadStream(tempVideoPath)
                 }
             }, {
-                timeout: 300000 // 5 minutes timeout
+                timeout: 1800000 // 30 minutes timeout for large video uploads
             });
 
             console.log(`[YouTube] Upload successful! Video ID: ${res.data.id}`);
             return res.data;
         } catch (err) {
             if (isAuthError(err)) {
-                // Retrying won't help, and reporting success here would hide a failed upload.
+                if (retries > 1 && account.refresh_token) {
+                    console.log('[YouTube] Auth failed, attempting refresh before retry...');
+                    try {
+                        const { credentials } = await oauth2Client.refreshAccessToken();
+                        oauth2Client.setCredentials(credentials);
+                        if (credentials.access_token) {
+                            account.access_token = credentials.access_token;
+                            await saveAccountTokens(account.id, {
+                                accessToken: credentials.access_token,
+                                refreshToken: credentials.refresh_token || account.refresh_token
+                            });
+                        }
+                        retries--;
+                        continue;
+                    } catch (refreshErr) {
+                        console.error('[YouTube] Refresh attempt during retry failed:', refreshErr.message);
+                    }
+                }
                 console.error('[YouTube] Authentication failed:', err.message);
                 throw Object.assign(new Error('YouTube credentials are invalid or expired. Reconnect the account and try again.'), { retryable: false });
             }

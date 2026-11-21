@@ -1,4 +1,6 @@
 const crypto = require('crypto');
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '.env') });
 require('dotenv').config();
 
 const KEY_PATTERN = /^[0-9a-fA-F]{64}$/; // 32 bytes for AES-256

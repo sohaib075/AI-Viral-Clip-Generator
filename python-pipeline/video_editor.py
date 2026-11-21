@@ -321,6 +321,11 @@ def process_clip(video_path, clip_data, clips_dir, subtitles_dir, job_id, clip_i
     start_time = clip_data.get('start', clip_data.get('start_time', 0.0))
     end_time = clip_data.get('end', clip_data.get('end_time', 0.0))
     duration = end_time - start_time
+    if duration < 15.0:
+        needed = 20.0 - max(0.0, duration)
+        start_time = max(0.0, start_time - (needed / 2.0))
+        end_time = start_time + 20.0
+        duration = end_time - start_time
     
     layout = clip_data.get('layout', 'vertical')
     is_vertical = layout_is_vertical(layout)

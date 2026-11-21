@@ -14,6 +14,8 @@ const Home = () => {
   const [errorMsg, setErrorMsg] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [layout, setLayout] = useState('vertical');
+  const [isLive, setIsLive] = useState(false);
+  const [liveDuration, setLiveDuration] = useState(600);
   const navigate = useNavigate();
 
   const [analytics, setAnalytics] = useState<Analytics | null>(null);
@@ -67,7 +69,7 @@ const Home = () => {
         formData.append('layout', layout);
         body = formData;
       } else {
-        body = JSON.stringify({ videoUrl, layout });
+        body = JSON.stringify({ videoUrl, layout, isLive, liveDuration });
       }
 
       const data = await apiFetch<{ jobId: string }>('/api/jobs', { method: 'POST', body });
@@ -131,12 +133,77 @@ const Home = () => {
                 id="video-url"
                 type="url"
                 value={videoUrl}
-                onChange={(e) => setVideoUrl(e.target.value)}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setVideoUrl(val);
+                  if (val.includes('/live/') || val.includes('youtube.com/live')) {
+                    setIsLive(true);
+                  }
+                }}
                 disabled={Boolean(file)}
-                placeholder={file ? 'Remove the file to use a URL' : 'https://www.youtube.com/watch?v=...'}
+                placeholder={file ? 'Remove the file to use a URL' : 'https://www.youtube.com/watch?v=... or https://youtube.com/live/...'}
                 className="field-input"
               />
             </div>
+
+            {videoUrl && !file && (
+              <div className="p-3.5 rounded-[10px] border border-[var(--color-border)] bg-[var(--color-canvas)] space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className={`inline-block w-2.5 h-2.5 rounded-full ${isLive ? 'bg-red-500 animate-pulse' : 'bg-[var(--color-faint)]'}`} />
+                    <span className="text-xs font-semibold text-[var(--color-ink)]">Live Stream Clipping Mode</span>
+                  </div>
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-checked={isLive}
+                    onClick={() => setIsLive(!isLive)}
+                    className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                      isLive ? 'bg-red-500' : 'bg-[var(--color-border-strong)]'
+                    }`}
+                  >
+                    <span
+                      className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
+                        isLive ? 'translate-x-4' : 'translate-x-0'
+                      }`}
+                    />
+                  </button>
+                </div>
+
+                {isLive && (
+                  <div className="pt-2 border-t border-[var(--color-border)] space-y-2">
+                    <div className="flex items-center justify-between text-xs text-[var(--color-muted)]">
+                      <span>Capture Buffer Duration:</span>
+                      <span className="font-semibold text-[var(--color-ink)]">{liveDuration / 60} minutes</span>
+                    </div>
+                    <div className="grid grid-cols-4 gap-2">
+                      {[
+                        { label: '5 min', sec: 300 },
+                        { label: '10 min (Best)', sec: 600 },
+                        { label: '15 min', sec: 900 },
+                        { label: '20 min', sec: 1200 },
+                      ].map(opt => (
+                        <button
+                          key={opt.sec}
+                          type="button"
+                          onClick={() => setLiveDuration(opt.sec)}
+                          className={`py-1.5 px-2 rounded-md text-xs font-medium border text-center transition-colors ${
+                            liveDuration === opt.sec
+                              ? 'border-red-500 bg-red-500/10 text-red-400 font-semibold'
+                              : 'border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-muted)] hover:border-[var(--color-border-strong)]'
+                          }`}
+                        >
+                          {opt.label}
+                        </button>
+                      ))}
+                    </div>
+                    <p className="text-[11px] text-[var(--color-faint)]">
+                      Captures the ongoing live broadcast buffer. 10–15 min is recommended so AI has enough commentary and action to generate complete viral clips.
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
 
             <div className="flex items-center gap-3">
               <div className="flex-1 h-px bg-[var(--color-border)]" />
